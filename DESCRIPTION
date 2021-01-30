@@ -1,0 +1,15 @@
+Package: KuskoHarvEst
+Title: Workflow and Interface for Producing In-season Harvest Estimates and Reports for Lower Kuskokwim Salmon Fisheries
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Ben",
+           family = "Staton",
+           role = c("aut", "cre"),
+           email = "bstaton.qes@gmail.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: TO BE COMPLETED LATER
+License: use_mit_license()
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
