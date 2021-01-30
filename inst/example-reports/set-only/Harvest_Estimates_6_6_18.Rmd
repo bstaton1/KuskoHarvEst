@@ -1,0 +1,302 @@
+---
+title: "Harvest Estimates: 6/6/2018 Set Net Subsistence Opportunity"
+author: "Prepared by USFWS"
+output: pdf_document
+geometry: margin=0.5in
+urlcolor: "blue"
+linkcolor: "blue"
+---
+
+---
+
+\pagenumbering{gobble}
+
+```{r Markdown Setup, include = F}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+
+# Sys.setenv(PATH=paste(Sys.getenv("PATH"),"C:\\Program Files\\MiKTeX 2.9\\miktex\\bin\\x64",sep=";"))
+# Sys.which("pdflatex")
+
+```
+
+```{r Session Setup}
+# clear the workspace
+rm(list = ls(all = T))
+
+# the directory where all data files are located
+data_dir = "C:/Users/bstaton/Documents/StatonWork/2_Harvest Estimates/6_6_18/"
+
+# read functions into workspace
+message = F
+source("C:/Users/bstaton/Documents/StatonWork/2_Harvest Estimates/Functions_Source.R")
+
+set.seed(1)
+```
+
+```{r Dates to Keep}
+# the dates to keep in the rest of the analysis.
+# THIS IS KEY, OTHERWISE YOU COULD USE THE WRONG CATCH AND EFFORT DATA!!!
+keep.dates = c("6/6")
+```
+
+```{r Step 1: Prepare All Data}
+# the columns in the right order for all interview data sets
+cols = c("source", "date", "stratum", "trip.start", "trip.end", "soak.hrs", "length", 
+         "gear", "mesh", "chinook", "chum", "sockeye", "chinook.cpe", "chum.cpe", "sockeye.cpe")
+
+# read in raw interview files
+cbm.raw.dat = read.csv(paste(data_dir, "CBM_6_6_18.csv", sep = "/"), stringsAsFactors = F)
+fc.raw.dat = read.csv(paste(data_dir, "FC_6_6_18.csv", sep = "/"), stringsAsFactors = F)
+
+# read in raw flight data
+flight.dat.raw = read.csv(paste(data_dir, "Flight_counts_6_6_18.csv", sep = "/"), stringsAsFactors = F)
+
+# PREPARE COMMUNITY BASED MONITORING DATA
+cbm.dat = cbm.prep(dat = cbm.raw.dat, includeWhiteFish = T)
+cbm.goals = cbm.dat$goals
+cbm.dat = cbm.dat$catch.effort
+
+# PREPARE BETHEL AREA FISH CAMP DATA
+fc.dat = fc.prep(dat = fc.raw.dat, includeWhiteFish = T)
+
+# COMBINE ALL DATASETS INTO ONE
+dat = rbind(cbm.dat, fc.dat)
+
+# KEEP ONLY THE DATES OF INTEREST
+dat = dat[dat$date %in% keep.dates,]
+
+# SEPARATE INTERVIEW DATA BY GEAR TYPES
+drift.dat = dat[dat$gear == "drift",]
+set.dat = dat[dat$gear == "set",]
+
+# PREPARE FLIGHT DATA
+flight.dat = flight.prep(dat = flight.dat.raw)
+```
+
+```{r Step 2: Generate Total Effort Estimates}
+set.nets = flight.dat$set.nets
+p.strata = set.nets/sum(set.nets)
+
+trip.ests = estimate.trips(trips = dat[,c("trip.start", "trip.end")], f1.times = flight.dat$f1.times, num.f1 = sum(set.nets))
+
+set.nets = round(trip.ests["total.b"] * p.strata)
+```
+
+```{r Step 3: Generate Harvest Estimates by Stratum}
+# number of bootstrapped datasets
+n.boot = 1000
+
+# strata
+strata = names(set.nets)
+n.strata = length(strata)
+
+# pooling of information: which data should be used in each stratum?
+# table(drift.dat$stratum)
+
+use.A = strata
+use.B = strata
+use.C = strata
+use.D1 = strata
+
+# containers: [iterations,species,strata]
+rand.strat.set = array(NA, dim = c(n.boot, 4, n.strata))
+dimnames(rand.strat.set) = list(1:n.boot, c("chinook", "chum", "sockeye", "whitefish"), strata)
+
+keep.sources = c("CBM", "FC")
+
+# produce estimates with randomized data
+for (i in 1:n.boot) {
+  
+  rand.strat.set[i,,"A"] = estimate.harvest(dat = randomize.data(set.dat), n.trips = unname(set.nets["A"]), includeWhiteFish = T)
+  rand.strat.set[i,,"B"] = estimate.harvest(dat = randomize.data(set.dat), n.trips = unname(set.nets["B"]), includeWhiteFish = T)
+  rand.strat.set[i,,"C"] = estimate.harvest(dat = randomize.data(set.dat), n.trips = unname(set.nets["C"]), includeWhiteFish = T)
+  rand.strat.set[i,,"D1"] = estimate.harvest(dat = randomize.data(set.dat), n.trips = unname(set.nets["D1"]), includeWhiteFish = T)
+}
+
+```
+
+```{r Step 4: Summarize Harvest Output}
+
+# NOTATION
+  # if includes 'rand', these are estimates for each random data set
+  # if includes 'strat', these are stratified by geographic stratum
+  # if includes 'tot', these are summed across strata but not necessarily across gears
+  # if includes 'drift', these are drift harvests only
+  # if includes 'set', these are set harvest only
+  # all objects (except 'all.salmon' ones) have species as the second dimension!!
+
+# randomized harvest by stratum across both gears
+rand.strat = rand.strat.set
+
+# randomized total harvest by drift boats across strata
+# rand.tot.drift = apply(rand.strat.drift, 2, rowSums)
+
+# randomized total harvest by set nets across strata
+rand.tot.set = apply(rand.strat.set, 2, rowSums)
+
+# randomized total harvest across gears across strata
+rand.tot = rand.tot.set
+
+# randomized all salmon harvest
+rand.all.salmon = rowSums(rand.tot[,c("chinook", "chum", "sockeye")])
+
+# summarized total harvest by gear
+# tot.drift = apply(rand.tot.drift, 2, rand.summ)
+tot.set = apply(rand.tot.set, 2, rand.summ, rnd = -1)
+
+# summarized total harvest across gears
+tot = apply(rand.tot, 2, rand.summ, pretty = T, rnd = -1)
+# apply(rand.tot, 2, function(x) sd(x)/mean(x))
+
+# summarized total salmon harvest
+all.salmon = rand.summ(rand.all.salmon, pretty = T, rnd = -1)
+
+# summaries by stratum
+strat.set = strat.tot = array(NA, dim = c(3, 4, 4))
+strat.all.salmon.set = matrix(NA, 3,4); rownames(strat.all.salmon.set) = rownames(tot); colnames(strat.all.salmon.set) = strata
+strat.all.salmon.tot = matrix(NA, 3,4); rownames(strat.all.salmon.tot) = rownames(tot); colnames(strat.all.salmon.tot) = strata
+dimnames(strat.set) = dimnames(strat.tot) = list(rownames(tot), colnames(tot), strata)
+for (s in 1:n.strata) {
+  strat.set[,,strata[s]] = apply(rand.strat.set[,,strata[s]], 2, rand.summ, rnd = -1)
+  strat.tot[,,strata[s]] = apply(rand.strat[,,strata[s]], 2, rand.summ, rnd = -1)
+  
+  strat.all.salmon.set[,s] = rand.summ(rowSums(rand.strat.set[,,strata[s]]), rnd = -1)
+  strat.all.salmon.tot[,s] = rand.summ(rowSums(rand.strat.set[,,strata[s]]), rnd = -1)
+}
+
+# rand.summ(rowSums(apply(rand.strat.drift,3,rowSums)))
+# rand.summ(rowSums(apply(rand.strat.set,3,rowSums)))
+# rand.summ(rowSums(apply(rand.strat.drift + rand.strat.set,3,rowSums)))
+
+# calculate total chinook salmon harvest below BTF
+# rand.chin.btf = rand.strat[,"chinook","A"] + rand.strat[,"chinook","B"] + rand.strat[,"chinook","C"] * 0.5
+# mean(rand.chin.btf); sd(rand.chin.btf)
+
+# calculate the total salmon harvest by set nets
+rand.all.salmon.set = rowSums(rand.tot.set)
+all.salmon.set = rand.summ(rand.all.salmon.set)
+
+# calculate the proportion of set net harvest by species
+rand.p.spp.set = t(apply(rand.tot.set, 1, function(x) x/sum(x)))
+p.spp.set = apply(rand.p.spp.set, 2, rand.summ, rnd = 2)
+p.spp.set = p.spp.set["mean",] * 100
+
+## QUANTITIES FOR TABLE 2 ##
+
+# all salmon harvest per boat above and below johnson R.
+# rand.all.salmon.below = rowSums(rand.strat.drift[,,"A"])
+# rand.all.salmon.above = rowSums(rand.strat.drift[,"chinook",c("B", "C", "D1")] + rand.strat.drift[,"chum",c("B", "C", "D1")] + rand.strat.drift[,"sockeye",c("B", "C", "D1")])
+# 
+# rand.all.salmon.cpb.below = rand.all.salmon.below/sum(boat.trips["A"])
+# rand.all.salmon.cpb.above = rand.all.salmon.above/sum(boat.trips[c("B", "C", "D1")])
+# cpb.below = rand.summ(rand.all.salmon.cpb.below, rnd = 0)
+# cpb.above = rand.summ(rand.all.salmon.cpb.above, rnd = 0)
+# 
+# # species ratio
+# rand.cpb.below = rand.strat.drift[,,"A"]/boat.trips["A"]
+# rand.ratio.below = rowSums(rand.cpb.below[,c("chum", "sockeye")])/rand.cpb.below[,"chinook"]
+# rand.ratio.above = rowSums(rand.strat.drift[,"chum",c("B", "C", "D1")] + rand.strat.drift[,"sockeye",c("B", "C", "D1")])/rowSums(rand.strat.drift[,"chinook",c("B", "C", "D1")])
+# 
+# ratio.below = rand.summ(rand.ratio.below, rnd = 1)
+# ratio.above = rand.summ(rand.ratio.above, rnd = 1)
+
+# drift.dat$ratio = rowSums(drift.dat[,c("chum", "sockeye")])/drift.dat$chinook
+# drift.dat$ratio[drift.dat$ratio == "Inf" | is.na(drift.dat$ratio)] = NA
+# drift.dat$region = ifelse(drift.dat$stratum %in% c("B", "C", "D1"), "above", "below")
+# 
+# drift.dat$all.salmon = rowSums(drift.dat[,c("chinook", "chum", "sockeye")])
+# 
+# with(drift.dat, tapply(all.salmon, region, rand.summ, rnd = 0))
+# with(drift.dat, tapply(ratio, region, rand.summ, rnd = 2))
+# with(drift.dat, tapply(ratio, region, rand.summ, rnd = 2))
+
+```
+
+```{r write output files}
+
+# write random estimates by strata and species for Setnets
+write.csv(x = ary_to_df(x = rand.strat.set, date = keep.dates, gear = "set"),
+          file = file_name(type = "SetOut", dFile = "6_6"), row.names = F)
+
+
+# total harvest
+write.csv(as.data.frame(rand.tot), "Total Harvest_6_6_18.csv", row.names = F)
+
+pC_set = 0.1
+
+# calculate harvest ds of btf
+rand_btf_set = rand.strat.set[,,"A"] + rand.strat.set[,,"B"] + rand.strat.set[,,"C"] * pC_set
+rand_btf = rand_btf_set
+
+# write out
+write.csv(rand_btf, "BTF Harvest_6_6_18_TA.csv", row.names = F)
+
+
+```
+
+This document presents harvest and effort estimates from the 4-inch set net opportunity on the Kuskokwim River that occurred on June 6, 2018. **These estimates encompass the portion of the Yukon Delta National Wildlife Refuge (YDNWR) between and including the villages of Tuntutuliak and Akiak, and apply only to the main-stem Kuskokwim River**. Harvest and effort estimation was conducted by USFWS staff using the same methods as in [2016](https://www.fws.gov/uploadedFiles/2016KuskokwimSubsistenceSalmonHarvest.pdf) and [2017](https://www.fws.gov/uploadedFiles/2017KuskokwimRiverSubsistenceSalmonHarvest.pdf). Please contact Ben Staton (<benjamin_staton@fws.gov>) if you have any questions regarding these estimates or methods.
+
+## Opportunity Details
+
+The ADF&G Kuskokwim Area Management Biologist opened the Kuskokwim River between the YDNWR boundary at the river mouth to the Holitna River mouth to the use of set nets limited to 4-inch or less stretched-mesh, 45 meshes deep, and 60 feet in length with the intent of targeting non-salmon species. The opportunity was 12 hours in duration, starting at 11:00AM June 6 and ending at 11:00PM June 6. The Emergency Order that implemented this opportunity can be found [here](http://www.adfg.alaska.gov/static/applications/dcfnewsrelease/910464458.pdf).
+
+## Data Sources
+
+* A total of **`r nrow(dat)`** fisher interviews were used in this analysis.
+    * **`r nrow(dat[dat$source == "CBM",])`** fisher interviews collected by KRITFC/BSFA community-based monitoring efforts were used. 
+    * **`r nrow(dat[dat$source == "FC",])`** fisher interviews collected by OTNC from Bethel area fish camps were used.
+* USFWS flew **1** aerial survey to count set nets.
+* Given the small number of interviews obtained, all catch data were pooled and applied to the set net counts made in each geographic stratum.
+
+## Effort Estimates
+
+* A total of **`r sum(set.nets)`** set nets were estimated to have fished in the main-stem Kuskokwim River during the opportunity.
+* During the aerial survey flight between Tuntutuliak and Akiak, USFWS observed **`r sum(flight.dat$set.nets)`** set nets fishing between 2:00PM and 4:00PM.
+* Given only one flight was made, there was no need to account for double-counted set nets.
+* **`r round(trip.ests["trips.not.counted"])`** set nets were estimated to have been set and retrieved during times that were not flown.
+
+## Harvest Estimates
+
+* An estimated total of **`r report(all.salmon)`** salmon were harvested.
+    * An estimated total of **`r report(tot[,"chinook"])`** Chinook salmon were harvested.
+    * Very few chum and sockeye salmon were estimated to have been harvested.
+* An estimated total of **`r report(tot[,"whitefish"])`** fish from non-salmon species (i.e., sheefish and other whitefishes) were harvested. 
+
+**Table 1.** Breakdown of relevant quantities by river stratum (area).
+
+```{r Table, results = "asis", eval = T}
+
+library(pander)
+
+empty = rep(0, n.strata); names(empty) = strata
+ints = table(dat$stratum); empty[names(ints)] = ints; ints = as.numeric(empty); ints.sum = sum(ints)
+count.set.nets = flight.dat$set.nets; count.set.nets.sum = sum(count.set.nets)
+est.set.nets = set.nets; est.set.nets.sum = sum(est.set.nets)
+
+chin = unname(strat.tot["mean","chinook",]); chin.sum = sum(chin)
+chum = unname(strat.tot["mean","chum",]); chum.sum = sum(chum)
+sock = unname(strat.tot["mean","sockeye",]); sock.sum = sum(sock)
+white = unname(strat.tot["mean","whitefish",]); white.sum = sum(white)
+
+tab = data.frame(ints, count.set.nets, est.set.nets, chin, white)
+sums = c(ints.sum, count.set.nets.sum, est.set.nets.sum, chin.sum, white.sum)
+# tab = data.frame(ints, max.count, boat.trips, chin, chum, sock)
+# sums = c(ints.sum, max.count.sum, n.trips, chin.sum, chum.sum, sock.sum)
+
+tab = rbind(tab, sums)
+
+tab = apply(tab, 2, prettyNum, big.mark = ",", scientific = F)
+
+rw.names = c("Tunt-Johnson", "Johnson-Napaskiak", "Napaskiak-Akiachak", "Akiachak-Akiak", "Total")
+cl.names = c("Stratum", "Interviews", "Set Net Count", "Set Net Estimate", "Chinook Harvest", "Non-Salmon Harvest")
+
+tab = cbind(rw.names, tab)
+rownames(tab) = NULL
+colnames(tab) = cl.names
+# c("30%", rep("10%", ncol(tab) - 1))
+# panderOptions(o = "table.split.table", value = Inf) # set global table option to never break table on two rows
+
+pandoc.table(tab, split.cells = c(2, rep(1, ncol(tab))), emphasize.strong.rows = nrow(tab), justify = c("right", rep("center", ncol(tab) - 1)))
+# pandoc.table(tab, style = "simple", emphasize.strong.rows = nrow(tab), justify = c("right", rep("center", ncol(tab) - 1)))
+```
+
