@@ -2,10 +2,10 @@
 #'
 #' @export
 
-prepare_interviews = function(input_file, src_name = NULL) {
+prepare_interviews = function(input_file, src_name = NULL, include_whitefishes = FALSE) {
 
   ### STEP 0: load the input data file & format column names
-  dat_in = read.csv(input_file, stringsAsFactors = F)
+  dat_in = read.csv(input_file, stringsAsFactors = FALSE)
 
   # which variables are available?
   vars = colnames(dat_in)
@@ -74,6 +74,19 @@ prepare_interviews = function(input_file, src_name = NULL) {
   } else {
     dat_out$soak_duration = lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes"))
   }
+  dat_out$soak_duration = round(dat_out$soak_duration)
+
+  ### STEP X: handle which species to keep
+  keep_spp = c("chinook", "chum", "sockeye")
+  if (include_whitefishes) keep_spp = c(keep_spp, "whitefish", "sheefish")
+  dat_out = cbind(dat_out, dat_in[,keep_spp])
+
+  ### STEP X: calculate catch rate
+  effort = with(dat_out, net_length * as.numeric(soak_duration, "hours"))
+  catch_rate = apply(dat_out[,keep_spp], 2, function(spp_catch) spp_catch/effort)
+  colnames(catch_rate) = paste0(colnames(catch_rate), "_cpe")
+  catch_rate = round(catch_rate, 5)
+  dat_out = cbind(dat_out, catch_rate)
 
   # more steps...
 
