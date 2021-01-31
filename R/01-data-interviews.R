@@ -23,7 +23,25 @@ prepare_interviews = function(input_file, src_name = NULL) {
   }
   dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
 
-  ### STEP 2: handle trip times
+  ### STEP X: handle the stratum name
+  dat_out$stratum = dat_in$stratum
+
+  ### STEP X: handle the gear (net) type
+  gear_entered = dat_in$gear
+  gear_standard = tolower(gear_entered) # make lowercase
+  gear_standard = stringr::str_remove(gear_standard, "net")
+  dat_out$gear = gear_standard
+
+  ### STEX X: handle net dimensions
+  has_mesh = "mesh" %in% vars
+  dat_out$net_length = dat_in$length
+  if (has_mesh) {
+    dat_out$mesh_size = round(dat_in$mesh, 3)
+  } else {
+    dat_out$mesh_size = NA
+  }
+
+  ### STEP X: handle trip times
   has_starttime = "trip_start" %in% vars
   has_endtime = "trip_end" %in% vars
 
@@ -42,7 +60,7 @@ prepare_interviews = function(input_file, src_name = NULL) {
   # calculate trip duration
   dat_out$trip_duration = lubridate::as.duration(lubridate::interval(dat_out$trip_start, dat_out$trip_end))
 
-  ### STEP 3: handle soak times
+  ### STEP X: handle soak times
   # extract the soak time variable name and time unit names from raw data
   # some sources use HH:MM format, others use the number of minutes or number of hours
   soak_var = vars[stringr::str_which(vars, "soak")]
