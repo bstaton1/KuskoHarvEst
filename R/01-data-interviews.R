@@ -5,7 +5,7 @@
 prepare_interviews = function(input_file, src_name = NULL) {
 
   ### STEP 0: load the input data file & format column names
-  dat_in = read.csv(input_file)
+  dat_in = read.csv(input_file, stringsAsFactors = F)
 
   # which variables are available?
   vars = colnames(dat_in)
