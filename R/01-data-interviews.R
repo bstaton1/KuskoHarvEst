@@ -2,7 +2,7 @@
 #'
 #' @export
 
-prepare_interviews = function(input_file, src_name = NULL, include_whitefishes = FALSE, include_village = FALSE) {
+prepare_interviews = function(input_file, src_name = NULL, include_whitefishes = FALSE, include_village = FALSE, include_goals = FALSE) {
 
   ### STEP 0: load the input data file & format column names
   dat_in = read.csv(input_file, stringsAsFactors = FALSE)
@@ -95,6 +95,16 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
       dat_out$village = ifelse(src_name == "BBH", "Bethel", NA)
     } else {
       dat_out$village = dat_in$village
+    }
+  }
+
+  ### STEP X: add information about goal attainment if requested
+  if (include_goals) {
+    goal_vars = vars[stringr::str_detect(vars, "goal$")]
+    if (length(goal_vars) == 0) {
+      dat_out = cbind(dat_out, chinook_goal = NA, chum_goal = NA, sockeye_goal = NA)
+    } else {
+      dat_out = cbind(dat_out, dat_in[,goal_vars])
     }
   }
 
