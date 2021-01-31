@@ -20,9 +20,9 @@ summ = function(x, p = c(0.5, 0.025, 0.975), rnd = NULL, na.rm = F, prettify = F
   out
 }
 
-x = rnorm(100, 50000, 2500)
-
-summ(x, rnd = -3, prettify = T)
+# x = rnorm(100, 50000, 2500)
+#
+# summ(x, rnd = -3, prettify = T)
 
 # rand.summ = function(x, pretty = F, rnd = -1, method = "quantile") {
 #
