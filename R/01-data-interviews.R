@@ -2,7 +2,7 @@
 #'
 #' @export
 
-prepare_interviews = function(input_file, src_name = NULL, include_whitefishes = FALSE) {
+prepare_interviews = function(input_file, src_name = NULL, include_whitefishes = FALSE, include_village = FALSE) {
 
   ### STEP 0: load the input data file & format column names
   dat_in = read.csv(input_file, stringsAsFactors = FALSE)
@@ -88,7 +88,15 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   catch_rate = round(catch_rate, 5)
   dat_out = cbind(dat_out, catch_rate)
 
-  # more steps...
+  ### STEP X: add village information if requested
+  if (include_village) {
+    has_village = "village" %in% vars
+    if (!has_village) {
+      dat_out$village = ifelse(src_name == "BBH", "Bethel", NA)
+    } else {
+      dat_out$village = dat_in$village
+    }
+  }
 
   # return the formatted output
   return(dat_out)
