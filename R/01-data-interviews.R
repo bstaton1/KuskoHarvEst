@@ -43,12 +43,19 @@ prepare_interviews = function(input_file, src_name = NULL) {
   dat_out$trip_duration = lubridate::as.duration(lubridate::interval(dat_out$trip_start, dat_out$trip_end))
 
   ### STEP 3: handle soak times
+  # extract the soak time variable name and time unit names from raw data
+  # some sources use HH:MM format, others use the number of minutes or number of hours
   soak_var = vars[stringr::str_which(vars, "soak")]
   soak_units_entered = stringr::str_extract(soak_var, "_.+$")
   soak_units_entered = stringr::str_remove(soak_units_entered, "_")
+  soak_class = class(dat_in[,soak_var])
 
-  # convert to a duration class
-  dat_out$soak_duration = lubridate::duration(dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes"))
+  # convert to duration class: different function depending on the units and format of the input
+  if (soak_units_entered == "hrs" & soak_class == "character") {
+    dat_out$soak_duration = lubridate::as.duration(lubridate::hm(dat_in[,soak_var]))
+  } else {
+    dat_out$soak_duration = lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes"))
+  }
 
   # more steps...
 
