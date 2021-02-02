@@ -4,7 +4,13 @@
 \alias{prepare_interviews}
 \title{Format interview data for analysis}
 \usage{
-prepare_interviews(input_file, src_name = NULL)
+prepare_interviews(
+  input_file,
+  src_name = NULL,
+  include_whitefishes = FALSE,
+  include_village = FALSE,
+  include_goals = FALSE
+)
 }
 \description{
 Format interview data for analysis
