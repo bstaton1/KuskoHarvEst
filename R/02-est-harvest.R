@@ -2,12 +2,6 @@
 #'
 #' @export
 
-
-# interview_data = idat
-# include_whitefishes = F
-# central_fn = mean
-# gear = "drift"
-
 estimate_harvest = function(interview_data, effort_est, gear, include_whitefishes = FALSE, central_fn = mean) {
   # keep only records for this gear type
   interview_data = interview_data[interview_data$gear == gear,]
