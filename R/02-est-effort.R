@@ -16,7 +16,7 @@ estimate_effort = function(interview_data, flight_data, gear = "drift") {
   trips = interview_data[!is.na(interview_data$trip_start) & !is.na(interview_data$trip_end), ]
 
   # STEP 4: discard opposite gear and keep only trip times
-  trips = trips[interview_data$gear == gear,c("trip_start", "trip_end")]
+  trips = trips[trips$gear == gear,c("trip_start", "trip_end")]
 
   # STEP 5: convert start/end times to intervals
   fint = lubridate::interval(flight_data$start_time, flight_data$end_time)
