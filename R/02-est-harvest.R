@@ -1,58 +1,34 @@
-# ESTIMATE.HARVEST()
+#' Estimate harvest
+#'
+#' @export
 
-# AUTHOR: BEN STATON
-# LAST UPDATED: 6/7/2017
 
-# DESCRIPTION:
-# generates harvest estimates for each chinook, chum, and sockeye based on a set of interviews and a total effort estimate
+# interview_data = idat
+# include_whitefishes = F
+# central_fn = mean
+# gear = "drift"
 
-# INPUTS:
-# dat: the interview dataset
-# n.trips: the number of trips
+estimate_harvest = function(interview_data, effort_est, gear, include_whitefishes = FALSE, central_fn = mean) {
+  # keep only records for this gear type
+  interview_data = interview_data[interview_data$gear == gear,]
 
-# OUTPUTS:
-# a numeric vector of length 3: estimated harvest for chinook, chum, and sockeye
+  # decide on species to estimate harvest for
+  keep_spp = c("chinook", "chum", "sockeye")
+  if (include_whitefishes) keep_spp = c(keep_spp, "whitefish", "sheefish")
 
-estimate.harvest = function(dat, n.trips, includeWhiteFish = F, return.quants = F, use.medians = F) {
-  
-  if (use.medians) {
-    avg.soak.hrs = median(dat$soak.hrs, na.rm = T)
-    avg.length = median(dat$length, na.rm = T)
-    avg.chinook.cpe = median(dat$chinook.cpe, na.rm = T)
-    avg.chum.cpe = median(dat$chum.cpe, na.rm = T)
-    avg.sockeye.cpe = median(dat$sockeye.cpe, na.rm = T)
-    if (includeWhiteFish) avg.whitefish.cpe = median(dat$whitefish.cpe, na.rm = T)
-  } else {
-    # calculate mean soak time
-    avg.soak.hrs = mean(dat$soak.hrs, na.rm = T)
-    
-    # calculate mean net length
-    avg.length = mean(dat$length, na.rm = T)
-    
-    # calculate mean cpe by species
-    avg.chinook.cpe = mean(dat$chinook.cpe, na.rm = T)
-    avg.chum.cpe = mean(dat$chum.cpe, na.rm = T)
-    avg.sockeye.cpe = mean(dat$sockeye.cpe, na.rm = T)
-    if (includeWhiteFish) avg.whitefish.cpe = mean(dat$whitefish.cpe, na.rm = T)
-    
-  }
-  
-  # produce harvest estimates by species
-  chinook.harv = avg.chinook.cpe * avg.soak.hrs * avg.length * n.trips
-  chum.harv = avg.chum.cpe * avg.soak.hrs * avg.length * n.trips
-  sockeye.harv = avg.sockeye.cpe * avg.soak.hrs * avg.length * n.trips
-  if (includeWhiteFish) whitefish.harv = avg.whitefish.cpe * avg.soak.hrs * avg.length * n.trips
-  
-  # return a vector with harvest estimates
-  if (includeWhiteFish) {
-    out = c(chinook = chinook.harv, chum = chum.harv, sockeye = sockeye.harv, whitefish = whitefish.harv)
-  } else {
-    out = c(chinook = chinook.harv, chum = chum.harv, sockeye = sockeye.harv)
-  }
-  
-  if (return.quants) {
-    out = c(avg.soak.hrs = avg.soak.hrs, avg.length = avg.length, avg.chinook.cpe = avg.chinook.cpe, avg.chum.cpe = avg.chum.cpe, avg.sockeye.cpe = avg.sockeye.cpe)
-  }
-  
-  return(out)
+  # calculate the trip level effort: feet of net * soaking hours
+  trip_effort = with(interview_data, net_length * as.numeric(soak_duration, "hours"))
+
+  # calculate the trip level catch rate by species: fish/foothour
+  catch_rate = apply(interview_data[,keep_spp], 2, function(spp_catch) spp_catch/trip_effort)
+
+  # estimate harvest: average_trip_effort * average_catch_rate * total_trips
+  harvest_est = apply(catch_rate, 2, function(spp) {
+    round(
+      central_fn(trip_effort, na.rm = TRUE) * central_fn(spp, na.rm = TRUE) * effort_est
+      )
+  })
+
+  # return the output
+  return(harvest_est)
 }
