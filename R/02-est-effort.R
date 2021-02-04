@@ -1,94 +1,99 @@
+#' Estimate effort
+#'
+#' @export
 
-# estimate_effort = function(idat, fdat) {
-#
-# }
+estimate_effort = function(interview_data, flight_data, gear = "drift") {
 
-input_files = c(
-  "inst/example-reports/drift-set/BBH_6_12_18.csv",
-  # "inst/example-reports/drift-set/CBM_6_12_18.csv",
-  "inst/example-reports/drift-set/FC_6_12_18.csv",
-  "inst/example-reports/drift-set/LE_6_12_18.csv",
-  # "inst/example-reports/drift-set/ADFG_6_12_18.csv",
-  "inst/example-reports/drift-set/Flight_counts2_6_12_18.csv"
-)
+  # STEP 1: how many flights were performed, and give them names
+  n_flights = nrow(flight_data)
+  flight_names = paste0("f", 1:n_flights)
 
-out = lapply(input_files[1:3], function(f) prepare_interviews(f, include_whitefishes = F, include_village = F, include_goals = F))
-idat = rbind(out[[1]], out[[2]], out[[3]])#, out[[4]], out[[5]])
-fdat = prepare_flights(input_files[4])[1,]
+  # STEP 2: count up total effort counted during each flight
+  flight_counts = rowSums(flight_data[,stringr::str_detect(colnames(flight_data), gear)])
+  names(flight_counts) = flight_names
 
-##### FUNCTION START
+  # STEP 3: discard interview records that do not have both start and end times
+  trips = interview_data[!is.na(interview_data$trip_start) & !is.na(interview_data$trip_end), ]
 
-# input_args: idat (interview data), fdat (flight data)
-# this is the body of a function that is still in development
+  # STEP 4: discard opposite gear and keep only trip times
+  trips = trips[interview_data$gear == gear,c("trip_start", "trip_end")]
 
-# STEP X: how many flights were performed, and give them names
-n_flights = nrow(fdat)
-flight_names = paste0("f", 1:n_flights)
+  # STEP 5: convert start/end times to intervals
+  fint = lubridate::interval(flight_data$start_time, flight_data$end_time)
+  iint = lubridate::interval(trips$trip_start, trips$trip_end)
 
-# STEP X: count up total effort counted during each flight
-set_counts = rowSums(fdat[,stringr::str_detect(colnames(fdat), "_set")])
-drift_counts = rowSums(fdat[,stringr::str_detect(colnames(fdat), "_drift")])
-names(set_counts) = names(drift_counts) = flight_names
+  # STEP 6: which trips were available to be counted on each flight
+  trips_available = sapply(1:n_flights, function(f) lubridate::int_overlaps(iint, fint[f]))
+  colnames(trips_available) = flight_names
+  trips = cbind(trips, trips_available)
 
-# STEP X: discard interview records that do not have both start and end times
-idat = idat[!is.na(idat$trip_start) & !is.na(idat$trip_end), ]
+  # STEP 7: calculate critical summary statistics
+  # account for effort that was likely double counted
+  if (n_flights > 1) {
 
-# STEP X: convert start/end times to intervals
-fint = lubridate::interval(fdat$start_time, fdat$end_time)
-iint = lubridate::interval(idat$trip_start, idat$trip_end)
+    # add indicators for whether each trip was counted on any flight, or on no flights
+    trips = cbind(
+      trips,
+      yes_counted = apply(trips[,flight_names], 1, function(x) any(x)),
+      not_counted = apply(trips[,flight_names], 1, function(x) !any(x))
+    )
 
-# STEP X: which trips were available to be counted on each flight
-# this one line replaces all of the old "trips.available()" function
-trips_counted = sapply(1:n_flights, function(f) lubridate::int_overlaps(iint, fint[f]))
-colnames(trips_counted) = flight_names
+    # create pairs of consecutive flights: only these need correcting
+    m = cbind(flight_names[(1:n_flights)[-n_flights]], flight_names[2:n_flights])
+    combos = apply(m, 1, function(x) paste(x, collapse = "&"))
 
-# STEP X: add which trips were or were not counted on any flight
-trips_counted = cbind(trips_counted,
-                      yes_counted = apply(trips_counted[,flight_names], 1, function(x) any(x)),
-                      not_counted = apply(trips_counted[,flight_names], 1, function(x) !any(x)))
+    # count how many interviews were available to be counted on each set of consecutive flights
+    joint_counts = sapply(combos, function(combo) {
+      joint_flight_names = unlist(stringr::str_split(combo, "&"))
+      apply(trips[,joint_flight_names], 1, function(counted) counted[1] & counted[2])
+    })
+    colnames(joint_counts) = combos
 
-# if double-counting needs to be accounted for
-if (n_flights > 1) {
-  # figure out which combos of flights need to have have double counting accounted for
-  # only consecutive flights need this
-  m = cbind(flight_names[(1:n_flights)[-n_flights]], flight_names[2:n_flights])
-  combos = apply(m, 1, function(x) paste(x, collapse = "&"))
+    # add this to the rest of the trip info
+    trips = cbind(trips, joint_counts)
 
-  # count how many interviews were available to be counted on each set of consecutive flights
-  joint_counts = sapply(combos, function(combo) {
-    joint_flight_names = unlist(stringr::str_split(combo, "&"))
-    apply(trips_counted[,joint_flight_names], 1, function(counted) counted[1] & counted[2])
-  })
-  colnames(joint_counts) = combos
+    # add up the number of outcomes in each type
+    trip_counts = colSums(trips[,-c(1,2)])
 
-  # add this to the rest of the trip counts
-  trips_counted = cbind(trips_counted, joint_counts)
+    # calculate the proportion of interviews available to be counted on flight T2
+    # that were also counted on flight T1
+    p_T1_given_T2 = trip_counts[combos]/trip_counts[flight_names[2:n_flights]]
 
-  # add up the number of outcomes in each type
-  trip_counts = colSums(trips_counted)
+    # calculate the number of unique trips counted: removes trips that were double counted
+    new_trips = round(flight_counts[flight_names[2:n_flights]] * (1 - p_T1_given_T2))
 
-  # calculate the proportion of interviews available to be counted on flight T2
-  # that were also counted on flight T1
-  p_T1_given_T2 = trip_counts[combos]/trip_counts[flight_names[2:n_flights]]
+    # unique trips counted on each flight
+    unique_counts = c(flight_counts[1], new_trips)
+  } else {
+    # if only one flight was conducted, skip most of this mess
+    trips = cbind(trips, trips, !trips)
+    colnames(trips) = c("f1", "yes_counted", "not_counted")
+    trip_counts = colSums(trips_counted)
+    unique_counts = flight_counts
+  }
 
-  # calculate the number of unique trips counted: removes trips that were double counted
-  new_trips = round(drift_counts[flight_names[2:n_flights]] * (1 - prob_countT2_given_countT1))
+  # STEP 8: apply expansion for trips occurring outside of flight times
+  # total trips counted in flights
+  effort_count = sum(unique_counts)
 
-  # unique trips counted on each flight
-  unique_counts = c(drift_counts[1], new_trips)
-} else {
-  # if only one flight was conducted, skip all of this mess
-  trip_counts = colSums(trips_counted)
-  unique_counts = drift_counts
+  # trips per interview
+  effort_per_interview = unname(effort_count/trip_counts["yes_counted"])
+
+  # effort unaccounted for by flights
+  effort_not_count = round(unname(effort_per_interview * trip_counts["not_counted"]))
+
+  # total effort estimate
+  effort_est = effort_count + effort_not_count
+
+  # build a list with the output
+  output = list(
+    trips = trips,
+    trip_counts = trip_counts,
+    p_T1_given_T2 = p_T1_given_T2,
+    effort_per_interview = effort_per_interview,
+    effort_est = effort_est
+  )
+
+  # return output
+  return(output)
 }
-
-# total trips counted in flights
-sum(unique_counts)
-
-# next up: apply the "Lincoln-Peterson" estimator
-
-# also to-do: compare with the old estimate.trips() function
-# answer at this point should be identical, and if not we
-# should be able to identify the causes of any differences
-
-##### FUNCTION END
