@@ -84,7 +84,14 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     effort_not_count = round(unname(effort_per_interview * trip_counts["not_counted"]))
 
     # total effort estimate
-    effort_est = effort_count + effort_not_count
+    effort_est_total = effort_count + effort_not_count
+
+    # STEP 9: stratify the total effort estiamte
+    effort_est_stratum = stratify_effort(flight_data, gear, effort_est_total)
+
+    # rewrite the total effort to make sure it is equal to the sum of the stratum-specific version
+    # (sometimes they are off by 1 unit, due to rounding)
+    effort_est_total = sum(effort_est_stratum)
 
     # build a list with the output
     output = list(
@@ -93,7 +100,8 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
       trip_counts = trip_counts,
       p_T1_given_T2 = p_T1_given_T2,
       effort_per_interview = effort_per_interview,
-      effort_est = effort_est
+      effort_est_total = effort_est_total,
+      effort_est_stratum = effort_est_stratum
     )
   }
 
@@ -102,12 +110,20 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     flight_counts = flight_data[,stringr::str_detect(colnames(flight_data), gear)]
 
     # STEP 2: find the sum of the maximum number of effort counted on any flight in each stratum
-    effort_est = sum(apply(flight_counts, 2, function(x) max(x)))
+    effort_est_total = sum(apply(flight_counts, 2, function(x) max(x)))
+
+    # STEP 3: stratify the total effort estiamte
+    effort_est_stratum = stratify_effort(flight_data, gear, effort_est_total)
+
+    # rewrite the total effort to make sure it is equal to the sum of the stratum-specific version
+    # (sometimes they are off by 1 unit, due to rounding)
+    effort_est_total = sum(effort_est_stratum)
 
     # build a list with the output
     output = list(
       method = method,
-      effort_est = effort_est
+      effort_est_total = effort_est_total,
+      effort_est_stratum = effort_est_stratum
     )
   }
 
