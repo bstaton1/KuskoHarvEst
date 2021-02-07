@@ -80,13 +80,6 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   if (include_whitefishes) keep_spp = c(keep_spp, "whitefish", "sheefish")
   dat_out = cbind(dat_out, dat_in[,keep_spp])
 
-  ### STEP X: calculate catch rate
-  effort = with(dat_out, net_length * as.numeric(soak_duration, "hours"))
-  catch_rate = apply(dat_out[,keep_spp], 2, function(spp_catch) spp_catch/effort)
-  colnames(catch_rate) = paste0(colnames(catch_rate), "_cpe")
-  catch_rate = round(catch_rate, 5)
-  dat_out = cbind(dat_out, catch_rate)
-
   ### STEP X: add village information if requested
   if (include_village) {
     has_village = "village" %in% vars
