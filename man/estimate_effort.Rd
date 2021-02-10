@@ -4,7 +4,12 @@
 \alias{estimate_effort}
 \title{Estimate effort}
 \usage{
-estimate_effort(interview_data, flight_data, gear = "drift")
+estimate_effort(
+  interview_data,
+  flight_data,
+  gear = "drift",
+  method = "dbl_exp"
+)
 }
 \description{
 Estimate effort
