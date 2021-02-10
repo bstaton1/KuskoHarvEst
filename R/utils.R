@@ -13,3 +13,17 @@ combine_datetime = function(dates, times) {
   return(step2)
 }
 
+#' Combine a List of Data Frames
+#'
+#'
+
+unlist_dfs = function(list) {
+  # empty object
+  output = NULL
+
+  # loop through list elements, combining the data frame in each with all previous
+  for (i in 1:length(list)) output = rbind(output, list[[i]])
+
+  # return the output
+  return(output)
+}
