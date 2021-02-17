@@ -27,3 +27,18 @@ unlist_dfs = function(list) {
   # return the output
   return(output)
 }
+
+#' Convert a proportion to a percent
+#'
+#' @export
+
+percentize = function(x, escape = T, digits = 0) {
+  # create the percent version
+  out = paste0(round(x * 100, digits = digits), ifelse(escape, "\\%", "%"))
+
+  # test if a non-zero proportion was rounded to a zero value percent
+  # if so, change output to be <1%
+  zero_test = ifelse(escape, "0\\%", "0%")
+  lt1_replace = ifelse(escape, "<1\\%", "<1%")
+  ifelse(out == zero_test & x > 0, lt1_replace, out)
+}
