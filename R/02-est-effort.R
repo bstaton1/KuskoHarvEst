@@ -100,6 +100,7 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     # build a list with the output
     output = list(
       method = method,
+      gear = gear,
       trips = trips,
       trip_counts = trip_counts,
       p_T1_given_T2 = p_T1_given_T2,
@@ -126,6 +127,7 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     # build a list with the output
     output = list(
       method = method,
+      gear = gear,
       effort_est_total = effort_est_total,
       effort_est_stratum = effort_est_stratum
     )
