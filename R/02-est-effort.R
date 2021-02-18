@@ -71,9 +71,9 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
       unique_counts = c(flight_counts[1], new_trips)
     } else {
       # if only one flight was conducted, skip most of this mess
-      trips = cbind(trips, trips, !trips)
-      colnames(trips) = c("f1", "yes_counted", "not_counted")
-      trip_counts = colSums(trips_counted)
+      trips = cbind(trips, yes_counted = trips$f1, not_counted = !trips$f1)
+      trip_counts = colSums(trips[,-c(1,2)])
+      p_T1_given_T2 = NULL
       unique_counts = flight_counts
     }
 
