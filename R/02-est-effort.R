@@ -20,7 +20,11 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     trips = trips[trips$gear == gear,c("trip_start", "trip_end")]
 
     # STEP 5: convert start/end times to intervals
-    fint = lubridate::interval(flight_data$start_time, flight_data$end_time)
+    # the 5 seconds part is to prevent an interview from being counted
+    # solely because the start/end dates are the same
+    # this 5 second part forces the overlap to be more substantial than just having the same endpoints time
+    fint = lubridate::interval(flight_data$start_time + lubridate::duration(5, "seconds"),
+                               flight_data$end_time - lubridate::duration(5, "seconds"))
     iint = lubridate::interval(trips$trip_start, trips$trip_end)
 
     # STEP 6: which trips were available to be counted on each flight
@@ -67,9 +71,9 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
       unique_counts = c(flight_counts[1], new_trips)
     } else {
       # if only one flight was conducted, skip most of this mess
-      trips = cbind(trips, trips, !trips)
-      colnames(trips) = c("f1", "yes_counted", "not_counted")
-      trip_counts = colSums(trips_counted)
+      trips = cbind(trips, yes_counted = trips$f1, not_counted = !trips$f1)
+      trip_counts = colSums(trips[,-c(1,2)])
+      p_T1_given_T2 = NULL
       unique_counts = flight_counts
     }
 
@@ -96,6 +100,7 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     # build a list with the output
     output = list(
       method = method,
+      gear = gear,
       trips = trips,
       trip_counts = trip_counts,
       p_T1_given_T2 = p_T1_given_T2,
@@ -122,6 +127,7 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     # build a list with the output
     output = list(
       method = method,
+      gear = gear,
       effort_est_total = effort_est_total,
       effort_est_stratum = effort_est_stratum
     )

@@ -2,9 +2,7 @@
 #'
 #' @export
 
-# NOTE: CAN GET RID OF THE GEAR ARG IF THIS WAS ADDED AS AN ELEMENT TO THE OUTPUT OF ESTIMATE_EFFORT()
-
-effort_plot = function(flight_data, effort_info, gear) {
+effort_plot = function(flight_data, effort_info) {
 
   # count how many flights were done
   n_flights = nrow(flight_data)
@@ -56,7 +54,7 @@ effort_plot = function(flight_data, effort_info, gear) {
   box()
 
   # create nice TeX #1: flight counts
-  flight_counts = rowSums(flight_data[,stringr::str_detect(colnames(flight_data), paste0("_", gear))])
+  flight_counts = rowSums(flight_data[,stringr::str_detect(colnames(flight_data), paste0("_", effort_info$gear))])
   flight_TeX = paste0("$F_{", 1:n_flights, "}:\\,", flight_counts)
 
   # create nice TeX #2: marginal probabiltites
