@@ -24,7 +24,7 @@ estimate_harvest_all = function(interview_data, effort_info, gear, stratify_inte
 
     # apply the estimate_harvest() function separately to data from each stratum, but use strata-specific interview data
     ests_all = sapply(strata_names, function(s) {
-      estimate_harvest(interview_data = interview_data[interview_data$stratum %in% use_strata[s],],
+      estimate_harvest(interview_data = interview_data[interview_data$stratum %in% unlist(use_strata[s]),],
                        effort_est = effort_info$effort_est_stratum[s],
                        gear = gear
       )

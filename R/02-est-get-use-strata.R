@@ -23,12 +23,12 @@ get_use_strata = function(interview_data, pooling_threshold = 10, gear = "drift"
   # in the case of B, stratum A fishers use longer nets so those interviews should be used in B. So use C instead.
   for (s in 1:length(strata_names)) {
     if (strata_counts[s] < pooling_threshold) {
-      if (strata_names[s] == "A") use_strata[[s]] = c("A", "B")
-      if (strata_names[s] == "B") use_strata[[s]] = c("B", "C")
-      if (strata_names[s] == "C") use_strata[[s]] = c("B", "C")
-      if (strata_names[s] == "D1") use_strata[[s]] = c("C", "D1")
+      if (strata_names[s] == "A") use_strata[[s]] = c("A", "B", NA)
+      if (strata_names[s] == "B") use_strata[[s]] = c("B", "C", NA)
+      if (strata_names[s] == "C") use_strata[[s]] = c("B", "C", NA)
+      if (strata_names[s] == "D1") use_strata[[s]] = c("C", "D1", NA)
     } else {
-      use_strata[[s]] = c(strata_names[s])
+      use_strata[[s]] = c(strata_names[s], NA)
     }
   }
 
