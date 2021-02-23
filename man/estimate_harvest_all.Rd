@@ -8,7 +8,8 @@ estimate_harvest_all(
   interview_data,
   effort_info,
   gear,
-  stratify_interviews = TRUE
+  stratify_interviews = TRUE,
+  pooling_threshold = 10
 )
 }
 \description{
