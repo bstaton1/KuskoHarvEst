@@ -66,3 +66,42 @@ is_normal_net = function(interview_data, length_cut = 350) {
   ifelse(!has_net_length(interview_data), TRUE, ifelse(interview_data[,"net_length"] <= length_cut, TRUE, FALSE))
 }
 
+#' Check soak time for outliers
+#'
+#' @details Consider soak time an outlier if its value is larger than
+#'   the mean plus XSDs of the remaining values for that gear type. The user
+#'   chooses the value of X with the argument `sd_cut`. This function applies
+#'   to completed trips only -- records that are for incomplete trips or that
+#'   do not have soak time recorded will have `FALSE` returned.
+
+is_soak_outlier = function(interview_data, sd_cut = 3) {
+  # extract the soak hours
+  soak_hrs = as.numeric(interview_data$soak_duration, "hours")
+
+  # determine which trips were completed trip interviews
+  is_complete = is_complete_trip(interview_data)
+
+  # container object
+  out = logical(nrow(interview_data))
+
+  # for completed trips only, is the soak time greater than XSDs from the mean?
+  # remove the sample in question before calculating mean and sd
+  # and do this on a gear-specific basis
+  for (i in 1:nrow(interview_data)) {
+    if (is_complete[i] & has_soak(interview_data)[i]) {
+      # extract the soak hours for all relevant interviews except this one
+      soak_hrs_without = soak_hrs[-i][interview_data$gear[-i] == interview_data$gear[i] & is_complete[-i]]
+
+      # calculate the mean and SD of remaining soak times
+      sd_without = sd(soak_hrs_without, na.rm = T)
+      mn_without = mean(soak_hrs_without, na.rm = T)
+
+      # perform the test
+      out[i] = soak_hrs[i] > (mn_without + (sd_cut * sd_without))
+    } else {
+      next()
+    }
+  }
+
+  return(out)
+}
