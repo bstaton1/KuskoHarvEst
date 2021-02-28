@@ -7,7 +7,7 @@ bootstrap_harvest = function(interview_data, effort_info, gear, n_boot = 1000, s
   # loop over bootstrap iterations, randomizing the data, and obtaining all harvest estimates for each
   output = lapply(1:n_boot, function(i) {
     out = estimate_harvest_all(
-      interview_data = randomize_data(interview_data, source_weights = source_weights),
+      interview_data = randomize_data(interview_data[interview_data$gear == gear,], source_weights = source_weights),
       effort_info = effort_info,
       gear = gear,
       stratify_interviews = stratify_interviews
