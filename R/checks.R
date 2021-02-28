@@ -21,3 +21,24 @@ has_soak = function(interview_data) {
   !is.na(interview_data$soak_duration)
 }
 
+##### FUNCTIONS TO CHECK FOR TIME ANOMALIES #####
+
+#' Check for impossible trip times
+#'
+#' @details If the trip end time is before the trip start time, this is impossible and an error.
+#' The user should fix this entry in the data set before proceeding.
+
+is_possible_trip = function(interview_data) {
+  ifelse(!has_trip_times(interview_data), TRUE, ifelse(interview_data[,"trip_start"] < interview_data[,"trip_end"], TRUE, FALSE))
+}
+
+#' Check for impossible soak times
+#'
+#' @details If the soak duration is longer than the trip duration, this is impossible and an error.
+#' The user should fix this entry in the data set before proceeding.
+#' @export
+
+is_possible_soak = function(interview_data) {
+  ifelse(!has_trip_times(interview_data) | !has_soak(interview_data), TRUE,
+         ifelse(interview_data[,"soak_duration"] <= interview_data[,"trip_duration"], TRUE, FALSE))
+}
