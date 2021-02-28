@@ -3,25 +3,12 @@
 #' @export
 
 estimate_harvest = function(interview_data, effort_est, gear, include_whitefishes = FALSE, central_fn = mean) {
-  # keep only records for this gear type
-  interview_data = interview_data[interview_data$gear == gear,]
 
-  # decide on species to estimate harvest for
-  keep_spp = c("chinook", "chum", "sockeye")
-  if (include_whitefishes) keep_spp = c(keep_spp, "whitefish", "sheefish")
+  # estimate catch per trip
+  catch_per_trip = estimate_catch_per_trip(interview_data, gear = gear, include_whitefishes = include_whitefishes, central_fn = central_fn)
 
-  # calculate the trip level effort: feet of net * soaking hours
-  trip_effort = with(interview_data, net_length * as.numeric(soak_duration, "hours"))
-
-  # calculate the trip level catch rate by species: fish/foothour
-  catch_rate = apply(interview_data[,keep_spp], 2, function(spp_catch) spp_catch/trip_effort)
-
-  # estimate harvest: average_trip_effort * average_catch_rate * total_trips
-  harvest_est = apply(catch_rate, 2, function(spp) {
-    round(
-      central_fn(trip_effort, na.rm = TRUE) * central_fn(spp, na.rm = TRUE) * effort_est
-      )
-  })
+  # estimate harvest: average catch per trip * number of trips
+  harvest_est = round(catch_per_trip * effort_est, 0)
 
   # return the output
   return(harvest_est)
