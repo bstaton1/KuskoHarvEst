@@ -105,3 +105,46 @@ is_soak_outlier = function(interview_data, sd_cut = 3) {
 
   return(out)
 }
+
+#' Check incomplete trips for very short soak times
+#'
+#' @details For incomplete trips, if the interview was conducted early into an incomplete
+#'   trip, its catch rate information is not likely representative of that from completed trips.
+#'   This function looks for incomplete interviews that have soak time shorter than the shortest recorded
+#'   soak time among completed trips for that gear type. Records with a `TRUE` value returned should
+#'   not return
+
+is_short_incomplete_soak = function(interview_data) {
+
+  # extract the soak hours
+  soak_hrs = as.numeric(interview_data$soak_duration, "hours")
+
+  # determine which trips were completed trip interviews
+  is_complete = is_complete_trip(interview_data)
+
+  # container object
+  out = logical(nrow(interview_data))
+
+  # determine the shortest soak time in complete trips of each gear type
+  shortest_complete_trip = with(interview_data[is_complete,], tapply(as.numeric(soak_duration, "hours"), gear, function(soak) {
+    if (sum(!is.na(soak)) > 0) {
+      out = min(soak, na.rm = T)
+    } else {
+      out = NA
+    }
+    out
+  }))
+
+  # for each interview, if it is incomplete, determine whether it is shorter than the shortest completed trip of that gear type
+  for (i in 1:nrow(interview_data)) {
+    if (!is_complete[i] & has_soak(interview_data)[i]) {
+      out[i] = soak_hrs[i] < shortest_complete_trip[interview_data[i,"gear"]]
+    } else {
+      next()
+    }
+  }
+
+  return(out)
+}
+
+
