@@ -42,3 +42,27 @@ is_possible_soak = function(interview_data) {
   ifelse(!has_trip_times(interview_data) | !has_soak(interview_data), TRUE,
          ifelse(interview_data[,"soak_duration"] <= interview_data[,"trip_duration"], TRUE, FALSE))
 }
+
+##### MISC CHECKS FOR DATA ACCURACY #####
+
+#' Check if interview is for a completed trip
+#'
+#' @details Data need special care if from an incomplete trip.
+#'   E.g., soak time should not be used in calculation of the average across trips,
+#'   and if the soak time is excessively short at the time of the interview relative to completed
+#'   trips, it shouldn't be used to inform the average catch rate.
+#' @export
+
+is_complete_trip = function(interview_data) {
+  interview_data$source != "LE"
+}
+
+#' Check if the net characteristics are as expected
+#'
+#' @details Nets that are extremely long are probably mis-recorded and should not be included.
+#' Could feasibly include a mesh cutoff here if there was interest.
+
+is_normal_net = function(interview_data, length_cut = 350) {
+  ifelse(!has_net_length(interview_data), TRUE, ifelse(interview_data[,"net_length"] <= length_cut, TRUE, FALSE))
+}
+
