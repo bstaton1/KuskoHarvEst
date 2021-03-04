@@ -2,7 +2,7 @@
 #'
 #' @export
 
-get_use_strata = function(interview_data, pooling_threshold = 10, gear = "drift") {
+get_use_strata = function(interview_data, pooling_threshold = getOption("pooling_threshold"), gear = "drift") {
 
   # discard any other gears
   interview_data = interview_data[interview_data$gear == gear,]

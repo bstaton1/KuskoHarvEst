@@ -2,7 +2,7 @@
 #'
 #' @export
 
-estimate_catch_per_trip = function(interview_data, gear, include_whitefishes = F, central_fn = mean) {
+estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn")) {
 
   # set the species
   # decide on species to estimate catch_per_trip for
