@@ -9,8 +9,8 @@ bootstrap_harvest(
   effort_info,
   gear,
   n_boot = 1000,
-  source_weights = NULL,
-  stratify_interviews = TRUE
+  stratify_interviews = TRUE,
+  seed = 1234
 )
 }
 \description{

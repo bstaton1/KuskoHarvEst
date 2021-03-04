@@ -7,8 +7,8 @@
 estimate_catch_per_trip(
   interview_data,
   gear,
-  include_whitefishes = F,
-  central_fn = mean
+  randomize = FALSE,
+  central_fn = getOption("central_fn")
 )
 }
 \description{

@@ -2,16 +2,16 @@
 % Please edit documentation in R/02-est-harvest.R
 \name{estimate_harvest}
 \alias{estimate_harvest}
-\title{Estimate harvest}
+\title{Estimate harvest for all strata and species}
 \usage{
 estimate_harvest(
   interview_data,
-  effort_est,
+  effort_info,
   gear,
-  include_whitefishes = FALSE,
-  central_fn = mean
+  randomize = FALSE,
+  stratify_interviews = TRUE
 )
 }
 \description{
-Estimate harvest
+Estimate harvest for all strata and species
 }

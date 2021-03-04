@@ -4,7 +4,11 @@
 \alias{get_use_strata}
 \title{Create stratum pooling strategy for interviews}
 \usage{
-get_use_strata(interview_data, pooling_threshold = 10, gear = "drift")
+get_use_strata(
+  interview_data,
+  pooling_threshold = getOption("pooling_threshold"),
+  gear = "drift"
+)
 }
 \description{
 Create stratum pooling strategy for interviews
