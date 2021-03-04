@@ -44,7 +44,7 @@ suitable_for = function(interview_data, task) {
   # is the net length usable in calculating the average for any expected trip?
   # excludes extremely long or missing net lengths
   if (task == "avg_net_length") {
-    suitable = has_soak(interview_data) & is_normal_net(interview_data)
+    suitable = has_net_length(interview_data) & is_normal_net(interview_data)
   }
 
   # return the output
