@@ -4,7 +4,7 @@
 \alias{is_soak_outlier}
 \title{Check soak time for outliers}
 \usage{
-is_soak_outlier(interview_data, sd_cut = 3)
+is_soak_outlier(interview_data, soak_sd_cut = getOption("soak_sd_cut"))
 }
 \description{
 Check soak time for outliers
@@ -12,7 +12,7 @@ Check soak time for outliers
 \details{
 Consider soak time an outlier if its value is larger than
 the mean plus XSDs of the remaining values for that gear type. The user
-chooses the value of X with the argument \code{sd_cut}. This function applies
+chooses the value of X with the argument \code{soak_sd_cut}. This function applies
 to completed trips only -- records that are for incomplete trips or that
 do not have soak time recorded will have \code{FALSE} returned.
 }

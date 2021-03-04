@@ -4,7 +4,7 @@
 \alias{is_normal_net}
 \title{Check if the net characteristics are as expected}
 \usage{
-is_normal_net(interview_data, length_cut = 350)
+is_normal_net(interview_data, net_length_cut = getOption("net_length_cut"))
 }
 \description{
 Check if the net characteristics are as expected

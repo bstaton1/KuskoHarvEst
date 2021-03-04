@@ -14,7 +14,7 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     names(flight_counts) = flight_names
 
     # STEP 3: discard interview records that do not have both start and end times
-    trips = interview_data[!is.na(interview_data$trip_start) & !is.na(interview_data$trip_end), ]
+    trips = interview_data[interview_data$suit_effort, ]
 
     # STEP 4: discard opposite gear and keep only trip times
     trips = trips[trips$gear == gear,c("trip_start", "trip_end")]

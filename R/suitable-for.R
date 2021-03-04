@@ -6,7 +6,7 @@
 
 suitable_for = function(interview_data, task) {
 
-  accepted_tasks = c("nothing", "effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak")
+  accepted_tasks = c("nothing", "effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak", "avg_net_length")
   if (!(task %in% accepted_tasks)) stop ("task must be one of: ", paste(paste0("'", accepted_tasks, "'"), collapse = ", "))
 
   # if the interview is lacking gear, it is totally useless.
@@ -39,6 +39,12 @@ suitable_for = function(interview_data, task) {
   # the soak time *must* be from a completed trip to be used
   if (task == "avg_soak") {
     suitable = has_soak(interview_data) & is_complete_trip(interview_data)
+  }
+
+  # is the net length usable in calculating the average for any expected trip?
+  # excludes extremely long or missing net lengths
+  if (task == "avg_net_length") {
+    suitable = has_net_length(interview_data) & is_normal_net(interview_data)
   }
 
   # return the output

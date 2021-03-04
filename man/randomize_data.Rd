@@ -4,17 +4,12 @@
 \alias{randomize_data}
 \title{Sample with replacement from a data set}
 \usage{
-randomize_data(interview_data, source_weights = NULL)
+randomize_data(interview_data)
 }
 \arguments{
-\item{interview_data}{data frame generated with \code{prepare_interviews()}}
-
-\item{source_weights}{named vector representing sampling weights for different interview data sources.
+\item{interview_data}{data frame generated with \code{prepare_interviews()}
 See details.}
 }
 \description{
 Sample with replacement from a data set
-}
-\details{
-Some details here about the sample weights.
 }

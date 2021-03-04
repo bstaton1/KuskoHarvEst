@@ -1,28 +1,48 @@
-#' Estimate harvest
+#' Estimate harvest for all strata and species
 #'
 #' @export
 
-estimate_harvest = function(interview_data, effort_est, gear, include_whitefishes = FALSE, central_fn = mean) {
-  # keep only records for this gear type
-  interview_data = interview_data[interview_data$gear == gear,]
+estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE, stratify_interviews = TRUE) {
 
-  # decide on species to estimate harvest for
-  keep_spp = c("chinook", "chum", "sockeye")
-  if (include_whitefishes) keep_spp = c(keep_spp, "whitefish", "sheefish")
+  # extract the strata names
+  strata_names = names(effort_info$effort_est_stratum)
 
-  # calculate the trip level effort: feet of net * soaking hours
-  trip_effort = with(interview_data, net_length * as.numeric(soak_duration, "hours"))
+  # define a quick expansion function
+  expand = function(catch_per_trip, effort) {
+    out = round(catch_per_trip * effort)
+    c(out, "total" = sum(out))
+  }
 
-  # calculate the trip level catch rate by species: fish/foothour
-  catch_rate = apply(interview_data[,keep_spp], 2, function(spp_catch) spp_catch/trip_effort)
-
-  # estimate harvest: average_trip_effort * average_catch_rate * total_trips
-  harvest_est = apply(catch_rate, 2, function(spp) {
-    round(
-      central_fn(trip_effort, na.rm = TRUE) * central_fn(spp, na.rm = TRUE) * effort_est
+  if (!stratify_interviews) {
+    # apply the expand() function separately to each stratum, but don't stratify interview data
+    ests_all = sapply(strata_names, function(s) {
+      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data, gear = gear, randomize = randomize),
+             effort = effort_info$effort_est_stratum[s]
       )
-  })
+    })
+  } else {
+    # set a pooling strategy
+    use_strata = get_use_strata(interview_data = interview_data, gear = gear)
+
+    # apply the expand() function separately to each stratum and stratify interview data
+    ests_all = sapply(strata_names, function(s) {
+      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data[interview_data$stratum %in% unlist(use_strata[s]),],
+                                                      gear = gear, randomize = randomize),
+             effort = effort_info$effort_est_stratum[s]
+      )
+    })
+  }
+
+  # format the output: add strata and species totals
+  output = t(ests_all)
+  output = rbind(output, total = colSums(output))
+  # output = cbind(output, total = rowSums(output))
+
+  # format output: give gear/stratum IDs
+  output = data.frame(output)
+  output = cbind(gear = gear, stratum = rownames(output), output)
+  rownames(output) = NULL
 
   # return the output
-  return(harvest_est)
+  return(output)
 }
