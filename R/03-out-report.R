@@ -25,12 +25,12 @@ report = function(spp = "total", gear = "total", stratum = "total", CI = TRUE, c
   harv = long_boot_sub$harvest
 
   # calculate the mean
-  mean_est = c(mean = round(mean(harv), digits = digits))
+  mean_est = c(mean = round(mean(harv, na.rm = TRUE), digits = digits))
 
   # calculate the bounds of the interval
   tail_prob = (1 - conf_level)/2
-  lwr_est = round(quantile(harv, tail_prob), digits = digits)
-  upr_est = round(quantile(harv, 1 - tail_prob), digits = digits)
+  lwr_est = round(quantile(harv, tail_prob, na.rm = TRUE), digits = digits)
+  upr_est = round(quantile(harv, 1 - tail_prob, na.rm = TRUE), digits = digits)
 
   # build the four types of output a user might request
   num_out = unname(mean_est)
