@@ -1,15 +1,48 @@
-#' Estimate harvest
+#' Estimate harvest for all strata and species
 #'
 #' @export
 
-estimate_harvest = function(interview_data, effort_est, gear, include_whitefishes = FALSE, central_fn = mean) {
+estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE, stratify_interviews = TRUE) {
 
-  # estimate catch per trip
-  catch_per_trip = estimate_catch_per_trip(interview_data, gear = gear, include_whitefishes = include_whitefishes, central_fn = central_fn)
+  # extract the strata names
+  strata_names = names(effort_info$effort_est_stratum)
 
-  # estimate harvest: average catch per trip * number of trips
-  harvest_est = round(catch_per_trip * effort_est, 0)
+  # define a quick expansion function
+  expand = function(catch_per_trip, effort) {
+    out = round(catch_per_trip * effort)
+    c(out, "total" = sum(out))
+  }
+
+  if (!stratify_interviews) {
+    # apply the expand() function separately to each stratum, but don't stratify interview data
+    ests_all = sapply(strata_names, function(s) {
+      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data, gear = gear, randomize = randomize),
+             effort = effort_info$effort_est_stratum[s]
+      )
+    })
+  } else {
+    # set a pooling strategy
+    use_strata = get_use_strata(interview_data = interview_data, gear = gear)
+
+    # apply the expand() function separately to each stratum and stratify interview data
+    ests_all = sapply(strata_names, function(s) {
+      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data[interview_data$stratum %in% unlist(use_strata[s]),],
+                                                      gear = gear, randomize = randomize),
+             effort = effort_info$effort_est_stratum[s]
+      )
+    })
+  }
+
+  # format the output: add strata and species totals
+  output = t(ests_all)
+  output = rbind(output, total = colSums(output))
+  # output = cbind(output, total = rowSums(output))
+
+  # format output: give gear/stratum IDs
+  output = data.frame(output)
+  output = cbind(gear = gear, stratum = rownames(output), output)
+  rownames(output) = NULL
 
   # return the output
-  return(harvest_est)
+  return(output)
 }
