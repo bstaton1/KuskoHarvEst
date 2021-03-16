@@ -1,0 +1,44 @@
+date,stratum,trip.start,trip.end,soak.hrs,length,gear,mesh,chinook,chum,sockeye,sheefish,whitefish,chinook.goal,chum.goal,sockeye.goal,type,village
+7/5/2018,D1,9:00,12:45,3:45,60,Setnet,5,0,12,46,0,3,5,5,4,Fish camp,Akiachak
+7/5/2018,D1,13:00,15:00,2:00,40,Setnet,4,0,4,36,0,15,5,5,4,Fish camp,Akiachak
+7/5/2018,D1,9:00,12:30,3:30,60,Setnet,4,0,2,9,0,18,5,5,4,Fish camp,Akiachak
+7/5/2018,D1,14:00,18:00,4:00,60,Setnet,5,0,0,40,0,18,5,5,4,Fish camp,Akiachak
+7/5/2018,C,10:30,14:00,2:30,150,Driftnet,6,4,12,47,0,0,5,5,4,Fish camp,Akiachak
+7/5/2018,C,9:00,13:30,4:30,60,Setnet,4,0,0,1,0,42,5,5,3,Fish camp,Akiachak
+7/5/2018,D1,9:00,12:45,3:45,60,Setnet,5,0,0,39,0,7,5,5,4,Fish camp,Akiachak
+7/5/2018,D1,15:30,17:00,1:00,150,Driftnet,6,1,55,10,0,0,5,5,5,Village,Akiak
+7/5/2018,D1,9:00,10:00,0:45,150,Driftnet,6,5,31,10,0,0,5,4,3,Village,Akiak
+7/5/2018,D1,11:00,12:00,0:30,150,Driftnet,6,6,30,5,0,0,5,4,3,Village,Akiak
+7/5/2018,D1,16:40,18:00,0:45,300,Driftnet,6,0,23,1,0,0,5,4,4,Village,Akiak
+7/5/2018,D1,20:30,21:00,0:20,150,Driftnet,6,1,15,1,0,0,4,4,4,Village,Akiak
+7/5/2018,D1,9:00,9:45,0:30,150,Driftnet,6,3,15,10,0,0,5,5,5,Village,Akiak
+7/5/2018,D1,14:00,17:00,2:00,150,Driftnet,5.5,0,7,18,0,1,4,5,5,Village,Akiak
+7/5/2018,C,10:00,11:00,0:15,150,Driftnet,6,0,0,34,0,0,5,5,5,Fish camp,Kwethluk
+7/5/2018,C,13:00,15:40,1:30,150,Driftnet,5.88,3,30,35,0,0,5,5,5,Village,Kwethluk
+7/5/2018,C,10:00,12:00,1:00,150,Setnet,5.88,2,5,8,0,0,5,5,5,Village,Kwethluk
+7/5/2018,C,10:00,12:30,1:30,150,Driftnet,6.00,4,16,23,0,0,5,5,5,Village,Kwethluk
+7/5/2018,B,12:30,13:30,0:45,150,Driftnet,5.50,2,4,7,0,0,3,5,4,Fish camp,Napaskiak
+7/5/2018,B,10:30,11:45,1:00,150,Driftnet,5.88,4,21,17,0,0,4,5,3,Fish camp,Napaskiak
+7/5/2018,B,10:00,12:00,1:45,150,Driftnet,6.00,1,74,37,0,0,4,5,3,Fish camp,Napaskiak
+7/5/2018,B,11:00,11:30,0:30,150,Driftnet,6.00,3,38,31,0,0,4,4,4,Fish camp,Napaskiak
+7/5/2018,B,11:00,11:45,0:30,150,Driftnet,5.88,2,43,37,0,0,3,5,3,Fish camp,Napaskiak
+7/5/2018,A,11:30,13:00,1:15,150,Driftnet,6.00,3,43,30,0,0,4,4,3,Fish camp,Napaskiak
+7/5/2018,B,12:00,12:45,0:30,270,Driftnet,6.00,3,28,13,0,0,4,5,3,Fish camp,Napaskiak
+7/5/2018,B,12:00,13:15,1:00,150,Driftnet,5.88,4,51,34,0,0,3,3,3,Fish camp,Napaskiak
+7/5/2018,B,12:00,12:30,0:30,150,Driftnet,5.88,2,27,31,0,0,3,4,3,Fish camp,Napaskiak
+7/5/2018,B,9:00,10:30,1:15,150,Driftnet,5.50,3,23,24,0,1,3,4,3,Fish camp,Napaskiak
+7/5/2018,B,10:00,10:45,0:30,150,Driftnet,6.00,0,48,37,1,0,3,4,3,Fish camp,Napaskiak
+7/5/2018,D1,12:45,16:00,2:00,150,Driftnet,5.50,0,16,8,0,1,4,2,3,Village,Akiak
+7/5/2018,D1,14:15,16:20,1:00,174,Driftnet,5.50,0,3,16,0,0,2,5,3,Village,Akiak
+7/5/2018,D1,12:45,19:00,1:00,120,Driftnet,5.00,1,38,20,0,1,4,5,4,Village,Akiak
+7/5/2018,D1,13:00,14:10,0:45,210,Driftnet,5.50,1,6,27,0,0,5,5,4,Fish camp,Akiak
+7/5/2018,D1,14:00,16:30,1:15,150,Driftnet,5.88,3,11,14,2,0,4,5,3,Fish camp,Akiak
+7/5/2018,D1,12:00,15:30,3:00,174,Driftnet,5.88,1,18,1,0,0,NA,NA,1,Village,Akiak
+7/5/2018,B,10:00,12:30,2:15,150,Driftnet,6.00,2,33,18,0,0,3,5,4,Fish camp,Napaskiak
+7/5/2018,B,9:00,13:30,4:15,150,Driftnet,6.00,0,16,19,0,0,4,5,5,Fish camp,Napaskiak
+7/5/2018,B,10:00,14:00,3:45,150,Driftnet,6.00,4,23,10,0,0,4,5,4,Fish camp,Napaskiak
+7/5/2018,B,9:30,16:00,6:15,150,Driftnet,6.00,3,13,14,0,0,4,5,5,Fish camp,Napaskiak
+7/5/2018,B,10:00,15:30,5:15,150,Driftnet,6.00,7,16,7,0,0,3,5,4,Fish camp,Napaskiak
+7/5/2018,B,11:30,15:00,3:15,150,Driftnet,5.88,0,12,2,0,0,3,4,4,Fish camp,Napaskiak
+7/5/2018,B,12:00,16:15,4:00,150,Driftnet,6.00,6,13,11,0,0,4,4,4,Fish camp,Napaskiak
+7/5/2018,B,11:30,17:30,5:45,150,Driftnet,6.00,7,14,9,0,0,3,5,4,Fish camp,Napaskiak
