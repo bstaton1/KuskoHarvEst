@@ -42,9 +42,9 @@ estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, cent
 
     # calculate the average catch per trip for the requested gear and only the suitable records
     if (sum(suitable_catch_rate) == 1) {
-      out = sapply(catch_rates[suitable_catch_rate,], central_fn) * central_fn(net_length[suitable_avg_net]) * central_fn(soak_hrs[suitable_avg_soak])
+      out = sapply(catch_rates[suitable_catch_rate,], central_fn, na.rm = TRUE) * central_fn(net_length[suitable_avg_net], na.rm = TRUE) * central_fn(soak_hrs[suitable_avg_soak], na.rm = TRUE)
     } else {
-      out = apply(catch_rates[suitable_catch_rate,], 2, central_fn) * central_fn(net_length[suitable_avg_net]) * central_fn(soak_hrs[suitable_avg_soak])
+      out = apply(catch_rates[suitable_catch_rate,], 2, central_fn, na.rm = TRUE) * central_fn(net_length[suitable_avg_net], na.rm = TRUE) * central_fn(soak_hrs[suitable_avg_soak], na.rm = TRUE)
     }
   }
 

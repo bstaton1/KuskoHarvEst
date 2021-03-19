@@ -1,0 +1,75 @@
+date,stratum,trip.start,trip.end,soak.hrs,length,gear,mesh,chinook,chum,sockeye,sheefish,whitefish,chinook.goal,chum.goal,sockeye.goal,type,village
+6/12/2018,D1,11:30,13:30,0:45,150,Driftnet,7,6,0,0,1,0,1,1,1,Village,Akiak
+6/12/2018,D1,10:00,12:00,1:00,150,Driftnet,6,7,0,0,2,0,1,1,1,Village,Akiak
+6/12/2018,A,9:50,15:45,2:30,300,Driftnet,6,13,33,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,A,10:30,15:15,1:30,300,Driftnet,5.75,7,11,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,A,12:30,16:00,3:00,330,Driftnet,5.75,4,15,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,A,13:00,16:30,3:00,300,Driftnet,7,4,2,0,0,0,2,1,1,Village,Tuntutuliak
+6/12/2018,A,11:00,14:00,1:30,300,Driftnet,5.5,3,1,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,A,11:00,15:00,3:00,200,Driftnet,5.75,11,11,3,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,C,12:00,17:00,4:00,150,Driftnet,5.875,8,0,0,0,1,1,1,1,Village,Kwethluk
+6/12/2018,A,12:00,16:00,4:00,150,Driftnet,5.625,3,2,0,4,0,1,1,1,Village,Kwethluk
+6/12/2018,C,10:30,12:30,2:00,150,Driftnet,5.875,4,1,1,0,0,1,1,1,Village,Kwethluk
+6/12/2018,C,10:00,15:00,5:00,150,Driftnet,6,0,1,0,0,0,1,1,1,Village,Kwethluk
+6/12/2018,C,10:00,18:00,7:00,150,Driftnet,6,23,4,2,4,0,2,1,1,Fish camp,Akiachak
+6/12/2018,D1,10:00,18:00,8:00,60,Setnet,4,0,0,0,0,12,1,1,1,Fish camp,Akiachak
+6/12/2018,C,18:30,22:00,3:30,150,Driftnet,6,0,0,0,0,0,1,1,1,Village,Kwethluk
+6/12/2018,C,12:00,19:00,4:00,150,Driftnet,6,6,0,0,1,1,1,1,1,Fish camp,Akiachak
+6/12/2018,C,10:00,20:00,10:00,150,Driftnet,6,4,0,0,0,1,1,1,1,Village,Kwethluk
+6/12/2018,C,10:30,21:00,3:30,150,Driftnet,5.5,22,1,1,5,1,1,1,1,Fish camp,Akiachak
+6/12/2018,C,11:00,21:30,4:00,60,Driftnet,6,2,3,0,1,0,1,1,1,Fish camp,Akiachak
+6/12/2018,D1,11:00,21:30,10:00,40,Setnet,4,0,0,0,0,5,1,1,1,Fish camp,Akiachak
+6/12/2018,C,10:30,20:00,7:30,100,Driftnet,6,1,0,0,0,1,1,1,1,Village,Kwethluk
+6/12/2018,B,10:15,16:00,5:30,150,Driftnet,6,3,2,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,D1,15:00,18:30,3:00,60,Driftnet,5.875,3,0,0,2,0,1,1,1,Fish camp,Akiachak
+6/12/2018,B,12:00,15:15,2:45,150,Driftnet,6,5,2,1,1,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,C,10:30,21:30,6:00,150,Driftnet,6,20,5,0,0,0,2,1,1,Fish camp,Akiachak
+6/12/2018,B,10:00,15:45,4:30,150,Driftnet,6,9,6,1,20,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,C,10:00,12:30,2:00,150,Driftnet,5.5,4,1,0,3,0,1,1,1,Village,Akiachak
+6/12/2018,C,12:00,16:00,4:00,150,Driftnet,5.5,5,0,0,0,0,1,1,1,Village,Kwethluk
+6/12/2018,C,13:30,17:30,4:00,150,Driftnet,6,10,2,0,2,0,1,1,1,Fish camp,Akiachak
+6/12/2018,B,10:15,18:00,6:30,150,Driftnet,5.5,6,2,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,C,13:30,17:00,4:30,150,Driftnet,6,2,0,0,0,0,1,1,1,Village,Kwethluk
+6/12/2018,C,14:30,18:00,3:30,150,Driftnet,6,2,1,0,1,0,1,1,1,Village,Kwethluk
+6/12/2018,B,11:00,16:00,4:30,150,Driftnet,5.5,12,3,0,3,1,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,11:30,16:00,5:00,150,Driftnet,5.5,4,0,0,1,1,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,10:30,16:00,5:30,150,Driftnet,6,6,1,1,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,10:00,14:30,1:45,150,Driftnet,6,13,0,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,D1,12:00,22:00,6:00,150,Driftnet,6,6,0,0,3,2,1,1,1,Village,Akiak
+6/12/2018,A,10:30,15:00,1:30,300,Driftnet,5.34,10,17,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,D1,14:00,17:30,1:30,150,Driftnet,5.5,2,1,1,2,0,1,1,1,Village,Akiak
+6/12/2018,A,11:00,15:00,3:00,300,Driftnet,5.5,2,1,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,D1,13:00,22:30,4:00,27,Driftnet,5.875,4,0,0,1,0,1,1,1,Village,Akiak
+6/12/2018,A,13:30,16:00,0:30,300,Driftnet,5.875,0,0,0,1,0,1,1,1,Village,Tuntutuliak
+6/12/2018,D1,17:00,18:00,0:45,300,Driftnet,6,0,0,0,0,0,1,1,1,Village,Akiak
+6/12/2018,A,10:30,19:25,1:00,300,Driftnet,5.875,15,0,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,D1,11:00,22:00,9:00,150,Driftnet,6,11,1,0,11,0,1,1,1,Village,Akiak
+6/12/2018,A,11:00,13:00,0:30,300,Driftnet,5.5,0,0,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,A,11:00,15:00,1:00,300,Driftnet,6,0,0,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,A,11:26,15:20,1:00,300,Driftnet,6,3,3,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,D1,11:30,22:00,4:00,150,Driftnet,6,5,1,0,0,2,1,1,1,Village,Akiak
+6/12/2018,A,10:30,18:00,1:00,300,Driftnet,5.875,13,9,1,0,0,1,1,1,Village,Tuntutuliak
+6/12/2018,A,10:30,18:00,1:00,300,Driftnet,5.875,13,9,1,0,,1,1,1,Village,Tuntutuliak
+6/12/2018,D1,19:00,22:00,2:30,150,Driftnet,6,4,0,3,1,0,1,1,1,Village,Akiak
+6/12/2018,D1,10:00,22:00,9:00,150,Driftnet,6,29,0,0,17,0,3,1,1,Village,Akiak
+6/12/2018,C,10:00,14:00,4:00,50,Driftnet,6,11,1,0,0,0,1,1,1,Village,Kwethluk
+6/12/2018,D1,14:30,22:00,6:30,150,Setnet,6,1,0,0,2,0,1,1,1,Village,Akiak
+6/12/2018,C,10:00,21:00,11:00,150,Setnet,6,5,0,0,1,1,1,1,1,Village,Kwethluk
+6/12/2018,D1,14:30,22:00,3:30,150,Driftnet,6,8,3,0,19,0,3,1,1,Village,Akiak
+6/12/2018,C,10:00,22:00,12:00,150,Driftnet,6,16,2,2,0,0,1,1,1,Fish camp,Kwethluk
+6/12/2018,C,10:00,21:30,10:00,150,Driftnet,6,10,0,1,0,0,1,1,1,Fish camp,Kwethluk
+6/12/2018,C,19:00,21:00,2:00,150,Driftnet,6,2,1,0,0,0,1,1,1,Fish camp,Kwethluk
+6/12/2018,C,13:00,18:00,5:00,150,Driftnet,6,6,0,0,1,0,1,1,1,Fish camp,Kwethluk
+6/12/2018,C,20:00,22:00,2:00,50,Driftnet,5.875,1,0,0,0,0,1,1,1,Village,Kwethluk
+6/12/2018,C,10:00,16:00,6:00,150,Driftnet,6,6,2,0,1,0,1,1,1,Village,Kwethluk
+6/12/2018,C,10:00,19:30,9:00,150,Driftnet,5.875,9,6,1,3,0,1,1,1,Village,Kwethluk
+6/12/2018,C,13:30,19:30,6:00,150,Driftnet,5.75,5,1,0,7,0,1,1,1,Village,Kwethluk
+6/12/2018,D1,12:12,22:00,4:30,150,Driftnet,5.5,9,0,0,11,0,1,1,1,Fish camp,Akiak
+6/12/2018,B,10:30,17:30,5:30,150,Driftnet,6,5,1,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,11:00,16:00,4:30,150,Driftnet,5.875,10,3,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,10:00,15:00,4:45,150,Driftnet,5.875,2,0,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,11:30,16:00,3:30,150,Driftnet,5.875,4,4,0,2,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,10:00,18:30,7:30,150,Driftnet,6,18,2,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,12:00,16:00,3:30,150,Driftnet,5.875,6,1,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,10:30,13:30,2:45,150,Driftnet,6,9,4,1,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2018,B,13:00,17:30,4:30,150,Driftnet,5.875,5,4,0,0,0,1,1,1,Village,Napaskiak
