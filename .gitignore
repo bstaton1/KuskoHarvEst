@@ -37,3 +37,7 @@ vignettes/*.pdf
 
 # Anything in the scratch folder
 scratch/*
+
+# Any rendered output
+*.log
+*.pdf
