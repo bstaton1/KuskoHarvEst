@@ -1,0 +1,83 @@
+---
+title: "Harvest Estimates"
+output: 
+  pdf_document:
+    template: "early-template.tex"
+geometry: [top=0.5in,right=0.75in,bottom=0.75in,left=0.75in]
+fontsize: 11pt
+editor_options: 
+  chunk_output_type: console
+opener-label: "6/12/2018 Subsistence Harvest Opportunity"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+knitr::opts_knit$set(root.dir = "../")
+library(magrittr)
+```
+
+```{r KuskoHarvEst setup, include = FALSE}
+library(KuskoHarvEst)
+
+# set options for function behavior
+options(
+  soak_sd_cut = 3, 
+  net_length_cut = 350, 
+  central_fn = mean, 
+  pooling_threshold = 10
+)
+
+# the date to try out
+try_date = "2018_06_12"
+
+# where are the data located
+base_dir = "inst/example-data"
+
+# the names of the data files in that directory
+input_files = list.files(file.path(base_dir, try_date), full.names = TRUE)
+
+# extract those that are specific to interviews and flights
+flight_file = input_files[stringr::str_which(input_files, "Flight_counts")]
+interview_files = input_files[-stringr::str_which(input_files, "Flight_counts")]
+```
+
+```{r data-prep}
+# read in and format raw interview data files
+interview_data = prepare_interviews_all(interview_files)
+
+# read in and format raw flight data file
+flight_data = prepare_flights(flight_file)
+```
+
+```{r estimate-effort}
+# estimate drift net effort
+drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
+
+# estimate set net effort
+set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
+```
+
+```{r estimate-harvest, eval = F}
+# estimate (via bootstrap) drift net harvest for all species and and strata
+boot_out_drift = bootstrap_harvest(interview_data, effort_info$drift,
+                                   gear = "drift", n_boot = 100, stratify_interviews = TRUE)
+
+# estimate (via bootstrap) drift net harvest for all species and and strata
+boot_out_set = bootstrap_harvest(interview_data, effort_info$set,
+                                 gear = "set", n_boot = 100, stratify_interviews = FALSE)
+
+# sum up across gears
+boot_out_total = cbind(iter = boot_out_drift$iter, 
+                       gear = "total", 
+                       stratum = boot_out_drift$stratum,
+                       boot_out_drift[,-c(1:3)] + boot_out_set[,-c(1:3)])
+
+# combine drift, set, and total into one data frame of bootstrap output
+# this object is used to make all harvest-related inference from here on
+boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)
+```
+
+```{r, fig.width = 7, fig.height = 4}
+effort_plot(flight_data, drift_effort_info)
+```
+
