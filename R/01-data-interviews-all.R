@@ -10,10 +10,20 @@ prepare_interviews_all = function(input_files, ...) {
   interview_data = unlist_dfs(interview_data_list)
 
   # perform suitability checks and combine logical flags with the data
-  tasks = c("nothing", "effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak", "avg_net_length")
+  tasks = c("effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak", "avg_net_length")
   suitable = sapply(tasks, suitable_for, interview_data = interview_data)
-  colnames(suitable) = paste0("suit_", c("nothing", "effort", "cr_info", "cr_reliable", "avg_soak", "avg_net"))
+  colnames(suitable) = paste0("suit_", c("effort", "cr_info", "cr_reliable", "avg_soak", "avg_net"))
   interview_data = cbind(interview_data, suitable)
+
+  # discard any trips lacking gear type information
+  # if the interview is lacking gear, it is totally useless.
+  # trip times can't be used for effort estimation b/c gear uncertainty
+  # catch rate and average net length and soak time same reason
+  no_gear = !has_gear(interview_data)
+  if (any(no_gear)) {
+    interview_data = interview_data[-which(no_gear),]
+    warning("\n", sum(no_gear), " interview(s) had missing gear type information.\nThese records have been discarded since they\ncannot be used for anything.")
+  }
 
   # perform checks for impossible soak times
   # if any are found, change the soak time to be the same as the trip duration, and include a note
