@@ -58,7 +58,7 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   }
 
   # calculate trip duration
-  dat_out$trip_duration = lubridate::as.period(lubridate::interval(dat_out$trip_start, dat_out$trip_end))
+  dat_out$trip_duration = suppressWarnings(lubridate::as.period(lubridate::interval(dat_out$trip_start, dat_out$trip_end)))
 
   ### STEP X: handle soak times
   # extract the soak time variable name and time unit names from raw data
@@ -70,9 +70,9 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
 
   # convert to duration class: different function depending on the units and format of the input
   if (soak_units_entered == "hrs" & soak_class == "character") {
-    dat_out$soak_duration = lubridate::as.period(round(lubridate::as.duration(lubridate::hm(dat_in[,soak_var]))))
+    dat_out$soak_duration = suppressWarnings(lubridate::as.period(round(lubridate::as.duration(lubridate::hm(dat_in[,soak_var])))))
   } else {
-    dat_out$soak_duration = lubridate::as.period(round(lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes"))))
+    dat_out$soak_duration = suppressWarnings(lubridate::as.period(round(lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes")))))
   }
 
   ### STEP X: handle which species to keep
