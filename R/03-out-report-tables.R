@@ -59,3 +59,54 @@ flight_data_table = function(flight_data) {
     kableExtra::row_spec(0, bold = TRUE)
 }
 
+#' Create a table to summarize information spatially
+#'
+#' @export
+
+strata_summary_table = function(gear) {
+
+  # create nice names for the strata
+  strata = paste0(strata_names$stratum_start, "--\n", strata_names$stratum_end)
+  names(strata) = strata_names$stratum
+
+  # determine the correct effort info to use depending on the gear
+  if (gear == "drift") {
+    effort_info = drift_effort_info
+  } else {
+    effort_info = set_effort_info
+  }
+
+  # calculate/format harvest by stratum
+  chinook = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
+  chum = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
+  sockeye = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
+  total = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
+
+  # build the strata-specific information for the table
+  tab = cbind(
+    Stratum = kableExtra::linebreak(strata, align = "l"),
+    Interviews = with(interview_data[interview_data$gear == gear,], table(stratum)),
+    "Effort Est." = effort_info$effort_est_stratum,
+    Chinook = chinook, Chum = chum, Sockeye = sockeye, Total = total
+  )
+
+  # build the across-strata information for the table
+  tot_int = sum(as.numeric(tab[,"Interviews"]))
+  tot_eff = sum(as.numeric(tab[,"Effort Est."]))
+  tot_harv = sapply(c("chinook", "chum", "sockeye", "total"), function(spp) tinyCI(report(spp = spp, stratum = "total", gear = gear)))
+  tots = c(Stratum = "All", Interviews = tot_int, "Effort Est." = tot_eff, tot_harv)
+
+  # combine
+  tab = rbind(tab, tots)
+
+  # build the kable
+  knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE, row.names = FALSE,
+               align = "lcccccc",
+               caption = paste0("Summary of relevant quantities by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
+    kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = 4), bold = T) %>%
+    kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
+    kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
+    kableExtra::column_spec(ncol(tab), bold = TRUE)
+}
+
