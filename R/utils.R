@@ -70,3 +70,28 @@ short_datetime = function(datetimes, include_date = F) {
   return(out)
 }
 
+#' Make the CI part of a summary smaller text than the mean
+#'
+
+tinyCI = function(x, linebreak = TRUE) {
+  # if x has CIs
+  if (stringr::str_detect(x, "\\(")) {
+    # build the replacement text
+    replacement = paste0("\\footnotesize{", stringr::str_extract(x, "\\(.+\\)"), "}")
+
+    # extract the mean part
+    x = stringr::str_extract(x, "^.+ \\(")
+
+    # paste on the CI replacement text
+    x = paste0(substr(x, 1, nchar(x) - 1), replacement)
+
+    # include the latex code to put the CI on a new line if in a table cell
+    if (linebreak) {
+      x = stringr::str_replace(x, " \\\\f", "\n\\\\f")
+      x = kableExtra::linebreak(x, align = "c")
+    }
+    return(x)
+  } else {
+    return(x)
+  }
+}
