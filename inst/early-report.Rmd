@@ -1,13 +1,23 @@
 ---
 title: "Harvest Estimates"
+title: "Kuskokwim River In-season Harvest and Effort Estimates"
+draft-watermark: true
 output: 
   pdf_document:
     template: "early-template.tex"
 geometry: [top=0.5in,right=0.75in,bottom=0.75in,left=0.75in]
+geometry: [top=0.75in,right=0.75in,bottom=0.75in,left=0.75in]
+number-sections: false
 fontsize: 11pt
 editor_options: 
   chunk_output_type: console
 opener-label: "6/12/2018 Subsistence Harvest Opportunity"
+opener-start: "6/12/2018 10:00 AM"
+opener-end: "6/12/2018 10:00 PM"
+area: "Tuntutuliak -- Akiak"
+special-action-url: http://example.com
+news-release-url: http://example.com
+contact: "Ben Staton (bstaton.qes@gmail.com)"
 ---
 
 ```{r setup, include=FALSE}

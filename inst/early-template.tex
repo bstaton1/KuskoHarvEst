@@ -87,17 +87,6 @@ $endif$
 \pagestyle{fancy}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0pt}  % make width of the rulers zero
-\renewcommand{\footrulewidth}{1pt}
-
-% new title
-\newcommand{\titleblock}[2]{
-  \begin{flushleft}
-    \hrulefill\\
-    {\Huge{#1}}\\
-    {\LARGE{#2}}\\
-    \hrulefill
-  \end{flushleft}
-}
 
 % add a watermark if requested
 $if(draft-watermark)$
@@ -112,7 +101,38 @@ $endif$
 \begin{document}
 
 % insert title
-\titleblock{$title$}{$opener-label$}
+\rule{\textwidth}{1pt}
+\begin{flushleft}
+
+{\bf\LARGE{$title$}}\\
+{\Large{$opener-label$}}\\
+
+$if(opener-start)$
+{\small{Opportunity Started: $opener-start$}}\\
+$endif$
+
+$if(opener-end)$
+{\small{Opportunity Ended: $opener-end$}}\\
+$endif$
+
+$if(area)$
+{\small{Area Covered by Estimates: $area$}}\\
+$endif$
+
+$if(contact)$
+{\small{Contact Person(s): $contact$}}\\
+$endif$
+
+$if(news-release-url)$
+{\small{News Release: $news-release-url$}}\\
+$endif$
+
+$if(news-release-url)$
+{\small{Special Action: $special-action-url$}}\\
+$endif$
+\end{flushleft}
+\vspace{-10pt}
+\rule{\textwidth}{1pt}
 
 % insert body
 $body$
