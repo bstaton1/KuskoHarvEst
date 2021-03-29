@@ -1,11 +1,9 @@
 ---
-title: "Harvest Estimates"
 title: "Kuskokwim River In-season Harvest and Effort Estimates"
 draft-watermark: true
 output: 
   pdf_document:
     template: "early-template.tex"
-geometry: [top=0.5in,right=0.75in,bottom=0.75in,left=0.75in]
 geometry: [top=0.75in,right=0.75in,bottom=0.75in,left=0.75in]
 number-sections: false
 fontsize: 11pt
@@ -21,7 +19,7 @@ contact: "Ben Staton (bstaton.qes@gmail.com)"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", warning = FALSE, fig.pos = "H", out.extra = "")
 knitr::opts_knit$set(root.dir = "../")
 library(magrittr)
 ```
@@ -49,7 +47,11 @@ input_files = list.files(file.path(base_dir, try_date), full.names = TRUE)
 # extract those that are specific to interviews and flights
 flight_file = input_files[stringr::str_which(input_files, "Flight_counts")]
 interview_files = input_files[-stringr::str_which(input_files, "Flight_counts")]
+
+histogram_gear = "drift"
 ```
+
+# Data Sources {-}
 
 ```{r data-prep}
 # read in and format raw interview data files
@@ -59,6 +61,16 @@ interview_data = prepare_interviews_all(interview_files)
 flight_data = prepare_flights(flight_file)
 ```
 
+```{r interview-sources-table}
+interview_data_table(interview_data)
+```
+
+```{r flight-table}
+flight_data_table(flight_data)
+```
+
+# Effort Estimates {-} 
+
 ```{r estimate-effort}
 # estimate drift net effort
 drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
@@ -67,13 +79,21 @@ drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method
 set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
 ```
 
-```{r estimate-harvest, eval = F}
+* An estimated **`r drift_effort_info$effort_est_total`** total drift boat trips occurred.
+  * An estimated **`r percentize(drift_effort_info$p_T1_given_T2[1])`** of the trips counted on flight 2 were also counted on flight 1.
+  * An estimated **`r percentize(drift_effort_info$p_T1_given_T2[2])`** of the trips counted on flight 3 were also counted on flight 2.
+  * An estimated **`r round(drift_effort_info$trip_counts["not_counted"] * drift_effort_info$effort_per_interview)`** trips were not counted during any flights.
+* An estimated **`r set_effort_info$effort_est_total`** total set net trips occurred.
+
+# Harvest Estimates {-}
+
+```{r estimate-harvest, eval = TRUE}
 # estimate (via bootstrap) drift net harvest for all species and and strata
-boot_out_drift = bootstrap_harvest(interview_data, effort_info$drift,
+boot_out_drift = bootstrap_harvest(interview_data, drift_effort_info,
                                    gear = "drift", n_boot = 100, stratify_interviews = TRUE)
 
 # estimate (via bootstrap) drift net harvest for all species and and strata
-boot_out_set = bootstrap_harvest(interview_data, effort_info$set,
+boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
                                  gear = "set", n_boot = 100, stratify_interviews = FALSE)
 
 # sum up across gears
@@ -87,7 +107,29 @@ boot_out_total = cbind(iter = boot_out_drift$iter,
 boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)
 ```
 
-```{r, fig.width = 7, fig.height = 4}
-effort_plot(flight_data, drift_effort_info)
+```{r}
+set_harvest = sapply(c("chinook", "chum", "sockeye", "total"), function(sp) report(sp, gear = "set", CI = FALSE, return_numeric = TRUE))
+set_spp = percentize(set_harvest[c("chinook", "chum", "sockeye")]/set_harvest["total"])
 ```
 
+* An estimated total of **`r report()`** salmon were harvested.
+  *  An estimated total of **`r report(spp = "chinook")`** Chinook salmon were harvested.
+  *  An estimated total of **`r report(spp = "chum")`** chum salmon were harvested.
+  *  An estimated total of **`r report(spp = "sockeye")`** sockeye salmon were harvested.
+* Harvest by set nets accounted for an estimated **`r report(gear = "set")`** total salmon (`r paste0(set_spp["chinook"], " Chinook salmon, ", set_spp["chum"], " chum salmon, and ", set_spp["sockeye"], " sockeye salmon")`).
+
+```{r strata-summary-table}
+strata_summary_table("drift")
+```
+
+```{r johnson-summary-table}
+johnson_summary_table()
+```
+
+```{r histograms, fig.width = 7.5, fig.height = 3.75, fig.cap = make_histogram_caption(interview_data, histogram_gear)}
+make_all_histograms(interview_data, histogram_gear, c("total_salmon", "chinook", "chum+sockeye", "trip_duration", "soak_duration", "p_chinook"))
+```
+
+```{r trip-time-plot, fig.width = 7, fig.height = 4, eval = FALSE}
+effort_plot(flight_data, drift_effort_info)
+```
