@@ -42,3 +42,31 @@ percentize = function(x, escape = FALSE, digits = 0) {
   lt1_replace = ifelse(escape, "<1\\%", "<1%")
   ifelse(out == zero_test & x > 0, lt1_replace, out)
 }
+
+#' Format a datetime object to be shorter
+#'
+#' @export
+
+short_datetime = function(datetimes, include_date = F) {
+
+  # extract the day and month, and format them as M/D
+  dates_short = paste(
+    lubridate::month(datetimes),
+    lubridate::day(datetimes), sep = "/"
+  )
+
+  # extract the time and format it as 12 hour clock (drop seconds as well)
+  times_short = format(datetimes, format = "%I:%M %p")
+  times_short = stringr::str_remove(times_short, "^0")
+
+  # combine them if requested
+  if (include_date) {
+    out = paste0(times_short, " (", dates_short, ")")
+  } else {
+    out = times_short
+  }
+
+  # return the output
+  return(out)
+}
+
