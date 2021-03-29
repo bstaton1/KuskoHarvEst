@@ -32,7 +32,7 @@ unlist_dfs = function(list) {
 #'
 #' @export
 
-percentize = function(x, escape = T, digits = 0) {
+percentize = function(x, escape = FALSE, digits = 0) {
   # create the percent version
   out = paste0(round(x * 100, digits = digits), ifelse(escape, "\\%", "%"))
 
