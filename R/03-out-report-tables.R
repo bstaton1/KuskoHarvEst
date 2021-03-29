@@ -110,3 +110,64 @@ strata_summary_table = function(gear) {
     kableExtra::column_spec(ncol(tab), bold = TRUE)
 }
 
+#' Create a table to summarize catch rates and species composition relative to Johnson River
+#'
+#' @export
+
+johnson_summary_table = function() {
+  # extract effort estimates above and below Johnson R.
+  below_johnson_effort = drift_effort_info$effort_est_stratum["A"]
+  above_johnson_effort = sum(drift_effort_info$effort_est_stratum[c("B", "C", "D1")])
+
+  # extract bootstrap estimates of total harvest below and above johnson R
+  below_johnson_total = subset(boot_out, gear == "drift" & stratum == "A")[,"total"]
+  above_johnson_total = with(subset(boot_out, gear == "drift" & stratum != "A" & stratum != "total"), tapply(total, iter, sum))
+
+  # extract bootstrap estimates of chinook harvest below and above johnson R
+  below_johnson_chinook = subset(boot_out, gear == "drift" & stratum == "A")[,"chinook"]
+  above_johnson_chinook = with(subset(boot_out, gear == "drift" & stratum != "A" & stratum != "total"), tapply(chinook, iter, sum))
+
+  # calculate bootstrap estimates of total salmon catch per trip above and below johnson R
+  below_johnson_cpt = below_johnson_total/below_johnson_effort
+  above_johnson_cpt = above_johnson_total/above_johnson_effort
+
+  # calculate bootstrap estimates of percent chinook catch per trip above and below johnson R
+  below_johnson_pchinook = below_johnson_chinook/below_johnson_total
+  above_johnson_pchinook = above_johnson_chinook/above_johnson_total
+
+  # function to summarize/format the output
+  f = function(x, as_percent) {
+    summs = c(mean(x), quantile(x, c(0.025, 0.975)))
+    if (!as_percent) {
+      summs = round(summs)
+      out = paste0(summs[1], " (", summs[2], " -- ", summs[3], ")")
+    } else {
+      out = paste0(percentize(summs[1], escape = T), " (", percentize(summs[2], escape = T), " -- ", percentize(summs[3], escape = T), ")")
+    }
+    out
+  }
+
+  # summarize/format bootstrapped output
+  cpt_value = c(f(below_johnson_cpt, F), f(above_johnson_cpt, F))
+  pchinook_value = c(f(below_johnson_pchinook, T), f(above_johnson_pchinook, T))
+
+  # add tiny CIs
+  cpt_value = sapply(cpt_value, tinyCI, linebreak = FALSE)
+  pchinook_value = sapply(pchinook_value, tinyCI, linebreak = FALSE)
+
+  # build the table to pass to kable()
+  tab = rbind(
+    c("Total Catch/Trip", cpt_value),
+    c("\\% Chinook Salmon", pchinook_value)
+  ); rownames(tab) = NULL
+
+  # build the kable
+  knitr::kable(tab, "latex", col.names = c("Quantity", "Downstream", "Upstream"),
+               row.names = FALSE, booktabs = TRUE, longtable = FALSE, linesep = "",
+               align = "lcc", escape = FALSE,
+               caption = "Average (95\\% confidence limits) total salmon catch per trip and percent Chinook salmon, summarized for the areas above and below the confluence of the Johnson River with the Kuskokwim River. Quantities are derived from the strata- and species-specific harvest estimates, not the raw interview data.") %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
+    kableExtra::add_header_above(c(" " = 1, "Proximity to Johnson R. Mouth" = 2), bold = TRUE) %>%
+    kableExtra::row_spec(0, bold = TRUE)
+}
+
