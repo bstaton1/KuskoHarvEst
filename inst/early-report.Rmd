@@ -65,6 +65,8 @@ flight_data = prepare_flights(flight_file)
 interview_data_table(interview_data)
 ```
 
+Of these interviews, **`r sum(interview_data$gear == "drift")`** were from drift nets and **`r sum(interview_data$gear == "set")`** were from set nets.
+
 ```{r flight-table}
 flight_data_table(flight_data)
 ```
