@@ -1,10 +1,10 @@
 ---
 title: "Kuskokwim River In-season Harvest and Effort Estimates"
-draft-watermark: true
+draft-watermark: false
 output: 
   pdf_document:
     template: "early-template.tex"
-geometry: [top=0.75in,right=0.75in,bottom=0.75in,left=0.75in]
+geometry: [top=0.5in,right=0.75in,bottom=0.75in,left=0.75in]
 number-sections: false
 fontsize: 11pt
 editor_options: 
@@ -55,7 +55,7 @@ histogram_gear = "drift"
 
 ```{r data-prep}
 # read in and format raw interview data files
-interview_data = prepare_interviews_all(interview_files)
+interview_data = prepare_interviews_all(interview_files, include_village = TRUE)
 
 # read in and format raw flight data file
 flight_data = prepare_flights(flight_file)
@@ -132,4 +132,67 @@ make_all_histograms(interview_data, histogram_gear, c("total_salmon", "chinook",
 
 ```{r trip-time-plot, fig.width = 7, fig.height = 4, eval = FALSE}
 effort_plot(flight_data, drift_effort_info)
+```
+
+\clearpage
+\setcounter{page}{1}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\renewcommand\thesection{A\arabic{section}}
+\renewcommand\thesubsection{A\arabic{section}.\arabic{subsection}}
+\renewcommand\thesubsubsection{A\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}
+\renewcommand\thepage{A\arabic{page}}
+\renewcommand\thefigure{A\arabic{figure}}
+\renewcommand\thetable{A\arabic{table}}
+
+# Appendix: Detailed Interview Summaries {-}
+
+**Column Meanings**
+
+* **Area**: the area of the river the trip occurred in
+* **N**: the number of interviews with usable information in each area
+* **Min**: the minimum value among all trips in each area
+* **25%**: the value that 25% of the trips fell below in each area
+* **Mean**: the average value across all trips in each area
+* **75%**: the value that 75% of the trips fell below in each area
+* **Max**: the maximum value among all trips in each area
+
+```{r}
+appendix_gear = "set"
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "chinook_rate")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "chinook")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "chum+sockeye_rate")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "chum+sockeye")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "p_chinook")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "soak_duration")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "trip_duration")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "trip_start")
+```
+
+```{r}
+make_appendix_table(interview_data, appendix_gear, "trip_end")
 ```
