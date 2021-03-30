@@ -171,3 +171,174 @@ johnson_summary_table = function() {
     kableExtra::row_spec(0, bold = TRUE)
 }
 
+#' Create a table to go in the report appendix
+#'
+#' @export
+
+make_appendix_table = function(interview_data, gear, variable) {
+
+  # set the variables that are accepted, and perform error check
+  accepted_variables = c(
+    "chinook_rate",
+    "chinook",
+    "chum+sockeye",
+    "chum+sockeye_rate",
+    "soak_duration",
+    "trip_start", "trip_end", "trip_duration",
+    "net_length",
+    "p_chinook"
+  )
+
+  if (!(variable %in% accepted_variables)) {
+    stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:\n", paste0("  '", accepted_variables, "'\n"))
+  }
+
+  # subset out only data relevant for the table
+  x_data = interview_data[is_complete_trip(interview_data) & !is.na(interview_data$stratum) & interview_data$gear == gear,]
+
+  # prepare information: chinook catch per trip
+  if (variable == "chinook") {
+    x = x_data$chinook
+    cap = paste0("Summary of ", gear, " net catch per trip of Chinook salmon by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: chinook catch rate per trip
+  if (variable == "chinook_rate") {
+    x_data = x_data[x_data$suit_cr_reliable,]
+    x = x_data$chinook/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = paste0("Summary of ", gear, " net catch rate of Chinook salmon by fishing area (units are salmon per 150 feet of net soaked for 1 hour).")
+    digits = 1
+  }
+
+  # prepare information: chum+sockeye catch per trip
+  if (variable == "chum+sockeye") {
+    x = x_data$chum + x_data$sockeye
+    cap = paste0("Summary of ", gear, " net catch per trip of chum+sockeye salmon by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: chum+sockeye catch rate per trip
+  if (variable == "chum+sockeye_rate") {
+    x_data = x_data[x_data$suit_cr_reliable,]
+    x = (x_data$chum + x_data$sockeye)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = paste0("Summary of ", gear, " net catch rate of chum+sockeye salmon by fishing area (units are salmon per 150 feet of net soaked for 1 hour).")
+    digits = 1
+  }
+
+  # prepare information: soak time per trip
+  if (variable == "soak_duration") {
+    x_data = x_data[x_data$suit_avg_soak,]
+    x = as.numeric(x_data$soak_duration, "hours")
+    cap = paste0("Summary of ", gear, " net active fishing hours by fishing area.")
+    digits = 1
+  }
+
+  # prepare information: trip duration
+  if (variable == "trip_duration") {
+    x_data = x_data[KuskoHarvEst:::is_possible_trip(x_data),]
+    x = as.numeric(x_data$soak_duration, "hours")
+    cap = paste0("Summary of ", gear, " net active fishing hours by fishing area.")
+    digits = 1
+  }
+
+  # prepare information: net length
+  if (variable == "net_length") {
+    x_data = x_data[x_data$suit_avg_net,]
+    x = x_data$net_length
+    cap = paste0("Summary of ", gear, " net length (feet) by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: trip start time
+  if (variable == "trip_start") {
+    x_data = x_data[KuskoHarvEst:::is_possible_trip(x_data),]
+    x = x_data$trip_start
+    cap = paste0("Summary of ", gear, " net trip start time by fishing area.")
+    digits = NA
+  }
+
+  # prepare information: trip end time
+  if (variable == "trip_end") {
+    x_data = x_data[KuskoHarvEst:::is_possible_trip(x_data),]
+    x = x_data$trip_end
+    cap = paste0("Summary of ", gear, " net trip end time by fishing area.")
+    digits = NA
+  }
+
+  # prepare information: percent chinook catches
+  if (variable == "p_chinook") {
+    x = x_data$chinook/(x_data$chinook + x_data$chum + x_data$sockeye)
+    cap = paste0("Summary of ", gear, " net percent composition of Chinook salmon by fishing area.")
+    digits = NA
+  }
+
+  # calculate the number of interviews used
+  N = tapply(x, x_data$stratum, function(z) length(!is.na(z)))
+  N_all = sum(N)
+
+  # calculate and format summaries: numerical quantities that need only rounding for format
+  if (!is.na(digits)) {
+    Min = round(tapply(x, x_data$stratum, function(z) min(z, na.rm = TRUE)), digits = digits)
+    q25 = round(tapply(x, x_data$stratum, function(z) quantile(z, 0.25, na.rm = TRUE)), digits = digits)
+    Mean = round(tapply(x, x_data$stratum, function(z) mean(z, na.rm = TRUE)), digits = digits)
+    q75 = round(tapply(x, x_data$stratum, function(z) quantile(z, 0.75, na.rm = TRUE)), digits = digits)
+    Max = round(tapply(x, x_data$stratum, function(z) max(z, na.rm = T)), digits = digits)
+
+    all_min = round(min(x, na.rm = TRUE), digits = digits)
+    all_q25 = round(quantile(x, 0.25, na.rm = TRUE), digits = digits)
+    all_mean = round(mean(x, na.rm = TRUE), digits = digits)
+    all_q75 = round(quantile(x, 0.75, na.rm = TRUE), digits = digits)
+    all_max = round(max(x, na.rm = TRUE), digits = digits)
+  }
+
+  # calculate and format summaries: percent chinook
+  if (is.na(digits) & variable == "p_chinook") {
+    Min = percentize(tapply(x, x_data$stratum, function(z) min(z, na.rm = TRUE)), escape = TRUE)
+    q25 = percentize(tapply(x, x_data$stratum, function(z) quantile(z, 0.25, na.rm = TRUE)), escape = TRUE)
+    Mean = percentize(tapply(x, x_data$stratum, function(z) mean(z, na.rm = TRUE)), escape = TRUE)
+    q75 = percentize(tapply(x, x_data$stratum, function(z) quantile(z, 0.75, na.rm = TRUE)), escape = TRUE)
+    Max = percentize(tapply(x, x_data$stratum, function(z) max(z, na.rm = T)), escape = TRUE)
+
+    all_min = percentize(min(x, na.rm = TRUE), escape = TRUE)
+    all_q25 = percentize(quantile(x, 0.25, na.rm = TRUE), escape = TRUE)
+    all_mean = percentize(mean(x, na.rm = TRUE), escape = TRUE)
+    all_q75 = percentize(quantile(x, 0.75, na.rm = TRUE), escape = TRUE)
+    all_max = percentize(max(x, na.rm = TRUE), escape = TRUE)
+  }
+
+  # calculate and format summaries: trip times
+  if (is.na(digits) & variable != "p_chinook"){
+    Min = short_datetime(aggregate(x ~ x_data$stratum, FUN = min, na.rm = T)$x); names(Min) = unique(x_data$stratum)
+    q25 = short_datetime(aggregate(x ~ x_data$stratum, FUN = quantile, prob = 0.25, na.rm = T)$x); names(q25) = unique(x_data$stratum)
+    Mean = short_datetime(aggregate(x ~ x_data$stratum, FUN = mean, na.rm = T)$x); names(Mean) = unique(x_data$stratum)
+    q75 = short_datetime(aggregate(x ~ x_data$stratum, FUN = quantile, prob = 0.75, na.rm = T)$x); names(q75) = unique(x_data$stratum)
+    Max = short_datetime(aggregate(x ~ x_data$stratum, FUN = max, na.rm = T)$x); names(Max) = unique(x_data$stratum)
+
+    all_min = short_datetime(min(x, na.rm = TRUE))
+    all_q25 = short_datetime(quantile(x, 0.25, na.rm = TRUE))
+    all_mean = short_datetime(mean(x, na.rm = TRUE))
+    all_q75 = short_datetime(quantile(x, 0.75, na.rm = TRUE))
+    all_max = short_datetime(max(x, na.rm = TRUE))
+  }
+
+  # build the table
+  strata_tab = cbind(N, Min, "25\\%" = q25, Mean, "75\\%" = q75, Max)
+  all_tab = c(N = N_all, Min = all_min, "25\\%" = all_q25, Mean = all_mean, "75\\%" = all_q75, Max = all_max)
+  tab = rbind(strata_tab, all_tab)
+
+  # create nice names for the strata
+  strata = paste0(strata_names$stratum_start[strata_names$stratum %in% rownames(tab)], " $\\rightarrow$ ", strata_names$stratum_end[strata_names$stratum %in% rownames(tab)])
+  strata = c(strata, "All")
+
+  # combine with summaries
+  tab = cbind(Area = strata, tab)
+  rownames(tab) = NULL
+
+  # build the kable
+  knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", caption = cap, escape = F, align = "lcccccc") %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
+    kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
+    kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
+    kableExtra::column_spec(1, bold = TRUE)
+}
