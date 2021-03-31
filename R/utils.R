@@ -32,7 +32,7 @@ unlist_dfs = function(list) {
 #'
 #' @export
 
-percentize = function(x, escape = T, digits = 0) {
+percentize = function(x, escape = FALSE, digits = 0) {
   # create the percent version
   out = paste0(round(x * 100, digits = digits), ifelse(escape, "\\%", "%"))
 
@@ -41,4 +41,57 @@ percentize = function(x, escape = T, digits = 0) {
   zero_test = ifelse(escape, "0\\%", "0%")
   lt1_replace = ifelse(escape, "<1\\%", "<1%")
   ifelse(out == zero_test & x > 0, lt1_replace, out)
+}
+
+#' Format a datetime object to be shorter
+#'
+#' @export
+
+short_datetime = function(datetimes, include_date = F) {
+
+  # extract the day and month, and format them as M/D
+  dates_short = paste(
+    lubridate::month(datetimes),
+    lubridate::day(datetimes), sep = "/"
+  )
+
+  # extract the time and format it as 12 hour clock (drop seconds as well)
+  times_short = format(datetimes, format = "%I:%M %p")
+  times_short = stringr::str_remove(times_short, "^0")
+
+  # combine them if requested
+  if (include_date) {
+    out = paste0(times_short, " (", dates_short, ")")
+  } else {
+    out = times_short
+  }
+
+  # return the output
+  return(out)
+}
+
+#' Make the CI part of a summary smaller text than the mean
+#'
+
+tinyCI = function(x, linebreak = TRUE) {
+  # if x has CIs
+  if (stringr::str_detect(x, "\\(")) {
+    # build the replacement text
+    replacement = paste0("\\footnotesize{", stringr::str_extract(x, "\\(.+\\)"), "}")
+
+    # extract the mean part
+    x = stringr::str_extract(x, "^.+ \\(")
+
+    # paste on the CI replacement text
+    x = paste0(substr(x, 1, nchar(x) - 1), replacement)
+
+    # include the latex code to put the CI on a new line if in a table cell
+    if (linebreak) {
+      x = stringr::str_replace(x, " \\\\f", "\n\\\\f")
+      x = kableExtra::linebreak(x, align = "c")
+    }
+    return(x)
+  } else {
+    return(x)
+  }
 }

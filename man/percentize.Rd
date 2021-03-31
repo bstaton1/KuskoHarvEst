@@ -4,7 +4,7 @@
 \alias{percentize}
 \title{Convert a proportion to a percent}
 \usage{
-percentize(x, escape = T, digits = 0)
+percentize(x, escape = FALSE, digits = 0)
 }
 \description{
 Convert a proportion to a percent
