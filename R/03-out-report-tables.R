@@ -66,7 +66,7 @@ flight_data_table = function(flight_data) {
 strata_summary_table = function(gear) {
 
   # create nice names for the strata
-  strata = paste0(strata_names$stratum_start, "--\n", strata_names$stratum_end)
+  strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
   names(strata) = strata_names$stratum
 
   # determine the correct effort info to use depending on the gear
@@ -84,7 +84,8 @@ strata_summary_table = function(gear) {
 
   # build the strata-specific information for the table
   tab = cbind(
-    Stratum = kableExtra::linebreak(strata, align = "l"),
+    # Stratum = kableExtra::linebreak(strata, align = "l"),
+    Stratum = strata,
     Interviews = with(interview_data[interview_data$gear == gear,], table(stratum)),
     "Effort Est." = effort_info$effort_est_stratum,
     Chinook = chinook, Chum = chum, Sockeye = sockeye, Total = total
@@ -103,11 +104,12 @@ strata_summary_table = function(gear) {
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE, row.names = FALSE,
                align = "lcccccc",
                caption = paste0("Summary of relevant quantities by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position", "scale_down")) %>%
     kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = 4), bold = T) %>%
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
-    kableExtra::column_spec(ncol(tab), bold = TRUE)
+    kableExtra::column_spec(ncol(tab), bold = TRUE) %>%
+    kableExtra::column_spec(1, bold = TRUE)
 }
 
 #' Create a table to summarize catch rates and species composition relative to Johnson River
@@ -328,7 +330,7 @@ make_appendix_table = function(interview_data, gear, variable) {
   tab = rbind(strata_tab, all_tab)
 
   # create nice names for the strata
-  strata = paste0(strata_names$stratum_start[strata_names$stratum %in% rownames(tab)], " $\\rightarrow$ ", strata_names$stratum_end[strata_names$stratum %in% rownames(tab)])
+  strata = paste0(strata_names$stratum_start[strata_names$stratum %in% rownames(tab)], " $\\longleftrightarrow$ ", strata_names$stratum_end[strata_names$stratum %in% rownames(tab)])
   strata = c(strata, "All")
 
   # combine with summaries

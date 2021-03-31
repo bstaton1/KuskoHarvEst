@@ -94,7 +94,7 @@ set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "
 boot_out_drift = bootstrap_harvest(interview_data, drift_effort_info,
                                    gear = "drift", n_boot = 100, stratify_interviews = TRUE)
 
-# estimate (via bootstrap) drift net harvest for all species and and strata
+# estimate (via bootstrap) set net harvest for all species and and strata
 boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
                                  gear = "set", n_boot = 100, stratify_interviews = FALSE)
 
