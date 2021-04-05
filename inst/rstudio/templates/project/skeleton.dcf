@@ -1,9 +1,3 @@
 Title: Harvest Estimation using KuskoHarvEst
 Caption: Name your project 'KuskoHarvEst_YYYY_MM_DD'
-Binding: KuskoHarvest_skeleton
-
-Parameter: set_only
-Widget: CheckboxInput
-Label: Opportunity Allowed Set Nets Only?
-Default: Off
-Position: Left
+Binding: KuskoHarvEst_skeleton
