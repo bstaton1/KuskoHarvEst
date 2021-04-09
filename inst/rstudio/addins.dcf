@@ -1,0 +1,4 @@
+Name: Enter Opportunity Meta-data
+Description: Use an interactive tool to enter specific information about the opportunity/estimate
+Binding: meta_tool
+Interactive: true
