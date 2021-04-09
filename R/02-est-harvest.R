@@ -43,6 +43,9 @@ estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE
   output = cbind(gear = gear, stratum = rownames(output), output)
   rownames(output) = NULL
 
+  # format the output: add the date the estimate applies to
+  output = cbind(date = unique_start_dates(interview_data), output)
+
   # return the output
   return(output)
 }
