@@ -9,6 +9,12 @@ prepare_interviews_all = function(input_files, ...) {
   # combine individual list elements into a data frame
   interview_data = unlist_dfs(interview_data_list)
 
+  # check to make sure only one unique start date is found in the data
+  start_dates = unique_start_dates(interview_data)
+  if (length(start_dates) > 1) {
+    stop ("More than one unique start date was found in the interview data:\n(", paste(start_dates, collapse = "; "), ")\nYou must edit the raw data to ensure all interviews are from trips that started on the same day.")
+  }
+
   # perform suitability checks and combine logical flags with the data
   tasks = c("effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak", "avg_net_length")
   suitable = sapply(tasks, suitable_for, interview_data = interview_data)
