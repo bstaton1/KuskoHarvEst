@@ -25,11 +25,15 @@ prepare_interviews_all = function(input_files, ...) {
     warning("\n", sum(no_gear), " interview(s) had missing gear type information.\nThese records have been discarded since they\ncannot be used for anything.")
   }
 
+  # create empty note objects
+  impossible_trip_notes = rep(NA, nrow(interview_data))
+  impossible_soak_notes = rep(NA, nrow(interview_data))
+  outlier_cpt_notes = rep(NA, nrow(interview_data))
+
   # perform checks for impossible trip times
-  interview_data$note = NA
   impossible_trips = !is_possible_trip(interview_data)
   if (any(impossible_trips)) {
-    interview_data$note[impossible_trips] = paste0("Impossible trip times reported, trip times set to NA.")
+    impossible_trip_notes[impossible_trips] = paste0("Impossible trip times reported, trip times set to NA.")
     interview_data$suit_effort[impossible_trips] = FALSE
     interview_data$trip_duration[impossible_trips] = NA
     interview_data$trip_start[impossible_trips] = NA
@@ -41,10 +45,28 @@ prepare_interviews_all = function(input_files, ...) {
   # if any are found, change the soak time to be the same as the trip duration, and include a note
   impossible_soaks = !is_possible_soak(interview_data)
   if (any(impossible_soaks)) {
-    interview_data$note[impossible_soaks] = paste0("Impossible soak duration (", interview_data[impossible_soaks,"soak_duration"], ") edited to trip duration")
+    impossible_soak_notes[impossible_soaks] = paste0("Impossible soak duration (", interview_data[impossible_soaks,"soak_duration"], ") edited to trip duration")
     interview_data$soak_duration[impossible_soaks] = interview_data$trip_duration[impossible_soaks]
     warning("\n", sum(impossible_soaks), " interview(s) had soak duration reported longer than trip duration.\nFor these records, the soak duration has been set to the trip duration,\nand a note has been included in the output.")
   }
+
+  # perform checks for if the average catch per trip is an outlier
+  cpt_outliers = is_catch_per_trip_outlier(interview_data)
+  if (any(cpt_outliers)) {
+    outlier_cpt_notes[cpt_outliers] = "Interview has a large influence on the average catch per trip, its catch rate info, soak time, and net length have been deemed unsuitable"
+    interview_data$suit_cr_reliable[cpt_outliers] = FALSE
+    interview_data$suit_avg_soak[cpt_outliers] = FALSE
+    interview_data$suit_avg_net[cpt_outliers] = FALSE
+    warning("\n", sum(cpt_outliers), " interviews had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
+  }
+
+  # combine the notes from each record
+  notes = paste(impossible_trip_notes, impossible_soak_notes, outlier_cpt_notes, sep = "; ")
+  notes = stringr::str_remove_all(notes, "NA")
+  notes = stringr::str_remove_all(notes, "; $")
+  notes = stringr::str_remove_all(notes, "^; ")
+  notes[notes == ""] = NA
+  interview_data$note = notes
 
   # return the output
   return(interview_data)
