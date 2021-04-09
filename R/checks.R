@@ -179,3 +179,10 @@ is_catch_per_trip_outlier = function(interview_data, catch_per_trip_cut = getOpt
   return(is_outlier)
 }
 
+#' Determine the unique start dates of all interviews
+#'
+
+unique_start_dates = function(interview_data) {
+  start_dates = lubridate::date(interview_data$trip_start)
+  unique(start_dates[!is.na(start_dates)])
+}
