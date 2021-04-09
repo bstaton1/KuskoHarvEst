@@ -31,6 +31,7 @@ library(KuskoHarvEst)
 options(
   soak_sd_cut = 3, 
   net_length_cut = 350, 
+  catch_per_trip_cut = 0.05,
   central_fn = mean, 
   pooling_threshold = 10
 )
@@ -90,9 +91,10 @@ boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
 
 # sum up across gears
 boot_out_total = cbind(iter = boot_out_set$iter, 
+                       date = boot_out_set$date,
                        gear = "total", 
                        stratum = boot_out_set$stratum,
-                       boot_out_set[,-c(1:3)])
+                       boot_out_set[,-c(1:4)])
 
 # combine drift, set, and total into one data frame of bootstrap output
 # this object is used to make all harvest-related inference from here on

@@ -146,3 +146,43 @@ is_short_incomplete_soak = function(interview_data) {
 
   return(out)
 }
+
+#' Determine if an interview is an outlier in terms of catch per trip
+
+is_catch_per_trip_outlier = function(interview_data, catch_per_trip_cut = getOption("catch_per_trip_cut")) {
+
+  # container (cpt = average catch of all salmon per trip)
+  loo_cpt = rep(NA, nrow(interview_data))
+
+  # loop through interviews
+  for (i in 1:nrow(interview_data)) {
+    # if the interview is from a set net trip, don't perform the check
+    if (interview_data$gear[i] == "set") {
+      next()
+    } else {
+      # estimate average catch per trip without this interview
+      loo_cpt[i] = sum(estimate_catch_per_trip(interview_data[-i,], "drift"))
+    }
+  }
+
+  # calculate average cpt with all interviews
+  original_cpt = sum(estimate_catch_per_trip(interview_data, "drift"))
+
+  # calculate percent change
+  loo_pdiff = (loo_cpt - original_cpt)/original_cpt
+
+  # create a flag for if the interview is an outlier
+  is_outlier = ifelse(abs(loo_pdiff) > catch_per_trip_cut, TRUE, FALSE)
+  is_outlier[is.na(is_outlier)] = FALSE
+
+  # return the flag
+  return(is_outlier)
+}
+
+#' Determine the unique start dates of all interviews
+#'
+
+unique_start_dates = function(interview_data) {
+  start_dates = lubridate::date(interview_data$trip_start)
+  unique(start_dates[!is.na(start_dates)])
+}

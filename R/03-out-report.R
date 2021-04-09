@@ -15,7 +15,7 @@ report = function(spp = "total", gear = "total", stratum = "total", CI = TRUE, c
 
   # convert to long form
   long_boot = reshape2::melt(boot_out_use,
-                             id.vars = c("iter", "gear", "stratum"),
+                             id.vars = c("iter", "gear", "stratum", "date"),
                              variable.name = "species", value.name = "harvest")
 
   # subset the output to match the input arguments
