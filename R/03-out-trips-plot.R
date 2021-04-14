@@ -2,7 +2,7 @@
 #'
 #' @export
 
-effort_plot = function(flight_data, effort_info) {
+effort_plot = function(flight_data, effort_info, trips_only = FALSE) {
 
   # count how many flights were done
   n_flights = nrow(flight_data)
@@ -15,7 +15,7 @@ effort_plot = function(flight_data, effort_info) {
 
   ### PLOT 1: THE TRIPS ###
   # set up the plotting region
-  layout(matrix(c(1,2), nrow = 2), heights = c(1, 0.3))
+  if (!trips_only) layout(matrix(c(1,2), nrow = 2), heights = c(1, 0.3))
   par(mar = c(2.5,2.5,0.25,1), tcl = -0.15, mgp = c(1.5,0.25,0),
       cex.axis = 0.6, cex.lab = 0.8, lend = "square", xaxs = "i")
 
@@ -48,45 +48,47 @@ effort_plot = function(flight_data, effort_info) {
   box()
 
   ### PLOT 2: ESTIMATION INFORMATION ###
-  # a blank plot
-  par(mar = c(0.25, 0.25, 0.25, 0.25))
-  plot(1,1, type = "n", axes = F)
-  box()
+  if (!trips_only) {
+    # a blank plot
+    par(mar = c(0.25, 0.25, 0.25, 0.25))
+    plot(1,1, type = "n", axes = F)
+    box()
 
-  # create nice TeX #1: flight counts
-  flight_counts = rowSums(flight_data[,stringr::str_detect(colnames(flight_data), paste0("_", effort_info$gear))])
-  flight_TeX = paste0("$F_{", 1:n_flights, "}:\\,", flight_counts)
+    # create nice TeX #1: flight counts
+    flight_counts = rowSums(flight_data[,stringr::str_detect(colnames(flight_data), paste0("_", effort_info$gear))])
+    flight_TeX = paste0("$F_{", 1:n_flights, "}:\\,", flight_counts)
 
-  # create nice TeX #2: marginal probabiltites
-  total_interviews = nrow(trips)
-  trip_counts = effort_info$trip_counts
-  marginal_counts = trip_counts[stringr::str_detect(names(trip_counts), "^f[:digit:]+?$")]
-  at_all_counts = trip_counts["yes_counted"]
-  marginal_p = marginal_counts/total_interviews
-  at_all_p = at_all_counts/total_interviews
-  if (n_flights > 1) {
-    marginal_subscrpts = c(1:n_flights, "Any")
-    marginal_p = c(marginal_p, at_all_p)
-  } else {
-    marginal_subscrpts = 1:n_flights
+    # create nice TeX #2: marginal probabiltites
+    total_interviews = nrow(trips)
+    trip_counts = effort_info$trip_counts
+    marginal_counts = trip_counts[stringr::str_detect(names(trip_counts), "^f[:digit:]+?$")]
+    at_all_counts = trip_counts["yes_counted"]
+    marginal_p = marginal_counts/total_interviews
+    at_all_p = at_all_counts/total_interviews
+    if (n_flights > 1) {
+      marginal_subscrpts = c(1:n_flights, "Any")
+      marginal_p = c(marginal_p, at_all_p)
+    } else {
+      marginal_subscrpts = 1:n_flights
+    }
+    marginal_TeX = paste0("$Pr(F_{", marginal_subscrpts, "}):\\,", percentize(marginal_p))
+
+    # create nice TeX #3: conditional probabilities
+    if (n_flights > 1) {
+      conditional_p = effort_info$p_T1_given_T2
+      conditional_labels = sapply(stringr::str_extract_all(names(conditional_p), "[:digit:]"), function(x) {
+        paste0("$Pr(F_{", x[1], "}", "\\,|\\,F_{", x[2], "}):\\,")
+      })
+      conditional_TeX = paste0(conditional_labels, percentize(conditional_p), "$")
+    }
+
+    # draw on the information using the legend() function
+    usr = par("usr"); xdiff = diff(usr[1:2]); ydiff = diff(usr[3:4])
+    legend(x = usr[1], y = usr[4], title = "Interviews Used", legend = total_interviews, bty = "n", cex = 0.7)
+    legend(x = usr[1], y = usr[4] - ydiff * 0.4, title = "Estimated Effort/Interview", legend = round(effort_info$effort_per_interview, 2), bty = "n", cex = 0.7)
+    legend(x = usr[1] + xdiff * 0.2, y = usr[4], title = "Marginal Probs.", legend = latex2exp::TeX(marginal_TeX), bty = "n", cex = 0.7)
+    if (n_flights > 1) legend(x = usr[1] + xdiff * 0.4, y = usr[4], title = "Conditional Probs.", legend = latex2exp::TeX(conditional_TeX), bty = "n", cex = 0.7)
+    legend(x = usr[1] + xdiff * 0.6, y = usr[4], title = "Flight Counts", legend = latex2exp::TeX(flight_TeX), bty = "n", cex = 0.7)
+    legend(x = usr[1] + xdiff * 0.8, y = usr[4] - ydiff * 0.25, title = "Estimated Effort", legend = effort_info$effort_est_total, bty = "n", cex = 0.9)
   }
-  marginal_TeX = paste0("$Pr(F_{", marginal_subscrpts, "}):\\,", percentize(marginal_p))
-
-  # create nice TeX #3: conditional probabilities
-  if (n_flights > 1) {
-    conditional_p = effort_info$p_T1_given_T2
-    conditional_labels = sapply(stringr::str_extract_all(names(conditional_p), "[:digit:]"), function(x) {
-      paste0("$Pr(F_{", x[1], "}", "\\,|\\,F_{", x[2], "}):\\,")
-    })
-    conditional_TeX = paste0(conditional_labels, percentize(conditional_p), "$")
-  }
-
-  # draw on the information using the legend() function
-  usr = par("usr"); xdiff = diff(usr[1:2]); ydiff = diff(usr[3:4])
-  legend(x = usr[1], y = usr[4], title = "Interviews Used", legend = total_interviews, bty = "n", cex = 0.7)
-  legend(x = usr[1], y = usr[4] - ydiff * 0.4, title = "Estimated Effort/Interview", legend = round(effort_info$effort_per_interview, 2), bty = "n", cex = 0.7)
-  legend(x = usr[1] + xdiff * 0.2, y = usr[4], title = "Marginal Probs.", legend = latex2exp::TeX(marginal_TeX), bty = "n", cex = 0.7)
-  if (n_flights > 1) legend(x = usr[1] + xdiff * 0.4, y = usr[4], title = "Conditional Probs.", legend = latex2exp::TeX(conditional_TeX), bty = "n", cex = 0.7)
-  legend(x = usr[1] + xdiff * 0.6, y = usr[4], title = "Flight Counts", legend = latex2exp::TeX(flight_TeX), bty = "n", cex = 0.7)
-  legend(x = usr[1] + xdiff * 0.8, y = usr[4] - ydiff * 0.25, title = "Estimated Effort", legend = effort_info$effort_est_total, bty = "n", cex = 0.9)
 }

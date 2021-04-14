@@ -95,3 +95,23 @@ tinyCI = function(x, linebreak = TRUE) {
     return(x)
   }
 }
+
+#' Capitalize a character string
+#'
+
+capitalize = function (x) {
+  if (!is.character(x)) stop("x must be of class 'character'")
+  first = substr(x, 1, 1)
+  last = substr(x, 2, nchar(x))
+  paste0(toupper(first), last)
+}
+
+#' Create a date for use in file names
+#'
+
+file_date = function(x) {
+  day = stringr::str_pad(lubridate::day(x), width = 2, side = "left", pad = "0")
+  month = stringr::str_pad(lubridate::month(x), width = 2, side = "left", pad = "0")
+  year = lubridate::year(x)
+  paste(year, month, day, sep = "_")
+}
