@@ -109,3 +109,9 @@ capitalize = function (x) {
 #' Create a date for use in file names
 #'
 
+file_date = function(x) {
+  day = stringr::str_pad(lubridate::day(x), width = 2, side = "left", pad = "0")
+  month = stringr::str_pad(lubridate::month(x), width = 2, side = "left", pad = "0")
+  year = lubridate::year(x)
+  paste(year, month, day, sep = "_")
+}
