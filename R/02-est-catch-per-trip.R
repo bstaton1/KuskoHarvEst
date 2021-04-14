@@ -25,7 +25,7 @@ estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, cent
   catches = interview_data[,keep_spp]
 
   # determine which are suitable for calculating reliable catch rates
-  suitable_catch_rate = interview_data[,"suit_cr_reliable"]
+  suitable_catch_rate = interview_data[,"suit_cr_reliable"] & interview_data[,"suit_cr_info"]
 
   # determine which are suitable for calculating average soak time
   suitable_avg_soak = interview_data[,"suit_avg_soak"]
