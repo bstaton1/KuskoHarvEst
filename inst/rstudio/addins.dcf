@@ -2,3 +2,8 @@ Name: Enter Opportunity Meta-data
 Description: Use an interactive tool to enter specific information about the opportunity/estimate
 Binding: meta_tool
 Interactive: true
+
+Name: Prepare Interview/Flight Data Files
+Description: Use an interactive tool to format the raw data files for use by later steps
+Binding: data_tool
+Interactive: true
