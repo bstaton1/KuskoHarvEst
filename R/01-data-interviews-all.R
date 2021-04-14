@@ -3,6 +3,10 @@
 #' @export
 
 prepare_interviews_all = function(input_files, ...) {
+
+  # check to make sure all global options are set
+  check_options()
+
   # read in and format raw interview data
   interview_data_list = lapply(input_files, function(file) prepare_interviews(file, ...))
 
