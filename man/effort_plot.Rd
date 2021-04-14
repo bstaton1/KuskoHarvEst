@@ -4,7 +4,7 @@
 \alias{effort_plot}
 \title{Create a plot summarizing effort estimation}
 \usage{
-effort_plot(flight_data, effort_info)
+effort_plot(flight_data, effort_info, trips_only = FALSE)
 }
 \description{
 Create a plot summarizing effort estimation
