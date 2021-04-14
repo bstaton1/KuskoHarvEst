@@ -5,6 +5,10 @@
 
 meta_tool = function() {
 
+  proj_dir = rstudioapi::getActiveProject()
+  output_data_dir = file.path(proj_dir, "data-use")
+  if(!dir.exists(output_data_dir)) dir.create(output_data_dir)
+
   # USER-INTERFACE
   ui = miniPage(
 
@@ -92,7 +96,7 @@ meta_tool = function() {
       )
 
       # export this list to an rds file to be used later
-      saveRDS(meta, "meta.rds")
+      saveRDS(meta, file.path(output_data_dir, paste0(file_date(meta$start_date), "_meta.rds")))
     })
 
     # Handle the Done button being pressed
