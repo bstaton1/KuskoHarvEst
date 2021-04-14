@@ -95,3 +95,17 @@ tinyCI = function(x, linebreak = TRUE) {
     return(x)
   }
 }
+
+#' Capitalize a character string
+#'
+
+capitalize = function (x) {
+  if (!is.character(x)) stop("x must be of class 'character'")
+  first = substr(x, 1, 1)
+  last = substr(x, 2, nchar(x))
+  paste0(toupper(first), last)
+}
+
+#' Create a date for use in file names
+#'
+
