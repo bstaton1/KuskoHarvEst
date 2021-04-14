@@ -24,7 +24,7 @@ suitable_for = function(interview_data, task) {
   # render its information insuitable for estimation?
   if (task == "catch_rate_info_reliable") {
     suitable = !is_short_incomplete_soak(interview_data) & !is_soak_outlier(interview_data) & is_normal_net(interview_data)
-    suitable = suitable & has_gear(interview_data) & has_soak(interview_data) & has_net_length(interview_data)
+    # suitable = suitable & has_gear(interview_data) & has_soak(interview_data) & has_net_length(interview_data)
   }
 
   # is the soak time usable in calculating the average for any expected trip?
@@ -36,7 +36,7 @@ suitable_for = function(interview_data, task) {
   # is the net length usable in calculating the average for any expected trip?
   # excludes extremely long or missing net lengths
   if (task == "avg_net_length") {
-    suitable = has_net_length(interview_data) & is_normal_net(interview_data)
+    suitable = is_normal_net(interview_data)
   }
 
   # return the output
