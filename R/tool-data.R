@@ -150,7 +150,7 @@ data_tool = function() {
                           net_length_cut = input$net_length_cut,
                           catch_per_trip_cut = input$catch_per_trip_cut,
                           central_fn = mean,
-                          pooling_treshold = input$pooling_threshold
+                          pooling_threshold = input$pooling_threshold
       )
 
       saveRDS(vals$options, file.path(output_data_dir, paste0(file_date(meta$start_date), "_options.rds")))
