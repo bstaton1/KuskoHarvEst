@@ -130,3 +130,104 @@ effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
     kableExtra::column_spec(1, bold = TRUE)
 }
 
+#' Build a table to report results from harvest sensitivity analyses
+#'
+#' @importFrom magrittr %>%
+
+harvest_sensitivity_table = function(harvest_scenarios, combos) {
+
+  # create names for each combo
+  combo_names = sapply(1:nrow(harvest_combos), function(i) {
+    discard = which(!unlist(harvest_combos[i,]))
+    if (length(discard) == 0) {
+      "All Data"
+    } else {
+      paste0("No ", names(harvest_combos)[discard])
+    }
+  })
+
+  # create a nice column showing the estimate by species group
+  pretty_chinook_ests = unlist(lapply(harvest_scenarios, function(x) {
+    KuskoHarvEst:::tinyCI(report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x))
+  }))
+
+  pretty_chum_ests = unlist(lapply(harvest_scenarios, function(x) {
+    KuskoHarvEst:::tinyCI(report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x))
+  }))
+
+  pretty_sockeye_ests = unlist(lapply(harvest_scenarios, function(x) {
+    KuskoHarvEst:::tinyCI(report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x))
+  }))
+
+  pretty_total_ests = unlist(lapply(harvest_scenarios, function(x) {
+    KuskoHarvEst:::tinyCI(report(spp = "total", gear = "total", stratum = "total", boot_out_use = x))
+  }))
+
+  # extract just the means: for calculating %change
+  mean_chinook_ests = unlist(lapply(harvest_scenarios, function(x) {
+    report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+  }))
+
+  mean_chum_ests = unlist(lapply(harvest_scenarios, function(x) {
+    report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+  }))
+
+  mean_sockeye_ests = unlist(lapply(harvest_scenarios, function(x) {
+    report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+  }))
+
+  mean_total_ests = unlist(lapply(harvest_scenarios, function(x) {
+    report(spp = "total", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+  }))
+
+  # calculate the % change in mean estimate
+  chinook_p_diff = percentize((mean_chinook_ests - mean_chinook_ests[1])/mean_chinook_ests[1], escape = TRUE)
+  chum_p_diff = percentize((mean_chum_ests - mean_chum_ests[1])/mean_chum_ests[1], escape = TRUE)
+  sockeye_p_diff = percentize((mean_sockeye_ests - mean_sockeye_ests[1])/mean_sockeye_ests[1], escape = TRUE)
+  total_p_diff = percentize((mean_total_ests - mean_total_ests[1])/mean_total_ests[1], escape = TRUE)
+
+  # calculate the CV for each species group
+  cv_chinook = unlist(lapply(harvest_scenarios, function(x) {
+    mn = report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+    sd = sd(subset(x, gear == "total" & stratum == "total")$chinook, na.rm = TRUE)
+    percentize(sd/mn, escape = TRUE)
+  }))
+
+  cv_chum = unlist(lapply(harvest_scenarios, function(x) {
+    mn = report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+    sd = sd(subset(x, gear == "total" & stratum == "total")$chum, na.rm = TRUE)
+    percentize(sd/mn, escape = TRUE)
+  }))
+
+  cv_sockeye = unlist(lapply(harvest_scenarios, function(x) {
+    mn = report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+    sd = sd(subset(x, gear == "total" & stratum == "total")$sockeye, na.rm = TRUE)
+    percentize(sd/mn, escape = TRUE)
+  }))
+
+  cv_total = unlist(lapply(harvest_scenarios, function(x) {
+    mn = report(spp = "total", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+    sd = sd(subset(x, gear == "total" & stratum == "total")$total, na.rm = TRUE)
+    percentize(sd/mn, escape = TRUE)
+  }))
+
+  # build the data frame to print
+  tab = data.frame(
+    combo_names,
+    pretty_chinook_ests, chinook_p_diff, cv_chinook,
+    pretty_chum_ests, chum_p_diff, cv_chum,
+    pretty_sockeye_ests, sockeye_p_diff, cv_sockeye,
+    pretty_total_ests, total_p_diff, cv_total
+  )
+
+  # make nice column names
+  colnames(tab) = c("Scenario", rep(c("Estimate", "\\% Change", "CV"), 4))
+
+  # build the kable to print
+  knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lcccccccccccc", escape = FALSE) %>%
+    kableExtra::kable_styling(full_width = F, latex_options = c("scale_down", "HOLD_position")) %>%
+    kableExtra::add_header_above(c(" " = 1, "Chinook" = 3, "Chum" = 3, "Sockeye" = 3, "Total" = 3), bold = TRUE) %>%
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
+    kableExtra::column_spec(1, bold = TRUE)
+}
