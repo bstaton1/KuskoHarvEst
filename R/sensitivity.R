@@ -127,7 +127,8 @@ effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
                align = paste(c("l", paste(rep("c", ncol(combo_table) - 1), collapse = "")), collapse = "")) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = c("scale_down", "HOLD_position")) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE)
+    kableExtra::column_spec(1, bold = TRUE) %>%
+    add_vspace
 }
 
 #' Build a table to report results from harvest sensitivity analyses
@@ -229,5 +230,6 @@ harvest_sensitivity_table = function(harvest_scenarios, combos) {
     kableExtra::add_header_above(c(" " = 1, "Chinook" = 3, "Chum" = 3, "Sockeye" = 3, "Total" = 3), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE)
+    kableExtra::column_spec(1, bold = TRUE) %>%
+    add_vspace
 }
