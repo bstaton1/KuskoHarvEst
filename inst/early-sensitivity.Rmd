@@ -1,0 +1,145 @@
+---
+title: "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"
+draft-watermark: false
+output: 
+  pdf_document:
+    template: "C:/Users/bstaton/Desktop/Staton/5_qes/01-projects/2021_KuskoHarvEst_BSFA/analyses/KuskoHarvEst/inst/early-template.tex"
+editor_options: 
+  chunk_output_type: console
+opener-label: "6/12/2018 Subsistence Harvest Opportunity"
+opener-start: "6/12/2018 10:00 AM"
+opener-end: "6/12/2018 10:00 PM"
+ds-bound: "Tuntutuliak"
+us-bound: "Akiak"
+special-action: "KS-18-01"
+special-action-url: http://example.com
+news-release-url: http://example.com
+contact: "Ben Staton (bstaton.qes@gmail.com)"
+doc-label: "Sensitivity Analyses"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", warning = FALSE, message = FALSE, fig.pos = "H", out.extra = "")
+library(KuskoHarvEst)
+make_effort_plots = FALSE
+```
+
+```{r load-data}
+interview_file = list.files(pattern = "interview_data", full.names = TRUE, recursive = TRUE)
+meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
+options_file = list.files(pattern = "options", full.names = TRUE, recursive = TRUE)
+flight_file = list.files(pattern = "flight_data", full.names = TRUE, recursive = TRUE)
+
+# load information
+interview_data = readRDS(interview_file)
+flight_data = readRDS(flight_file)
+meta = readRDS(meta_file)
+
+# apply the global options
+do.call(options, readRDS(options_file))
+```
+
+# Effort Sensitivity Analyses {-}
+
+::: {.small data-latex=""}
+_In the table(s) below, "Pr(F1|F2)" is the probability that a trip counted on flight 2 was also counted on flight 1 (the estimator corrects for double-counting; this column will not display if only one flight was made). "Trips per interview" is an estimate of how many actual trips occurred per interview that was conducted, and is used to expand the effort estimate for interviews that are known to have occurred but could not have been counted because they started and stopped during times when the flight(s) were inactive. "Trips not observed" is the estimated number of trips that fall in this expanded category._
+:::
+
+## Exclusion of Flight Data {-}
+
+```{r make-flight-data-message}
+if (nrow(flight_data) == 1) {
+  flight_data_message = "_This analysis was not conducted because only one flight was flown, therefore leaving out any flights would prevent an effort estimate from being made at all._"
+} else {
+  flight_data_message = "_This analysis leaves out all combinations of flight data and re-calculates the drift net effort estimates. This helps give a sense of how the estimate would have been different had fewer flights been conducted. Generally, you want to see small changes because with good interview data coverage, the effort estimator should be robust to fewer flights. If there are large changes (e.g., >50%), that indicates that the distribution of fishing effort indicated by the interview data and the flight data are inconsistent, and emphasizes that conducting several flights within an opportunity is important to obtain a good estimate._"
+}
+```
+
+::: {.small data-latex=""}
+`r flight_data_message`
+:::
+
+```{r perform-flight-data-exclusion, eval = nrow(flight_data) > 1}
+flight_combos = KuskoHarvEst:::make_flight_combos(flight_data)
+flight_effort_scenarios = lapply(1:nrow(flight_combos), function(i) {
+  estimate_effort(interview_data, flight_data[unlist(flight_combos[i,]),], gear = "drift", method = "dbl_exp")
+})
+KuskoHarvEst:::effort_sensitivity_table(flight_effort_scenarios, flight_data, flight_combos)
+```
+
+`r if (nrow(flight_data) > 1) "\\clearpage"`
+
+```{r make-plots-flight-data-exclusion, results = "asis", eval = make_effort_plots & nrow(flight_data) > 1, fig.height = 4, fig.width = 7}
+junk = lapply(1:nrow(flight_combos), function(i) {
+  cat("### Flight(s)", paste(which(unlist(flight_combos[i,])), collapse = " & "), "{-}")
+  junk = effort_plot(flight_data[unlist(flight_combos[i,]),], flight_effort_scenarios[[i]], FALSE)
+})
+```
+
+## Exclusion of Interview Data {-}
+
+:::{.small data-latex=""}
+_This analysis leaves out all combinations of interview data sources and re-calculates the drift net effort estimates (the scenario column indicates which data sources were kept). This helps give a sense of how much each data source affects the overall estimate, and how much the estimate would have been different had fewer data sources been available. Generally, you want to see relatively small changes when leaving out data -- this is an indication that each source took a random sample of the fishers it could have sampled with respect to trip times. If large changes occur (e.g., >50%), that is not necessarily a problem, but it is good information to know._
+:::
+
+```{r perform-interview-data-exclusion, eval = TRUE}
+interview_combos = KuskoHarvEst:::make_interview_combos(interview_data)
+interview_effort_scenarios = lapply(1:nrow(interview_combos), function(i) {
+  combos_use = unlist(interview_combos[i,])
+  estimate_effort(interview_data[interview_data$source %in% names(combos_use)[which(combos_use)],], flight_data, gear = "drift", method = "dbl_exp")
+})
+KuskoHarvEst:::effort_sensitivity_table(interview_effort_scenarios, flight_data, interview_combos)
+```
+
+```{r make-plots-interview-data-exclusion, results = "asis", eval = make_effort_plots, fig.height = 4, fig.width = 7}
+junk = lapply(1:nrow(interview_combos), function(i) {
+  cat("### Data Source(s):", paste(names(interview_combos)[which(unlist(interview_combos[i,]))], collapse = " & "), "{-}")
+  junk = effort_plot(flight_data, interview_effort_scenarios[[i]], FALSE)
+})
+```
+
+\clearpage
+
+# Harvest Sensitivity Analyses {-}
+
+::: {.small data-latex=""}
+_This analysis leaves out one interview data source at a time and recalculates the harvest estimates for all species and gears. The effort estimate still uses all data. This gives information about how much each data source contributes to the overall estimates, and how different the estimates would have been had a data source not been collected. The "Estimate" column shows the mean estimate and 95% confidence interval in parentheses, the "% Change" column gives a measure of change relative to the mean estimate using all data, and the "CV" column is the coefficient of variation of the estimate -- this is a measure of uncertainty (higher values mean more uncertainty)._
+:::
+
+```{r perform-harvest-sensitivity}
+# estimate drift net effort with all data
+drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
+
+# estimate set net effort with all data
+set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
+
+# make the combinations of data sources to leave out
+harvest_combos = KuskoHarvEst:::make_harvest_combos(interview_data)
+
+# obtain bootstrapped harvest estimates for each scenario
+harvest_scenarios = lapply(1:nrow(harvest_combos), function(i) {
+  
+  # leave out the data in question
+  interview_data_use = interview_data[interview_data$source %in% names(harvest_combos)[which(unlist(harvest_combos[i,]))],]
+  
+  # estimate (via bootstrap) drift net harvest for all species and and strata
+  boot_out_drift = bootstrap_harvest(interview_data_use, drift_effort_info,
+                                     gear = "drift", stratify_interviews = TRUE)
+  
+  # estimate (via bootstrap) set net harvest for all species and and strata
+  boot_out_set = bootstrap_harvest(interview_data_use, set_effort_info,
+                                   gear = "set", stratify_interviews = FALSE)
+  
+  # sum up across gears
+  boot_out_total = cbind(iter = boot_out_drift$iter, 
+                         date = boot_out_drift$date,
+                         gear = "total", 
+                         stratum = boot_out_drift$stratum,
+                         boot_out_drift[,-c(1:4)] + boot_out_set[,-c(1:4)])
+  
+  # combine drift, set, and total into one data frame of bootstrap output
+  rbind(boot_out_total, boot_out_drift, boot_out_set)
+})
+
+KuskoHarvEst:::harvest_sensitivity_table(harvest_scenarios, harvest_combos)
+```
