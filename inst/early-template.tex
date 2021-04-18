@@ -1,4 +1,4 @@
-\documentclass[letterpaper,$if(fontsize)$$fontsize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{article}
+\documentclass[letterpaper,11pt,$for(classoption)$$classoption$$sep$,$endfor$]{article}
 
 % packages for using helvetica as the font
 \usepackage{sansmathfonts}
@@ -14,10 +14,8 @@
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
 
-% set page margins, etc.
-$if(geometry)$
-\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
-$endif$
+% set page margins
+\usepackage[top=0.5in,right=0.75in,bottom=0.75in,left=0.75in]{geometry}
 
 % settings for hyperlinks
 \usepackage{hyperref}
@@ -52,6 +50,8 @@ $endif$
 
 \usepackage{titlesec}
 \titlespacing\section{0pt}{6pt plus 4pt minus 2pt}{6pt plus 4pt minus 2pt}
+\titlespacing\subsection{0pt}{6pt plus 4pt minus 2pt}{6pt plus 4pt minus 2pt}
+\titlespacing\subsubsection{0pt}{6pt plus 4pt minus 2pt}{6pt plus 4pt minus 2pt}
 
 %%% Use protect on footnotes to avoid problems with footnotes in titles
 % not sure where this came from
@@ -88,6 +88,8 @@ $endif$
 \setlength{\headheight}{13.59999pt}
 \pagestyle{fancy}
 \cfoot{\thepage}
+\rfoot{\textit{\small{$opener-label$}}}
+\lfoot{\textit{\small{$doc-label$}}}
 \rhead{\empty}
 \renewcommand{\headrulewidth}{0pt}  % make width of the rulers zero
 \renewcommand{\footrulewidth}{0.5pt}
@@ -111,28 +113,26 @@ $endif$
 {\bf\LARGE{$title$}}\\
 {\Large{$opener-label$}}\\
 
-$if(opener-start)$
 {\small{Opportunity Started: $opener-start$}}\\
-$endif$
 
-$if(opener-end)$
 {\small{Opportunity Ended: $opener-end$}}\\
-$endif$
 
-$if(area)$
-{\small{Area Covered by Estimates: $area$}}\\
-$endif$
+{\small{Area Covered by Estimates: $ds-bound$ \( \longleftrightarrow \) $us-bound$}}\\
 
 $if(contact)$
 {\small{Contact Person(s): $contact$}}\\
 $endif$
 
-$if(news-release-url)$
-{\small{News Release: $news-release-url$}}\\
+$if(special-action)$
+{\small{Special Action: $special-action$}}\\
+$endif$
+
+$if(special-action-url)$
+{\small{Special Action: $special-action-url$}}\\
 $endif$
 
 $if(news-release-url)$
-{\small{Special Action: $special-action-url$}}\\
+{\small{News Release: $news-release-url$}}\\
 $endif$
 \end{flushleft}
 \vspace{-10pt}

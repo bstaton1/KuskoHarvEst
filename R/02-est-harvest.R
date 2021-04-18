@@ -14,9 +14,16 @@ estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE
   }
 
   if (!stratify_interviews) {
+
+    # perform the randomization once for all strata before expansion
+    interview_data_use = interview_data[interview_data$gear == gear,]
+    if(randomize) {
+      interview_data_use = randomize_data(interview_data_use)
+    }
+
     # apply the expand() function separately to each stratum, but don't stratify interview data
     ests_all = sapply(strata_names, function(s) {
-      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data, gear = gear, randomize = randomize),
+      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data_use, gear = gear, randomize = FALSE),
              effort = effort_info$effort_est_stratum[s]
       )
     })
@@ -36,7 +43,6 @@ estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE
   # format the output: add strata and species totals
   output = t(ests_all)
   output = rbind(output, total = colSums(output))
-  # output = cbind(output, total = rowSums(output))
 
   # format output: give gear/stratum IDs
   output = data.frame(output)

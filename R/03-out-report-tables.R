@@ -1,5 +1,6 @@
 #' Create a table to report the number of interviews by data source
 #'
+#' @importFrom magrittr %>%
 #' @export
 
 interview_data_table = function(interview_data) {
@@ -29,6 +30,7 @@ interview_data_table = function(interview_data) {
 
 #' Create a table to report the flights and the counts that were made on each
 #'
+#' @importFrom magrittr %>%
 #' @export
 
 flight_data_table = function(flight_data) {
@@ -61,6 +63,7 @@ flight_data_table = function(flight_data) {
 
 #' Create a table to summarize information spatially
 #'
+#' @importFrom magrittr %>%
 #' @export
 
 strata_summary_table = function(gear) {
@@ -114,6 +117,7 @@ strata_summary_table = function(gear) {
 
 #' Create a table to summarize catch rates and species composition relative to Johnson River
 #'
+#' @importFrom magrittr %>%
 #' @export
 
 johnson_summary_table = function() {
@@ -175,6 +179,7 @@ johnson_summary_table = function() {
 
 #' Create a table to go in the report appendix
 #'
+#' @importFrom magrittr %>%
 #' @export
 
 make_appendix_table = function(interview_data, gear, variable) {

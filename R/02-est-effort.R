@@ -14,7 +14,12 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
     names(flight_counts) = flight_names
 
     # STEP 3: discard interview records that do not have both start and end times
-    trips = interview_data[interview_data$suit_effort, ]
+    # the suppress messages is to prevent a message saying that lubridate was loaded.
+    # really not sure why this line triggers lubridate to be loaded
+    # but this message may confuse users and it is not helpful, so we suppress it
+    suppressMessages({
+      trips = interview_data[interview_data$suit_effort, ]
+    })
 
     # STEP 4: discard opposite gear and keep only trip times
     trips = trips[trips$gear == gear,c("trip_start", "trip_end")]
@@ -104,6 +109,8 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
       trips = trips,
       trip_counts = trip_counts,
       p_T1_given_T2 = p_T1_given_T2,
+      effort_count = effort_count,
+      effort_not_count = effort_not_count,
       effort_per_interview = effort_per_interview,
       effort_est_total = effort_est_total,
       effort_est_stratum = effort_est_stratum

@@ -34,7 +34,11 @@ effort_plot = function(flight_data, effort_info, trips_only = FALSE) {
        labels = latex2exp::TeX(paste0("$F_{", 1:n_flights, "}")), xpd = T, cex = 0.8)
 
   # sum up the number of times each trip was counted
-  times_counted = rowSums(trips[,stringr::str_detect(colnames(trips), "^f[:digit:]$")])
+  if (n_flights > 1) {
+    times_counted = rowSums(trips[,stringr::str_detect(colnames(trips), "^f[:digit:]$")])
+  } else {
+    times_counted = as.numeric(trips[,"f1"])
+  }
 
   # draw on each interviewed trips' start and end times
   segments(1:nrow(trips), trips$trip_start, 1:nrow(trips), trips$trip_end,
