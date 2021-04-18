@@ -77,3 +77,56 @@ make_harvest_combos = function(interview_data) {
   return(combos)
 }
 
+#' Build a table to report results of effort sensitivity analyses
+#'
+#' @importFrom magrittr %>%
+
+effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
+
+  # extract primary effort estimation information from each effort estimate
+  combo_total_ests = unlist(lapply(effort_scenarios, function(x) x$effort_est_total))
+  combo_names = sapply(1:nrow(combos), function(i) paste(names(combos)[which(unlist(combos[i,]))], collapse = ", "))
+  combo_p_change = percentize((combo_total_ests - combo_total_ests[1])/combo_total_ests[1], escape = TRUE)
+  combo_effort_per_interview = unlist(lapply(effort_scenarios, function(x) x$effort_per_interview))
+  combo_effort_not_counted = unlist(lapply(effort_scenarios, function(x) x$effort_not_count))
+
+  # create the names of the conditional probabilities
+  n_flights = nrow(flight_data)
+  cond_names = paste0("Pr(F", 1:(n_flights - 1), "|F", 2:n_flights, ")")
+
+  # format the conditional probabilities for each scenario
+  if (n_flights > 1) {
+    combo_conditionals = unlist_dfs(lapply(effort_scenarios, function(x) {
+      x = unname(x$p_T1_given_T2)
+      if (length(x) < length(cond_names)) {
+        x = percentize(c(x, rep(NA, length(cond_names) - length(x))), escape = TRUE)
+      } else {
+        x = percentize(x, escape = TRUE)
+      }
+      x[x == "NA\\%"] = "--"
+      x = as.data.frame(as.list(x))
+      names(x) = cond_names
+      x
+    }))
+  } else {
+    combo_conditionals = NULL
+  }
+
+  # build the table
+  combo_table = cbind(
+    "Scenario" = combo_names,
+    "Effort Estimate" = combo_total_ests,
+    "\\% Change" = combo_p_change,
+    combo_conditionals,
+    "Trips Per Interview" = round(combo_effort_per_interview, 2),
+    "Trips Not Observed" = combo_effort_not_counted
+  )
+
+  # build the kable
+  knitr::kable(combo_table, format = "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE,
+               align = paste(c("l", paste(rep("c", ncol(combo_table) - 1), collapse = "")), collapse = "")) %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("scale_down", "HOLD_position")) %>%
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    kableExtra::column_spec(1, bold = TRUE)
+}
+
