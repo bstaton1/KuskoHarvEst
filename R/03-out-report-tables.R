@@ -354,3 +354,64 @@ make_appendix_table = function(interview_data, gear, variable) {
     kableExtra::column_spec(1, bold = TRUE) %>%
     add_vspace
 }
+
+#' Create a table displaying reported harvest goal attainment
+#'
+#' @importFrom magrittr %>%
+#' @export
+
+goals_summary_table = function(interview_data) {
+
+  # check to make sure the goal data are present in the data set
+  goal_columns = stringr::str_detect(colnames(interview_data), "goal")
+  if (sum(goal_columns) == 0) {
+    stop ("Goal data not found in the interview data.\nBe sure to use include_goals = TRUE when using prepare_interviews() or prepare_interviews_all().")
+  }
+
+  # extract the goal info
+  goals = interview_data[,goal_columns]
+
+  # discard any records that have NAs
+  goals = na.omit(goals)
+
+  # count how many interviews have valid goal information
+  n_goal_interviews = nrow(goals)
+
+  # convert data to long format: easier tallying
+  colnames(goals) = stringr::str_remove(colnames(goals), "_goal")
+  goals = suppressMessages(reshape2::melt(goals, value.name = "goal", variable.name = "species"))
+
+  # use names rather than numeric codes
+  goals$named_goal = sapply(goals$goal, function(x) {
+    switch(x,
+           "1" = "Under Half",
+           "2" = "Half",
+           "3" = "Over Half",
+           "4" = "Done")
+  })
+
+  # create it as a factor: keeps order consistent, and will include zero counts if no fishers report in a category
+  goals$named_goal = factor(goals$named_goal, levels = c("Under Half", "Half", "Over Half", "Done"))
+
+  # count the number of interviews by species and goal reported
+  counts = table(goals$species, goals$named_goal)
+  counts = as.data.frame(counts)
+
+  # format the counts as percentages
+  counts$Freq = counts$Freq/n_goal_interviews
+  counts$Freq = percentize(counts$Freq, escape = TRUE)
+
+  # format the table
+  tab = reshape2::dcast(counts, Var1 ~ Var2, value.var = "Freq")
+  colnames(tab)[1] = "Species"
+  tab$Species = KuskoHarvEst:::capitalize(as.character(tab$Species))
+
+  # build the kable
+  knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lcccc", escape = FALSE,
+               caption = paste0("Percentage of fishers reporting that they are either halfway done, halfway done, over halfway done, or completely done fishing for a given species, relative to their season-wide harvest goals (sample size = ", n_goal_interviews, ").")) %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
+    kableExtra::add_header_above(c(" " = 1, "Category of Harvest Goals Attained" = 4), bold = TRUE) %>%
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    kableExtra::column_spec(1, bold = TRUE) %>%
+    add_vspace
+}
