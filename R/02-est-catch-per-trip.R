@@ -35,7 +35,7 @@ estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, cent
 
   # return all NAs if any of the data types are all unsuitable
   if (all(!suitable_catch_rate) | all(!suitable_avg_soak) | all(!suitable_avg_net)) {
-    out = rep(NA, length(keep_spp))
+    out = rep(NA, length(keep_spp)); names(out) = keep_spp
   } else {
     # calculate the catch rate for all records (doesn't matter if suitable or not yet)
     catch_rates = apply(catches, 2, function(catch) catch/(net_length * soak_hrs))
