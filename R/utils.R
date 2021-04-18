@@ -115,3 +115,13 @@ file_date = function(x) {
   year = lubridate::year(x)
   paste(year, month, day, sep = "_")
 }
+
+#' A function to add vspace to the bottom of a kable
+#'
+
+add_vspace = function(kable_input, space = "-1em") {
+  kable_input_new = paste(c(as.character(kable_input), "\n\\vspace{", space, "}"), collapse = "")
+  class(kable_input_new) = class(kable_input)
+  attributes(kable_input_new) = attributes(kable_input)
+  return(kable_input_new)
+}
