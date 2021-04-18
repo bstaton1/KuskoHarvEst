@@ -48,3 +48,32 @@ make_interview_combos = function(interview_data) {
   return(combos)
 }
 
+#' Make combinations of interview data sources to leave out for harvest sensitivity analysis
+#'
+
+make_harvest_combos = function(interview_data) {
+
+  # extract all interview data source names
+  sources = unique(interview_data$source)
+
+  # build and execute call to build all data exclusion scenarios
+  call = paste0("expand.grid(", paste(paste0("x", 1:length(sources), " = c(TRUE, FALSE)"), collapse = ", "), ")")
+  combos = eval(parse(text = call))
+  names(combos) = sources
+
+  # exclude the case that would retain no data
+  combos = combos[-which(rowSums(combos) == 0),]
+
+  # build and execute a call to order the scenarios
+  call = paste0("combos[", paste0("order(", paste(paste0("combos[,'", sources, "']"), collapse = ", "), ", decreasing = TRUE)"), ",]")
+  combos = eval(parse(text = call))
+  combos = combos[order(rowSums(combos), decreasing = TRUE),]
+  rownames(combos) = NULL
+
+  # keep only cases that leave out 0 or 1 data sources at a time
+  combos = combos[rowSums(combos) >= (length(sources) - 1),]
+
+  # return the output
+  return(combos)
+}
+
