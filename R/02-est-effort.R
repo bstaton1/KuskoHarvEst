@@ -104,6 +104,8 @@ estimate_effort = function(interview_data, flight_data, gear = "drift", method =
       trips = trips,
       trip_counts = trip_counts,
       p_T1_given_T2 = p_T1_given_T2,
+      effort_count = effort_count,
+      effort_not_count = effort_not_count,
       effort_per_interview = effort_per_interview,
       effort_est_total = effort_est_total,
       effort_est_stratum = effort_est_stratum
