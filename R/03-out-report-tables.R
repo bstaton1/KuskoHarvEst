@@ -25,7 +25,8 @@ interview_data_table = function(interview_data) {
     kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") %>%
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
     kableExtra::row_spec(nrow(tab), bold = TRUE) %>%
-    kableExtra::row_spec(0, bold = TRUE)
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    add_vspace
 }
 
 #' Create a table to report the flights and the counts that were made on each
@@ -58,7 +59,8 @@ flight_data_table = function(flight_data) {
                caption = "The times each flight was conducted and the number of fishers counted on each.") %>%
     kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c("Time Information" = 3, "Nets Counted" = 2), bold = TRUE) %>%
-    kableExtra::row_spec(0, bold = TRUE)
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    add_vspace
 }
 
 #' Create a table to summarize information spatially
@@ -112,7 +114,8 @@ strata_summary_table = function(gear) {
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
     kableExtra::column_spec(ncol(tab), bold = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE)
+    kableExtra::column_spec(1, bold = TRUE) %>%
+    add_vspace
 }
 
 #' Create a table to summarize catch rates and species composition relative to Johnson River
@@ -174,7 +177,8 @@ johnson_summary_table = function() {
                caption = "Average (95\\% confidence limits) total salmon catch per trip and percent Chinook salmon, summarized for the areas above and below the confluence of the Johnson River with the Kuskokwim River. Quantities are derived from the strata- and species-specific harvest estimates, not the raw interview data.") %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c(" " = 1, "Proximity to Johnson R. Mouth" = 2), bold = TRUE) %>%
-    kableExtra::row_spec(0, bold = TRUE)
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    add_vspace
 }
 
 #' Create a table to go in the report appendix
@@ -347,5 +351,6 @@ make_appendix_table = function(interview_data, gear, variable) {
     kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE)
+    kableExtra::column_spec(1, bold = TRUE) %>%
+    add_vspace
 }
