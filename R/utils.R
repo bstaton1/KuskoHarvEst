@@ -116,6 +116,16 @@ file_date = function(x) {
   paste(year, month, day, sep = "_")
 }
 
+#' Create a basic date from date time object
+#'
+
+basic_date = function(datetime) {
+  day = lubridate::day(datetime)
+  month = lubridate::month(datetime)
+  year = lubridate::year(datetime)
+  paste(month, day, year, sep = "/")
+}
+
 #' A function to add vspace to the bottom of a kable
 #'
 
