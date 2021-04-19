@@ -99,3 +99,119 @@ build_yaml = function(doc_type, draft) {
   return(out)
 }
 
+#' Automate creation of a Rmd source file for in-season reports
+#'
+
+build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE) {
+
+  # read in the meta data file
+  meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
+  meta = readRDS(meta_file)
+
+  # determine how many flights were conducted
+  flight_file = list.files(pattern = "flight_data", full.names = TRUE, recursive = TRUE)
+  n_flights = nrow(readRDS(flight_file))
+
+  # files for global setup and data preparation
+  setup_file = resource_path(file.path("01-common", "01-setup.Rmd"))
+  data_prep_file = resource_path(file.path("01-common", "02-data-prep.Rmd"))
+
+  # a blank file
+  blank_file = resource_path(file.path("01-common", "blank.Rmd"))
+
+  # return warning if its a set net only opener and the johnson table was requested
+  # that table is for drift net estimates only, and can't be produced for a set net only opportunity
+  if (include_johnson_table & meta$set_only) {
+    warning ("The output of johnson_summary_table() was requested, but this is a set net only estimate.\nIt will not be included in the output report.")
+  }
+
+  # 1: select the right file to produce data source summaries
+  if (!meta$set_only) {
+    if (do_setnets) {
+      data_sources_file = resource_path(file.path("02-estimate-report", "01a-data-sources_driftset.Rmd"))
+    } else {
+      data_sources_file = resource_path(file.path("02-estimate-report", "01b-data-sources_driftset_noset.Rmd"))
+    }
+  } else {
+    data_sources_file = resource_path(file.path("02-estimate-report", "01c-data-sources_setonly.Rmd"))
+  }
+
+  # 2: select the right file to produce effort estimate summaries
+  if (!meta$set_only) {
+    if (do_setnets) {
+      paste0("02a-effort_driftset_", n_flights, "flight.Rmd")
+      effort_file = resource_path(file.path("02-estimate-report", paste0("02a-effort_driftset_", n_flights, "flight.Rmd")))
+    } else {
+      effort_file = resource_path(file.path("02-estimate-report", paste0("02b-effort_driftset_noset_", n_flights, "flight.Rmd")))
+    }
+  } else {
+    effort_file = resource_path(file.path("02-estimate-report", "02c-effort_setonly.Rmd"))
+  }
+
+  # 3: select the right file to produce harvest estimate summaries
+  if (!meta$set_only) {
+    if (do_setnets) {
+      harvest_file = resource_path(file.path("02-estimate-report", "03a-harvest_driftset.Rmd"))
+    } else {
+      harvest_file = resource_path(file.path("02-estimate-report", "03b-harvest_driftset_noset.Rmd"))
+    }
+  } else {
+    harvest_file = resource_path(file.path("02-estimate-report", "03c-harvest_setonly.Rmd"))
+  }
+
+  # 4: select the right file to use for the place where the johnson summary table should go if requested
+  if (include_johnson_table & !meta$set_only) {
+    johnson_file = resource_path(file.path("02-estimate-report", "04-johnson-table.Rmd"))
+  } else {
+    johnson_file = blank_file
+  }
+
+  # 5: select the right file to use for the place where the goals summary table should go if requested
+  if (include_goal_table) {
+    goal_file = resource_path(file.path("02-estimate-report", "05-goal-table.Rmd"))
+  } else {
+    goal_file = blank_file
+  }
+
+  # 6: select the right file to use for the histograms
+  if (!meta$set_only) {
+    histogram_file = resource_path(file.path("02-estimate-report", "06a-histograms_drift.Rmd"))
+  } else {
+    histogram_file = resource_path(file.path("02-estimate-report", "06b-histograms_set.Rmd"))
+  }
+
+  # 7: select the right file to use for the appendix
+  if (include_appendix) {
+    if (!meta$set_only) {
+      appendix_file = resource_path(file.path("02-estimate-report", "07a-appendix_drift.Rmd"))
+    } else {
+      appendix_file = resource_path(file.path("02-estimate-report", "07b-appendix_set.Rmd"))
+    }
+  } else {
+    appendix_file = blank_file
+  }
+
+  # build the YAML header
+  yaml_contents = build_yaml("estimate_report", draft)
+
+  # combine the names of the Rmd source files to use
+  body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, appendix_file)
+
+  # read in each file and combine into a vector
+  body_contents = unlist(lapply(body_files, readLines))
+
+  # paste all content into one vector, with entries separated by new lines
+  Rmd_contents = paste(yaml_contents, paste(body_contents, collapse = "\n"), collapse = "\n")
+
+  # replace the n_boot placeholder text with the number supplied
+  Rmd_contents = stringr::str_replace(Rmd_contents, "N_BOOT_REPLACE", as.character(n_boot))
+
+  # build the file name
+  Rmd_file = paste0("KuskoHarvEst_", file_date(meta$start_date), ".Rmd")
+
+  # write the Rmd source file that is ready to be knitted
+  writeLines(Rmd_contents, Rmd_file)
+
+  # return the name of the output file
+  return(Rmd_file)
+}
