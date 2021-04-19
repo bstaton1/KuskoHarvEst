@@ -1,0 +1,4 @@
+
+```{r johnson-summary-table}
+johnson_summary_table()
+```

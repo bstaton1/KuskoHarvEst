@@ -1,0 +1,4 @@
+
+```{r goals-summary-table}
+goals_summary_table(interview_data)
+```
