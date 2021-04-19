@@ -5,7 +5,7 @@ KuskoHarvEst_skeleton = function(path) {
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
   # create subdirectories
-  dir.create(file.path(path, "data"))
+  dir.create(file.path(path, "data-raw"))
 
   TRUE
 }
