@@ -1,5 +1,12 @@
 
+<!-- 
+NOTE: this file was generated automatically and should not require any manual changes on your part.
+However, if you wish to edit it by hand, it is recommended that you save it under a different name,
+otherwise your changes will be overwritten if the automated process is re-executed.
+-->
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE, fig.align = "center", message = FALSE, warning = FALSE, fig.pos = "H", out.extra = "")
 library(KuskoHarvEst)
+n_boot = N_BOOT_REPLACE
 ```
