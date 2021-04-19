@@ -7,7 +7,7 @@ boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
                                  gear = "set", n_boot = n_boot, stratify_interviews = FALSE)
 
 # don't perform a drift net estimate, but create a placeholder data frame
-boot_out_drift = boot_out_drift
+boot_out_drift = boot_out_set
 boot_out_drift[,c("chinook", "chum", "sockeye", "total")] = NA
 boot_out_drift$gear = "drift"
 
