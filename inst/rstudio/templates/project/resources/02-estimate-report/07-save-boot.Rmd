@@ -1,0 +1,14 @@
+
+```{r save-boot-out}
+# duplicate the bootstrap object under a new name
+boot_out_save = boot_out
+
+# reformat the date column
+boot_out_save$date = KuskoHarvEst:::basic_date(unique(boot_out_save$date))
+
+# create the file name for output file
+boot_out_filename = paste0("KuskoHarvEst_bootstrap_", KuskoHarvEst:::file_date(meta$start_date), ".csv")
+
+# save the output file
+write.csv(boot_out_save, file.path(out_dir, boot_out_filename), row.names = FALSE)
+```
