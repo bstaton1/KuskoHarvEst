@@ -102,7 +102,7 @@ build_yaml = function(doc_type, draft) {
 #' Automate creation of a Rmd source file for in-season reports
 #'
 
-build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE) {
+build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, save_bootstrap = TRUE) {
 
   # read in the meta data file
   meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
@@ -180,12 +180,19 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
     histogram_file = resource_path(file.path("02-estimate-report", "06b-histograms_set.Rmd"))
   }
 
-  # 7: select the right file to use for the appendix
+  # 7: select the right file to use for saving the bootstrapped output file
+  if (save_bootstrap) {
+    save_boot_file = resource_path(file.path("02-estimate-report", "07-save-boot.Rmd"))
+  } else {
+    save_boot_file = blank_file
+  }
+
+  # 8: select the right file to use for the appendix
   if (include_appendix) {
     if (!meta$set_only) {
-      appendix_file = resource_path(file.path("02-estimate-report", "07a-appendix_drift.Rmd"))
+      appendix_file = resource_path(file.path("02-estimate-report", "08a-appendix_drift.Rmd"))
     } else {
-      appendix_file = resource_path(file.path("02-estimate-report", "07b-appendix_set.Rmd"))
+      appendix_file = resource_path(file.path("02-estimate-report", "08b-appendix_set.Rmd"))
     }
   } else {
     appendix_file = blank_file
@@ -195,7 +202,7 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   yaml_contents = build_yaml("estimate_report", draft)
 
   # combine the names of the Rmd source files to use
-  body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, appendix_file)
+  body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, save_boot_file, appendix_file)
 
   # read in each file and combine into a vector
   body_contents = unlist(lapply(body_files, readLines))
