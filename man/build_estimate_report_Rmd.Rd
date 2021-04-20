@@ -10,7 +10,8 @@ build_estimate_report_Rmd(
   n_boot = 1000,
   include_johnson_table = TRUE,
   include_goal_table = FALSE,
-  include_appendix = FALSE
+  include_appendix = FALSE,
+  save_bootstrap = TRUE
 )
 }
 \description{
