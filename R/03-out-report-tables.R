@@ -68,7 +68,7 @@ flight_data_table = function(flight_data) {
 #' @importFrom magrittr %>%
 #' @export
 
-strata_summary_table = function(gear) {
+strata_summary_table = function(interview_data, gear) {
 
   # create nice names for the strata
   strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
