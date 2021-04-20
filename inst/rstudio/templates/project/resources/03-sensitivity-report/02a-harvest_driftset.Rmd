@@ -1,0 +1,48 @@
+
+# Harvest Sensitivity Analyses {-}
+
+::: {.small data-latex=""}
+_This analysis leaves out one interview data source at a time and recalculates the harvest estimates for all species and gears. The effort estimate still uses all data. This gives information about how much each data source contributes to the overall estimates, and how different the estimates would have been had a data source not been collected. The "Estimate" column shows the mean estimate and 95% confidence interval in parentheses, the "% Change" column gives a measure of change relative to the mean estimate using all data, and the "CV" column is the coefficient of variation of the estimate -- this is a measure of uncertainty (higher values mean more uncertainty)._
+:::
+
+```{r perform-harvest-sensitivity}
+# estimate drift net effort with all data
+drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
+
+# estimate set net effort with all data
+set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
+
+# make the combinations of data sources to leave out
+harvest_combos = KuskoHarvEst:::make_harvest_combos(interview_data)
+
+# obtain bootstrapped harvest estimates for each scenario
+harvest_scenarios = lapply(1:nrow(harvest_combos), function(i) {
+  
+  # leave out the data in question
+  interview_data_use = interview_data[interview_data$source %in% names(harvest_combos)[which(unlist(harvest_combos[i,]))],]
+  
+  # estimate (via bootstrap) drift net harvest for all species and and strata
+  boot_out_drift = bootstrap_harvest(interview_data_use, drift_effort_info,
+                                     gear = "drift", n_boot = n_boot, stratify_interviews = TRUE)
+  
+  # estimate (via bootstrap) set net harvest for all species and and strata
+  boot_out_set = bootstrap_harvest(interview_data_use, set_effort_info,
+                                   gear = "set", n_boot = n_boot, stratify_interviews = FALSE)
+  
+  # sum up across gears
+  boot_out_total = data.frame(iter = boot_out_drift$iter, 
+                              date = boot_out_drift$date,
+                              gear = "total", 
+                              stratum = boot_out_drift$stratum,
+                              chinook = rowSums(cbind(boot_out_drift[,"chinook"], boot_out_set[,"chinook"]), na.rm = TRUE),
+                              chum = rowSums(cbind(boot_out_drift[,"chum"], boot_out_set[,"chum"]), na.rm = TRUE),
+                              sockeye = rowSums(cbind(boot_out_drift[,"sockeye"], boot_out_set[,"sockeye"]), na.rm = TRUE),
+                              total = rowSums(cbind(boot_out_drift[,"total"], boot_out_set[,"total"]), na.rm = TRUE)
+)
+  
+  # combine drift, set, and total into one data frame of bootstrap output
+  rbind(boot_out_total, boot_out_drift, boot_out_set)
+})
+
+KuskoHarvEst:::harvest_sensitivity_table(harvest_scenarios, harvest_combos)
+```
