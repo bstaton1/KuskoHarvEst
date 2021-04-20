@@ -1,9 +1,7 @@
 
 \clearpage
-\setcounter{page}{1}
 \setcounter{figure}{0}
 \setcounter{table}{0}
-\renewcommand\thepage{A\arabic{page}}
 \renewcommand\thefigure{A\arabic{figure}}
 \renewcommand\thetable{A\arabic{table}}
 
