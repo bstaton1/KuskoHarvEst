@@ -1,0 +1,15 @@
+
+# Effort Estimates {-} 
+
+```{r estimate-effort}
+# estimate drift net effort
+drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
+
+# estimate set net effort
+set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
+```
+
+* An estimated **`r drift_effort_info$effort_est_total`** total drift boat trips occurred.
+  * Since only one flight was conducted, the counts did not need to be corrected for double counts.
+  * An estimated **`r drift_effort_info$effort_not_count`** trips were not counted during any flights.
+* An estimated **`r set_effort_info$effort_est_total`** total set net trips occurred.

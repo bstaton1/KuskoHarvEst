@@ -1,0 +1,49 @@
+
+# Effort Sensitivity Analyses {-}
+
+::: {.small data-latex=""}
+_In the tables below, "Pr(F1|F2)" is the probability that a trip counted on flight 2 was also counted on flight 1 (the estimator corrects for double-counting; this column will not display if only one flight was made). "Trips per interview" is an estimate of how many actual trips occurred per interview that was conducted, and is used to expand the effort estimate for interviews that are known to have occurred but could not have been counted because they started and stopped during times when the flights were inactive. "Trips not observed" is the estimated number of trips that fall in this expanded category._
+:::
+
+## Exclusion of Flight Data {-}
+
+::: {.small data-latex=""}
+_This analysis leaves out all combinations of flight data and re-calculates the drift net effort estimates. This helps give a sense of how the estimate would have been different had fewer flights been conducted. Generally, you want to see small changes because with good interview data coverage, the effort estimator should be robust to fewer flights. If there are large changes (e.g., >50%), that indicates that the distribution of fishing effort indicated by the interview data and the flight data are inconsistent, and emphasizes that conducting several flights within an opportunity is important to obtain a good estimate._
+:::
+
+```{r perform-flight-data-exclusion}
+# create combinations of flights to retain or discard
+flight_combos = KuskoHarvEst:::make_flight_combos(flight_data)
+
+# apply the effort estimator to each combination
+flight_effort_scenarios = lapply(1:nrow(flight_combos), function(i) {
+  estimate_effort(interview_data, flight_data[unlist(flight_combos[i,]),], gear = "drift", method = "dbl_exp")
+})
+
+# build the output table
+KuskoHarvEst:::effort_sensitivity_table(flight_effort_scenarios, flight_data, flight_combos)
+```
+
+\clearpage
+
+## Exclusion of Interview Data {-}
+
+:::{.small data-latex=""}
+_This analysis leaves out all combinations of interview data sources and re-calculates the drift net effort estimates (the scenario column indicates which data sources were kept). This helps give a sense of how much each data source affects the overall estimate, and how much the estimate would have been different had fewer data sources been available. Generally, you want to see relatively small changes when leaving out data -- this is an indication that each source took a random sample of the fishers it could have sampled with respect to trip times. If large changes occur (e.g., >50%), that is not necessarily a problem, but it is good information to know._
+:::
+
+```{r perform-interview-data-exclusion}
+# create combinations of interview data sources to retain or discard
+interview_combos = KuskoHarvEst:::make_interview_combos(interview_data)
+
+# apply the effort estimator to each combination
+interview_effort_scenarios = lapply(1:nrow(interview_combos), function(i) {
+  combos_use = unlist(interview_combos[i,])
+  estimate_effort(interview_data[interview_data$source %in% names(combos_use)[which(combos_use)],], flight_data, gear = "drift", method = "dbl_exp")
+})
+
+# build the output table
+KuskoHarvEst:::effort_sensitivity_table(interview_effort_scenarios, flight_data, interview_combos)
+```
+
+\clearpage

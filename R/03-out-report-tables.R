@@ -82,16 +82,16 @@ strata_summary_table = function(gear) {
   }
 
   # calculate/format harvest by stratum
-  chinook = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
-  chum = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
-  sockeye = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
-  total = sapply(c("A", "B", "C", "D1"), function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
+  chinook = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
+  chum = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
+  sockeye = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
+  total = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
 
   # build the strata-specific information for the table
   tab = cbind(
     # Stratum = kableExtra::linebreak(strata, align = "l"),
     Stratum = strata,
-    Interviews = with(interview_data[interview_data$gear == gear,], table(stratum)),
+    Interviews = with(interview_data[interview_data$gear == gear,], table(factor(stratum, levels = strata_names$stratum))),
     "Effort Est." = effort_info$effort_est_stratum,
     Chinook = chinook, Chum = chum, Sockeye = sockeye, Total = total
   )
