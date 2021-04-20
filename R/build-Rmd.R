@@ -15,7 +15,7 @@ build_yaml = function(doc_type, draft) {
   if (doc_type == "estimate_report") {
     title = 'title: "Kuskokwim River In-season Harvest and Effort Estimates"'
   } else {
-    title = 'title: "Kuskokwim River In-season Harvest/Effort Sensitivity Analyses"'
+    title = 'title: "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"'
   }
 
   # make the opener-label setting
@@ -215,6 +215,75 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 
   # build the file name
   Rmd_file = paste0("KuskoHarvEst_", file_date(meta$start_date), ".Rmd")
+
+  # write the Rmd source file that is ready to be knitted
+  writeLines(Rmd_contents, Rmd_file)
+
+  # return the name of the output file
+  return(Rmd_file)
+}
+
+#' Automate creation of a Rmd source file for sensitivity analysis reports
+#'
+
+build_sensitivity_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_plots = FALSE) {
+
+  # read in the meta data file
+  meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
+  meta = readRDS(meta_file)
+
+  # determine how many flights were conducted
+  flight_file = list.files(pattern = "flight_data", full.names = TRUE, recursive = TRUE)
+  n_flights = nrow(readRDS(flight_file))
+
+  # files for global setup and data preparation
+  setup_file = resource_path(file.path("01-common", "01-setup.Rmd"))
+  data_prep_file = resource_path(file.path("01-common", "02-data-prep.Rmd"))
+
+  # return an error if the opener is a set net only opener -- sensitivity analyses aren't conducted
+  if (meta$set_only) {
+    stop ("This is a set net only estimate, so the sensitivity analyses are not applicable.")
+  }
+
+  # 1: select the right file to produce effort sensitivity analyses
+  if (n_flights == 1) {
+    if (!include_plots) {
+      effort_file = resource_path(file.path("03-sensitivity-report", "01a-effort_1flight_noplots.Rmd"))
+    } else {
+      effort_file = resource_path(file.path("03-sensitivity-report", "01b-effort_1flight_plots.Rmd"))
+    }
+  } else {
+    if (!include_plots) {
+      effort_file = resource_path(file.path("03-sensitivity-report", "01c-effort_multiflight_noplots.Rmd"))
+    } else {
+      effort_file = resource_path(file.path("03-sensitivity-report", "01d-effort_multiflight_plots.Rmd"))
+    }
+  }
+
+  # 2: select the right file to produce effort sensitivity analyses
+  if (do_setnets) {
+    harvest_file = resource_path(file.path("03-sensitivity-report", "02a-harvest_driftset.Rmd"))
+  } else {
+    harvest_file = resource_path(file.path("03-sensitivity-report", "02b-harvest_driftset_noset.Rmd"))
+  }
+
+  # build the YAML header
+  yaml_contents = build_yaml("sensitivity_report", draft)
+
+  # combine the names of the Rmd source files to use
+  body_files = c(setup_file, data_prep_file, effort_file, harvest_file)
+
+  # read in each file and combine into a vector
+  body_contents = unlist(lapply(body_files, readLines))
+
+  # paste all content into one vector, with entries separated by new lines
+  Rmd_contents = paste(yaml_contents, paste(body_contents, collapse = "\n"), collapse = "\n")
+
+  # replace the n_boot placeholder text with the number supplied
+  Rmd_contents = stringr::str_replace(Rmd_contents, "N_BOOT_REPLACE", as.character(n_boot))
+
+  # build the file name
+  Rmd_file = paste0("sensitivity_", file_date(meta$start_date), ".Rmd")
 
   # write the Rmd source file that is ready to be knitted
   writeLines(Rmd_contents, Rmd_file)
