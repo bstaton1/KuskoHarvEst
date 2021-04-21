@@ -7,3 +7,8 @@ Name: Prepare Interview/Flight Data Files
 Description: Use an interactive tool to format the raw data files for use by later steps
 Binding: data_tool
 Interactive: true
+
+Name: Build Reports
+Description: Use an interactive tool to create the reports for estimates and sensitivity analyses
+Binding: rmd_tool
+Interactive: true
