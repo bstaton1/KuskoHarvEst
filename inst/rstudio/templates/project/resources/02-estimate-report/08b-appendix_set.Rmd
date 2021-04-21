@@ -20,37 +20,37 @@
 _Information is for set net trips only._
 
 ```{r chinook-rate-appendix-table}
-make_appendix_table(interview_data, "set", "chinook_rate")
+appendix_table(interview_data, "set", "chinook_rate")
 ```
 
 ```{r chinook-appendix-table}
-make_appendix_table(interview_data, "set", "chinook")
+appendix_table(interview_data, "set", "chinook")
 ```
 
 ```{r chum-sockeye-rate-appendix-table}
-make_appendix_table(interview_data, "set", "chum+sockeye_rate")
+appendix_table(interview_data, "set", "chum+sockeye_rate")
 ```
 
 ```{r chum-sockeye-appendix-table}
-make_appendix_table(interview_data, "set", "chum+sockeye")
+appendix_table(interview_data, "set", "chum+sockeye")
 ```
 
 ```{r p-chinook-appendix-table}
-make_appendix_table(interview_data, "set", "p_chinook")
+appendix_table(interview_data, "set", "p_chinook")
 ```
 
 ```{r soak-duration-appendix-table}
-make_appendix_table(interview_data, "set", "soak_duration")
+appendix_table(interview_data, "set", "soak_duration")
 ```
 
 ```{r trip-duration-appendix-table}
-make_appendix_table(interview_data, "set", "trip_duration")
+appendix_table(interview_data, "set", "trip_duration")
 ```
 
 ```{r trip-start-appendix-table}
-make_appendix_table(interview_data, "set", "trip_start")
+appendix_table(interview_data, "set", "trip_start")
 ```
 
 ```{r trip-end-appendix-table}
-make_appendix_table(interview_data, "set", "trip_end")
+appendix_table(interview_data, "set", "trip_end")
 ```

@@ -4,7 +4,7 @@
 \alias{strata_summary_table}
 \title{Create a table to summarize information spatially}
 \usage{
-strata_summary_table(gear)
+strata_summary_table(interview_data, gear)
 }
 \description{
 Create a table to summarize information spatially

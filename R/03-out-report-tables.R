@@ -186,7 +186,7 @@ johnson_summary_table = function() {
 #' @importFrom magrittr %>%
 #' @export
 
-make_appendix_table = function(interview_data, gear, variable) {
+appendix_table = function(interview_data, gear, variable) {
 
   # set the variables that are accepted, and perform error check
   accepted_variables = c(

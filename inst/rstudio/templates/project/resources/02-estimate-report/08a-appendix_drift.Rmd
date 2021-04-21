@@ -20,37 +20,37 @@
 _Information is for drift net trips only._
 
 ```{r chinook-rate-appendix-table}
-make_appendix_table(interview_data, "drift", "chinook_rate")
+appendix_table(interview_data, "drift", "chinook_rate")
 ```
 
 ```{r chinook-appendix-table}
-make_appendix_table(interview_data, "drift", "chinook")
+appendix_table(interview_data, "drift", "chinook")
 ```
 
 ```{r chum-sockeye-rate-appendix-table}
-make_appendix_table(interview_data, "drift", "chum+sockeye_rate")
+appendix_table(interview_data, "drift", "chum+sockeye_rate")
 ```
 
 ```{r chum-sockeye-appendix-table}
-make_appendix_table(interview_data, "drift", "chum+sockeye")
+appendix_table(interview_data, "drift", "chum+sockeye")
 ```
 
 ```{r p-chinook-appendix-table}
-make_appendix_table(interview_data, "drift", "p_chinook")
+appendix_table(interview_data, "drift", "p_chinook")
 ```
 
 ```{r soak-duration-appendix-table}
-make_appendix_table(interview_data, "drift", "soak_duration")
+appendix_table(interview_data, "drift", "soak_duration")
 ```
 
 ```{r trip-duration-appendix-table}
-make_appendix_table(interview_data, "drift", "trip_duration")
+appendix_table(interview_data, "drift", "trip_duration")
 ```
 
 ```{r trip-start-appendix-table}
-make_appendix_table(interview_data, "drift", "trip_start")
+appendix_table(interview_data, "drift", "trip_start")
 ```
 
 ```{r trip-end-appendix-table}
-make_appendix_table(interview_data, "drift", "trip_end")
+appendix_table(interview_data, "drift", "trip_end")
 ```
