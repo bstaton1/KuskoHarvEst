@@ -138,12 +138,12 @@ effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
 harvest_sensitivity_table = function(harvest_scenarios, combos) {
 
   # create names for each combo
-  combo_names = sapply(1:nrow(harvest_combos), function(i) {
-    discard = which(!unlist(harvest_combos[i,]))
+  combo_names = sapply(1:nrow(combos), function(i) {
+    discard = which(!unlist(combos[i,]))
     if (length(discard) == 0) {
       "All Data"
     } else {
-      paste0("No ", names(harvest_combos)[discard])
+      paste0("No ", names(combos)[discard])
     }
   })
 

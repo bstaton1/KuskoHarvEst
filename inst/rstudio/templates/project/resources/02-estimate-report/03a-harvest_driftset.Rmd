@@ -22,7 +22,7 @@ boot_out_total = data.frame(iter = boot_out_drift$iter,
 )
 
 # combine drift, set, and total into one data frame of bootstrap output
-boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)
+boot_out <<- rbind(boot_out_total, boot_out_drift, boot_out_set)
 ```
 
 ```{r set-summaries}
@@ -37,6 +37,5 @@ set_spp = percentize(set_harvest[c("chinook", "chum", "sockeye")]/set_harvest["t
 * Harvest by set nets accounted for an estimated **`r report(gear = "set")`** total salmon (`r paste0(set_spp["chinook"], " Chinook salmon, ", set_spp["chum"], " chum salmon, and ", set_spp["sockeye"], " sockeye salmon")`).
 
 ```{r strata-summary-table}
-strata_summary_table("drift")
+strata_summary_table(interview_data, "drift")
 ```
-

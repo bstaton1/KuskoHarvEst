@@ -68,7 +68,7 @@ flight_data_table = function(flight_data) {
 #' @importFrom magrittr %>%
 #' @export
 
-strata_summary_table = function(gear) {
+strata_summary_table = function(interview_data, gear) {
 
   # create nice names for the strata
   strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
@@ -186,7 +186,7 @@ johnson_summary_table = function() {
 #' @importFrom magrittr %>%
 #' @export
 
-make_appendix_table = function(interview_data, gear, variable) {
+appendix_table = function(interview_data, gear, variable) {
 
   # set the variables that are accepted, and perform error check
   accepted_variables = c(
@@ -408,7 +408,7 @@ goals_summary_table = function(interview_data) {
 
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lcccc", escape = FALSE,
-               caption = paste0("Percentage of fishers reporting that they are either halfway done, halfway done, over halfway done, or completely done fishing for a given species, relative to their season-wide harvest goals (sample size = ", n_goal_interviews, ").")) %>%
+               caption = paste0("Percentage of fishers reporting that they are either under halfway done, halfway done, over halfway done, or completely done fishing for a given species, relative to their season-wide harvest goals (sample size = ", n_goal_interviews, ").")) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
     kableExtra::add_header_above(c(" " = 1, "Category of Harvest Goals Attained" = 4), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%

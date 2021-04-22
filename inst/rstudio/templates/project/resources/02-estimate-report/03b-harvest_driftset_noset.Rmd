@@ -23,7 +23,7 @@ boot_out_total = data.frame(iter = boot_out_drift$iter,
 )
 
 # combine drift, set, and total into one data frame of bootstrap output
-boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)
+boot_out <<- rbind(boot_out_total, boot_out_drift, boot_out_set)
 ```
 
 * An estimated total of **`r report()`** salmon were harvested.
@@ -32,5 +32,5 @@ boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)
   * An estimated total of **`r report(spp = "sockeye")`** sockeye salmon were harvested.
 
 ```{r strata-summary-table}
-strata_summary_table("drift")
+strata_summary_table(interview_data, "drift")
 ```
