@@ -57,21 +57,16 @@ data_tool = function() {
                 ),
                 shiny::fillRow(
                   shiny::checkboxGroupInput(inputId = "interview_files", choices = interview_files, selected = interview_files,
-                                            label = shiny::h4(shiny::strong("Choose Files to Include"), style = "margin:0;", shinyBS::popify(shiny::icon("question-circle"), title = NULL, content = "Should you wish to exclude one of the interview data sets, you may do so here. Generally speaking, all files should be selected.", placement = "right", options = list(container = "body"), trigger = "hover")))
+                                            label = shiny::h4(shiny::strong("Choose Files to Include"), style = "margin:0;"))
                 ),
                 shiny::fillCol(
                   flex = c(0.35,1,1),
-                  shiny::h4(shiny::strong("Choose Global Options"), style = "margin:0;", shinyBS::popify(shiny::icon("question-circle"), title = NULL, content = "This section allows you to change some settings about how the data are treated. In nearly all cases these should be left at the default values, do not change them unless you have a good reason.", placement = "right", options = list(container = "body"), trigger = "click")),
+                  shiny::h4(shiny::strong("Choose Global Options"), style = "margin:0;"),
                   shiny::fillRow(
-                    shiny::numericInput(inputId = "soak_sd_cut", value = 3, min = 0, max = 10, step = 1,
-                                        label = shiny::p("Soak Time SD Threshold", style = "margin:0;", shinyBS::popify(shiny::icon("question-circle"), title = NULL, content = "The standard deviation (SD) cut-off for soak time: reported soak times longer than this many SDs from the mean will be considered unreliable.", placement = "top", options = list(container = "body"), trigger = "click"))),
-                    shiny::numericInput(inputId = "net_length_cut", value = 350, min = 0, max = 500, step = 50,
-                                        label = shiny::p("Net Length Threshold", style = "margin:0;", shinyBS::popify(shiny::icon("question-circle"), title = NULL, content = "The maximum net length allowed: reported net lengths longer than this will be considered unreliable.", placement = "top", options = list(container = "body"), trigger = "click"))),
-                    shiny::numericInput(inputId = "catch_per_trip_cut", value = 0.05, min = 0, max = 1, step = 0.05,
-                                        label = shiny::p("Exclusion Change Threshold", style = "margin:0;", shinyBS::popify(shiny::icon("question-circle"), title = NULL, content = "The maximum allowable absolute proportional change in the catch rate allowed by the exclusion of an interview. For example, 0.05 means that if the average catch rate of all salmon increases or decreases by more than 5% when an interview is excluded, the catch rate data from that interview will be considered unreliable.", placement = "top", options = list(container = "body"), trigger = "click"))),
-                    shiny::numericInput(inputId = "pooling_threshold", value = 10, min = 5, max = 20, step = 1,
-                                        label = shiny::p("Pooling Threshold", style = "margin:0;", shinyBS::popify(shiny::icon("question-circle"), title = NULL, content = "The minimum number of interviews available in a geographic stratum before pooling is required. With this setting at 10, for example, if only 5 interviews are available in one stratum, then data from another stratum will be shared when estimating harvest for that stratum.", placement = "top", options = list(container = "body"), trigger = "click")))
-
+                    shiny::numericInput(inputId = "soak_sd_cut", label = "Soak Time SD Threshold", value = 3, min = 0, max = 10, step = 1),
+                    shiny::numericInput(inputId = "net_length_cut", label = "Net Length Threshold", value = 350, min = 0, max = 500, step = 50),
+                    shiny::numericInput(inputId = "catch_per_trip_cut", label = "Exclusion Change Threshold", value = 0.05, min = 0, max = 1, step = 0.05),
+                    shiny::numericInput(inputId = "pooling_threshold", label = "Pooling Threshold", value = 10, min = 5, max = 20, step = 1)
                   ),
                   miniUI::miniButtonBlock(
                     border = NA,
