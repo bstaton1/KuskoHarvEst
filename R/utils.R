@@ -135,10 +135,3 @@ add_vspace = function(kable_input, space = "-1em") {
   attributes(kable_input_new) = attributes(kable_input)
   return(kable_input_new)
 }
-
-#' Create a shiny element label with a helper tooltip
-#'
-
-help_label = function(label, tip, ...) {
-  shiny::p(label, tippy::with_tippy(shiny::icon("question-circle"), tooltip = tip, ...), style = "margin:0;")
-}

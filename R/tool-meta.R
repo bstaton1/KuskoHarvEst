@@ -1,7 +1,5 @@
 #' An interactive tool to specify opportunity meta-data
 #'
-#' @import shiny miniUI shinyTime
-#'
 
 meta_tool = function() {
 
@@ -10,61 +8,61 @@ meta_tool = function() {
   if(!dir.exists(output_data_dir)) dir.create(output_data_dir)
 
   # USER-INTERFACE
-  ui = miniPage(
+  ui = miniUI::miniPage(
 
     # create the title
-    gadgetTitleBar("KuskoHarvEst Meta-Data Entry Tool"),
+    miniUI::gadgetTitleBar("KuskoHarvEst Meta-Data Entry Tool"),
 
     # populate page with input widgets
-    miniContentPanel(
-      fillCol(
+    miniUI::miniContentPanel(
+      shiny::fillCol(
         flex = c(2,3,3,3,3,1),
 
         # descriptive text
-        fillRow(
-          p(em("Here you will enter some information that helps identify the estimates you will produce later.
+        shiny::fillRow(
+          shiny::p(shiny::em("Here you will enter some information that helps identify the estimates you will produce later.
                     When you are done, be sure to click save to prevent needing to do this again."))
         ),
 
         # opportunity date/times
-        fillRow(
+        shiny::fillRow(
           flex = c(2,1,1),
-          dateInput(inputId = "date", label = "Day of Opportunity",
+          shiny::dateInput(inputId = "date", label = "Day of Opportunity",
                     value = lubridate::today(), format = "mm-dd-yyyy"),
-          timeInput(inputId = "start_time", label = "Start Time (24-hr)", seconds = FALSE, value = strptime("12:00", "%R")),
-          timeInput(inputId = "end_time", label = "End Time (24-hr)", seconds = FALSE, value = strptime("23:59", "%R"))
+          shinyTime::timeInput(inputId = "start_time", label = "Start Time (24-hr)", seconds = FALSE, value = strptime("12:00", "%R")),
+          shinyTime::timeInput(inputId = "end_time", label = "End Time (24-hr)", seconds = FALSE, value = strptime("23:59", "%R"))
         ),
 
         # estimate spatial coverage
-        fillRow(
-          textInput(inputId = "downstream_end", label = "Downstream Boundary", value = "Tuntutuliak"),
-          textInput(inputId = "upstream_end", label = "Upstream Boundary", value = "Akiak")
+        shiny::fillRow(
+          shiny::textInput(inputId = "downstream_end", label = "Downstream Boundary", value = "Tuntutuliak"),
+          shiny::textInput(inputId = "upstream_end", label = "Upstream Boundary", value = "Akiak")
         ),
 
         # special action identifiers
-        fillRow(
+        shiny::fillRow(
           flex = c(1,2,2),
-          textInput(inputId = "spact_name", label = "Special Action #", placeholder = "Optional"),
-          textInput(inputId = "spact_url", label = "Special Action URL", placeholder = "Optional"),
-          textInput(inputId = "spact_news_url", label = "News Release URL", placeholder = "Optional")
+          shiny::textInput(inputId = "spact_name", label = "Special Action #", placeholder = "Optional"),
+          shiny::textInput(inputId = "spact_url", label = "Special Action URL", placeholder = "Optional"),
+          shiny::textInput(inputId = "spact_news_url", label = "News Release URL", placeholder = "Optional")
         ),
 
         # contact information
-        fillRow(
-          textInput(inputId = "contact_persons", label = "Contact Person(s) (Optional)", width = "100%",
+        shiny::fillRow(
+          shiny::textInput(inputId = "contact_persons", label = "Contact Person(s) (Optional)", width = "100%",
                     placeholder = "E.g., Person 1 (p1@email.com), Person 2 (p2@email.com)")
         ),
 
         # is the opener set-net only?
-        fillRow(
-          checkboxInput(inputId = "set_only", label = "Set Nets Only?", value = FALSE)
+        shiny::fillRow(
+          shiny::checkboxInput(inputId = "set_only", label = "Set Nets Only?", value = FALSE)
         )
       ),
     ),
 
     # button to export the information to a .rds file
-    miniButtonBlock(
-      actionButton(inputId = "save_meta", label = "Save", icon = icon("save"), class = "btn-primary")
+    miniUI::miniButtonBlock(
+      shiny::actionButton(inputId = "save_meta", label = "Save", icon = shiny::icon("save"), class = "btn-primary")
     )
   )
 
@@ -72,7 +70,7 @@ meta_tool = function() {
   server = function(input, output, session) {
 
     # when the "save" button is clicked:
-    observeEvent(input$save_meta, {
+    shiny::observeEvent(input$save_meta, {
 
       # combine the date and time into the start_date
       start_date = lubridate::as_datetime(strftime(input$start_time), tz = "US/Alaska")
@@ -100,13 +98,12 @@ meta_tool = function() {
     })
 
     # Handle the Done button being pressed
-    observeEvent(input$done, {
+    shiny::observeEvent(input$done, {
       stopApp()
     })
   }
 
   # launch gadget
-  runGadget(ui, server, viewer = dialogViewer("", width = 700, height = 500))
+  shiny::runGadget(ui, server, viewer = shiny::dialogViewer("", width = 700, height = 500))
 
 }
-
