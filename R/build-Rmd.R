@@ -22,10 +22,15 @@ build_yaml = function(doc_type, draft) {
   opener_label = paste0('opener-label: "', basic_date(meta$start_date), ' Subsistence Harvest Opportunity"')
 
   # make the opener-start setting
-  opener_start = paste0('opener-start: "', basic_date(meta$start_date), ' ', short_datetime(meta$start_date, include_date = FALSE), '"')
+  include_date = ifelse(lubridate::date(meta$start_date) == lubridate::date(meta$start_date), FALSE, TRUE)
+  opener_start = paste0('opener-start: "', short_datetime(meta$start_date, include_date = include_date), '"')
 
   # make the opener-end setting
-  opener_end = paste0('opener-end: "', basic_date(meta$end_date), ' ', short_datetime(meta$end_date, include_date = FALSE), '"')
+  opener_end = paste0('opener-end: "', short_datetime(meta$end_date, include_date = include_date), '"')
+
+  # make the opener duration setting
+  hours_open = round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1)
+  opener_duration = paste0('opener-duration: "', paste0(hours_open, ' Hours'), '"')
 
   # make the downstream and upstream boundaries settings
   ds_bound = paste0('ds-bound: "', meta$ds_bound, '"')
@@ -80,6 +85,7 @@ build_yaml = function(doc_type, draft) {
     opener_label,
     opener_start,
     opener_end,
+    opener_duration,
     ds_bound,
     us_bound,
     contact,

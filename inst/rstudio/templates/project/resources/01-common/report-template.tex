@@ -113,9 +113,7 @@ $endif$
 {\bf\LARGE{$title$}}\\
 {\Large{$opener-label$}}\\
 
-{\small{Opportunity Started: $opener-start$}}\\
-
-{\small{Opportunity Ended: $opener-end$}}\\
+{\small{Opportunity Time Period: $opener-start$ -- $opener-end$ ($opener-duration$)}}\\
 
 {\small{Area Covered by Estimates: $ds-bound$ \( \longleftrightarrow \) $us-bound$}}\\
 
@@ -124,7 +122,7 @@ $if(contact)$
 $endif$
 
 $if(special-action)$
-{\small{Special Action: $special-action$}}\\
+{\small{Special Action \#: $special-action$}}\\
 $endif$
 
 $if(special-action-url)$
