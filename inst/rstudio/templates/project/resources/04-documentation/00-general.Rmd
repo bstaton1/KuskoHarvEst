@@ -1,0 +1,14 @@
+---
+title: "General Instructions"
+subtitle: "KuskoHarvEst Documentation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is a placeholder file.
+Soon, it will be populated with specific instructions for how to perform one of the key tasks in the new workflow.
+
+Screenshots can be included, as can `code` and output of code, if needed.

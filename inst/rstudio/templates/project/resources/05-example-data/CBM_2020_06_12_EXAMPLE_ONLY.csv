@@ -1,0 +1,67 @@
+date,stratum,trip.start,trip.end,soak.hrs,length,gear,mesh,chinook,chum,sockeye,sheefish,whitefish,chinook.goal,chum.goal,sockeye.goal,type,village
+6/12/2020,B,11:00,16:30,5:30,100,Driftnet,6,11,1,0,0,0,1,1,1,Fish camp,Napaskiak
+6/12/2020,B,7:00,11:00,4:00,150,Driftnet,6,16,2,0,0,0,2,1,1,Village,Napaskiak
+6/12/2020,B,7:30,12:45,5:00,150,Driftnet,6,10,3,0,0,0,2,1,1,Village,Napaskiak
+6/12/2020,B,6:00,17:00,11:00,150,Driftnet,6,12,0,0,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,7:50,17:50,9:15,100,Driftnet,6,24,0,0,0,0,2,1,1,Village,Napaskiak
+6/12/2020,B,8:00,12:00,4:00,100,Driftnet,6,12,0,1,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,9:00,10:30,1:30,100,Driftnet,6,3,0,0,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,10:00,14:30,4:30,150,Driftnet,6,21,2,0,0,0,2,1,1,Village,Napaskiak
+6/12/2020,A,8:30,17:00,4:15,300,Driftnet,5.875,13,4,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,13:00,18:00,5:00,300,Driftnet,6,12,2,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,14:00,18:00,3:00,300,Driftnet,6,5,2,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,6:00,18:00,11:30,600,Driftnet,6,47,3,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,6:00,18:00,11:30,600,Driftnet,6,9,4,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,14:30,18:00,3:30,100,Driftnet,5.875,11,6,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,15:00,18:00,2:30,100,Driftnet,5.125,9,2,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,13:00,18:00,4:30,50,Driftnet,5.5,3,0,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,12:00,18:00,5:00,100,Driftnet,6,12,3,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,6:00,18:00,11:30,100,Driftnet,6,26,7,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,14:30,18:00,3:30,65,Driftnet,5.75,8,1,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,14:00,18:00,3:30,300,Driftnet,5.75,12,0,0,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,A,8:30,18:00,5:30,150,Driftnet,6,8,1,0,0,1,1,1,1,Village,Tuntutuliak
+6/12/2020,A,12:00,18:00,5:45,270,Driftnet,6,14,1,1,0,0,1,1,1,Village,Tuntutuliak
+6/12/2020,B,7:30,18:00,10:30,150,Driftnet,5.5,23,2,1,0,1,1,1,1,Village,Napaskiak
+6/12/2020,B,14:30,18:00,3:30,150,Driftnet,5.5,3,0,1,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,10:30,13:30,3:00,60,Setnet,4,1,1,0,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,6:30,14:00,7:30,270,Driftnet,6,4,3,1,1,0,1,1,1,Village,Napaskiak
+6/12/2020,B,9:00,14:30,5:15,150,Driftnet,6,3,1,0,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,8:30,15:30,5:45,150,Driftnet,5.5,9,3,1,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,14:30,16:30,2:00,150,Driftnet,5.375,2,1,0,0,0,1,1,1,Village,Napaskiak
+6/12/2020,C,6:00,14:00,8:00,150,Driftnet,6,8,0,0,2,0,1,1,1,Fish camp,Kwethluk
+6/12/2020,C,9:00,17:15,8:15,60,Driftnet,6,3,1,1,0,0,1,1,1,Fish camp,Kwethluk
+6/12/2020,C,11:00,17:45,6:45,60,Driftnet,6,5,0,0,0,0,1,1,1,Fish camp,Kwethluk
+6/12/2020,C,6:00,17:45,11:45,150,Driftnet,5.375,20,0,0,2,0,1,1,1,Fish camp,Kwethluk
+6/12/2020,C,6:00,18:00,12:00,150,Driftnet,5.375,20,0,1,2,1,2,1,1,Fish camp,Kwethluk
+6/12/2020,C,6:30,17:30,11:00,150,Driftnet,5.25,15,0,2,2,0,2,1,1,Village,Kwethluk
+6/12/2020,C,9:00,15:00,6:00,60,Driftnet,5.5,4,0,1,0,1,1,1,1,Village,Kwethluk
+6/12/2020,C,7:00,17:00,10:00,80,Driftnet,5.5,9,0,1,1,1,1,1,1,Fish camp,Kwethluk
+6/12/2020,C,6:00,16:00,10:00,60,Driftnet,5.5,7,0,1,2,2,1,1,1,Fish camp,Kwethluk
+6/12/2020,C,9:00,14:00,5:00,150,Driftnet,5.5,8,0,0,2,1,1,1,1,Village,Kwethluk
+6/12/2020,C,6:30,17:00,10:30,60,Driftnet,5.25,12,0,1,2,1,1,1,1,Village,Kwethluk
+6/12/2020,C,8:00,16:00,8:00,60,Setnet,5.125,5,0,0,2,0,1,1,1,Village,Kwethluk
+6/12/2020,C,8:00,17:00,9:00,40,Setnet,5.5,2,0,0,1,0,1,1,1,Fish camp,Kwethluk
+6/12/2020,D1,6:00,14:00,8:00,150,Driftnet,6,7,3,0,1,0,2,3,2,Village,Akiak
+6/12/2020,D1,8:00,16:00,8:00,150,Driftnet,6,5,2,0,2,0,2,2,2,Village,Akiak
+6/12/2020,D1,9:00,13:00,4:00,150,Driftnet,6,2,1,0,0,0,2,3,2,Village,Akiak
+6/12/2020,D1,13:00,17:00,4:00,150,Driftnet,6,4,0,0,1,0,2,2,2,Village,Akiak
+6/12/2020,D1,10:00,14:00,4:00,150,Driftnet,6,2,0,0,1,1,2,2,2,Village,Akiak
+6/12/2020,D1,13:00,18:00,5:00,150,Driftnet,6,5,1,0,1,0,2,2,2,Village,Akiak
+6/12/2020,C,6:00,17:00,5:00,150,Driftnet,6,7,0,0,12,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,14:45,18:00,3:15,150,Driftnet,5.875,0,0,0,0,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,6:30,18:00,10:00,150,Driftnet,5.875,4,0,0,6,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,16:00,18:00,2:00,150,Driftnet,5.875,2,0,0,0,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,8:30,17:30,8:00,150,Driftnet,5.625,3,0,0,0,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,6:00,13:30,6:00,150,Driftnet,6,3,0,0,3,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,6:00,17:30,10:30,150,Driftnet,5.875,5,0,0,3,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,7:30,15:30,6:30,150,Driftnet,5.5,3,0,0,1,0,1,1,1,Phone,Kwethluk
+6/12/2020,C,8:00,18:00,9:00,150,Driftnet,6,5,1,0,0,0,1,1,1,Phone,Kwethluk
+6/12/2020,B,7:30,13:00,5:15,150,Driftnet,5.375,7,3,0,0,2,1,1,1,Village,Napaskiak
+6/12/2020,B,8:30,14:00,5:30,150,Driftnet,5.625,6,1,0,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,9:30,14:30,4:00,150,Driftnet,5.375,4,2,0,0,0,1,1,1,Village,Napaskiak
+6/12/2020,B,6:00,14:00,7:45,150,Driftnet,5.5,26,2,1,0,0,1,1,1,Village,Napaskiak
+6/12/2020,D1,11:00,18:00,7:00,150,Driftnet,6,7,2,0,2,0,3,2,2,Village,Akiak
+6/12/2020,D1,12:00,18:00,6:00,150,Driftnet,6,5,1,0,1,0,3,2,2,Village,Akiak
+6/12/2020,D1,8:00,11:00,2:45,150,Driftnet,6,1,0,0,1,0,2,2,2,Village,Akiak
+6/12/2020,D1,11:30,16:45,5:15,150,Driftnet,6,5,1,0,2,1,2,2,2,Village,Akiak
+6/12/2020,D1,12:00,16:45,4:45,150,Driftnet,6,3,1,0,2,0,2,2,2,Village,Akiak
