@@ -12,5 +12,5 @@ set_effort_info <<- estimate_effort(interview_data, flight_data, "set", method =
 * An estimated **`r drift_effort_info$effort_est_total`** total drift boat trips occurred.
   * An estimated **`r percentize(drift_effort_info$p_T1_given_T2[1])`** of the trips counted on flight 2 were also counted on flight 1.
   * An estimated **`r percentize(drift_effort_info$p_T1_given_T2[2])`** of the trips counted on flight 3 were also counted on flight 2.
-  * An estimated **`r drift_effort_info$effort_not_count`** trips were not counted during any flights.
+  * An estimated **`r drift_effort_info$effort_not_count`** trips were not counted during any flight.
 * An estimated **`r set_effort_info$effort_est_total`** total set net trips occurred, but no harvest estimate was made.

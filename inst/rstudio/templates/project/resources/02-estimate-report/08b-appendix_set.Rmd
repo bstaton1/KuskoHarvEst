@@ -11,11 +11,11 @@
 
 * **Area**: the area of the river the trip occurred in
 * **N**: the number of interviews with usable information in each area
-* **Min**: the minimum value among all trips in each area
-* **25%**: the value that 25% of the trips fell below in each area
-* **Mean**: the average value across all trips in each area
-* **75%**: the value that 75% of the trips fell below in each area
-* **Max**: the maximum value among all trips in each area
+* **Min**: the minimum value among trips in each area
+* **25%**: the value that 25% of trips fell below in each area
+* **Mean**: the average value across trips in each area
+* **75%**: the value that 75% of trips fell below in each area
+* **Max**: the maximum value among trips in each area
 
 _Information is for set net trips only._
 
