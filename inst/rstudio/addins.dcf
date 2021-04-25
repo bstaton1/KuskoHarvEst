@@ -12,3 +12,8 @@ Name: Build Reports
 Description: Use an interactive tool to create the reports for estimates and sensitivity analyses
 Binding: rmd_tool
 Interactive: true
+
+Name: Get Help
+Description: Use an interactive tool access helpful instructions and example data files
+Binding: help_tool
+Interactive: true
