@@ -218,7 +218,7 @@ appendix_table = function(interview_data, gear, variable) {
   if (variable == "chinook_rate") {
     x_data = x_data[x_data$suit_cr_reliable,]
     x = x_data$chinook/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of Chinook salmon by fishing area (units are salmon per 150 feet of net soaked for 1 hour).")
+    cap = paste0("Summary of ", gear, " net catch rate of Chinook salmon by fishing area (salmon per 150 feet of net per hour).")
     digits = 1
   }
 
@@ -233,7 +233,7 @@ appendix_table = function(interview_data, gear, variable) {
   if (variable == "chum+sockeye_rate") {
     x_data = x_data[x_data$suit_cr_reliable,]
     x = (x_data$chum + x_data$sockeye)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of chum+sockeye salmon by fishing area (units are salmon per 150 feet of net soaked for 1 hour).")
+    cap = paste0("Summary of ", gear, " net catch rate of chum+sockeye salmon by fishing area (salmon per 150 feet of net per hour).")
     digits = 1
   }
 
