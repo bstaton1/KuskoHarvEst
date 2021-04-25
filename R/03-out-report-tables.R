@@ -55,8 +55,8 @@ flight_data_table = function(flight_data) {
   tab = data.frame(start_time, end_time, duration, drift_count, set_count)
 
   # build the kable
-  knitr::kable(tab, "latex", col.names = c("Start Time", "End Time", "Hours", "Drift", "Set"), linesep = "", booktabs = TRUE, longtable = FALSE, escape = TRUE, align = "llccc",
-               caption = "The times each flight was conducted and the number of fishers counted on each.") %>%
+  knitr::kable(tab, "latex", col.names = c("Start Time", "End Time", "Hours", "Drift", "Set"), linesep = "", booktabs = TRUE, longtable = FALSE, escape = TRUE, align = "rrccc",
+               caption = "The time each flight was conducted and fishers counted each flight.") %>%
     kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c("Time Information" = 3, "Nets Counted" = 2), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
