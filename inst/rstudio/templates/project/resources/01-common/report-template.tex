@@ -36,6 +36,8 @@
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
+\graphicspath{{$graphics-path$}}
+
 % spacing set up: not sure where this came from
 \IfFileExists{parskip.sty}{%
 \usepackage{parskip}
@@ -134,24 +136,19 @@ $if(news-release-url)$
 $endif$
 \end{flushleft}
 
-% \fbox{
+% add logos
 \begin{minipage}[ht]{0.33\textwidth}
 \centering
-\includegraphics{C:/Users/bstaton/Desktop/Staton/5_qes/01-projects/2021_KuskoHarvEst_BSFA/analyses/KuskoHarvEst/scratch/logos/onc-logo}
+\includegraphics{onc-logo}
 \end{minipage}
-% }
-% \fbox{
 \begin{minipage}[ht]{0.33\textwidth}
 \centering
-\includegraphics{C:/Users/bstaton/Desktop/Staton/5_qes/01-projects/2021_KuskoHarvEst_BSFA/analyses/KuskoHarvEst/scratch/logos/kritfc-logo}
+\includegraphics{kritfc-logo}
 \end{minipage}
-% }
-% \fbox{
 \begin{minipage}[ht]{0.33\textwidth}
 \centering
-\includegraphics{C:/Users/bstaton/Desktop/Staton/5_qes/01-projects/2021_KuskoHarvEst_BSFA/analyses/KuskoHarvEst/scratch/logos/usfws-logo}
+\includegraphics{usfws-logo}
 \end{minipage}
-% }
 
 % \vspace{-10pt}
 \rule{\textwidth}{1pt}
