@@ -19,7 +19,11 @@ build_yaml = function(doc_type, draft) {
   }
 
   # make the opener-label setting
-  opener_label = paste0('opener-label: "', basic_date(meta$start_date), ' Subsistence Harvest Opportunity"')
+  opener_label = paste0('opener-label: "', basic_date(meta$start_date), ' Subsistence Harvest Opportunity (', ifelse(meta$set_only, 'Set Nets Only)"', 'Drift & Set Nets)"'))
+
+  # make the footer-label setting
+  rfooter = stringr::str_replace(opener_label, "^opener-label", "rfooter")
+  rfooter = stringr::str_remove(rfooter, "Subsistence Harvest ")
 
   # make the opener-start setting
   include_date = ifelse(lubridate::date(meta$start_date) == lubridate::date(meta$start_date), FALSE, TRUE)
@@ -66,9 +70,9 @@ build_yaml = function(doc_type, draft) {
 
   # make the doc label setting
   if (doc_type == 'estimate_report') {
-    doc_label = 'doc-label: "In-season Harvest and Effort Estimates"'
+    lfooter = 'lfooter: "In-season Harvest and Effort Estimates"'
   } else {
-    doc_label = 'doc-label: "Sensitivity Analyses"'
+    lfooter = 'lfooter: "Sensitivity Analyses"'
   }
 
   # make the draft watermark setting
@@ -92,7 +96,8 @@ build_yaml = function(doc_type, draft) {
     special_action,
     special_action_url,
     news_release_url,
-    doc_label,
+    lfooter,
+    rfooter,
     draft_watermark,
     editor_options,
     "---\n"
