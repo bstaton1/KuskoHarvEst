@@ -1,4 +1,4 @@
-# KuskoHarvEst
+# KuskoHarvEst <img src="man/figures/KuskoHarvEst-logo.png" align="right" height=200px/>
 
 > An R package for producing in-season harvest and effort estimates and their reports for the Lower Kuskokwim River subsistence salmon fisheries.
 
