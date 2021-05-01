@@ -44,19 +44,27 @@ This means the only things you will edit directly are either (a) in the data fil
 
 It is recommended that you review the documentation for 'KuskoHarvEst' before using it. Lots of information is available through the built-in "Help" tool, available through the "Addins" menu at the top of RStudio:
 
-<img src = "man\figures\readme-screenshots\addin-menu.png" class="center" width=600px>
+<p align="center">
+  <img src="man/figures/readme-screenshots/addin-menu.png" width="600"/>
+<\p>
 
 There are dedicated documents with step-by-step instructions and general guidance on how to use each interactive tool and more, accessible through this menu in the 'KuskoHarvEst' help tool:
 
-<img src = "man\figures\readme-screenshots\help-instructions.png" class="center" width=300px>
+<p align="center">
+  <img src="man/figures/readme-screenshots/help-instructions.png" width="300"/>
+<\p>
 
 Additionally, there are example data files to illustrate precisely how the individual raw data files should be formatted.  These are accessible through this menu in the 'KuskoHarvEst' help tool:
 
-<img src = "man\figures\readme-screenshots\help-data.png" class="center" width=300px>
+<p align="center"> 
+  <img src="man/figures/readme-screenshots/help-data.png" width="300"/> 
+<\p>
 
 Users new to in-season Kuskokwim River subsistence harvest monitoring and estimation are advised to read the Staton (2018) report -- it details the data collection and analytical methods. This is accessible by clicking the link in this section of the 'KuskoHarvest' help tool:
 
-<img src = "man\figures\readme-screenshots\help-report.png" class="center" width=600px>
+<p align="center">
+  <img src="man/figures/readme-screenshots/help-report.png" width="600"/>
+<\p>
 
 ## Acknowledgements
 
@@ -65,10 +73,3 @@ Several people provided valuable feedback on the functionality included in this 
 This package is totally reliant on RStudio, Rmarkdown, and Shiny to do its job. The software developers are owed gratitude for making the construction of intuitive workflows like those contained in 'KuskoHarvEst' possible. 
 
 Funding for the development of this package was provided by the Kuskokwim River Inter-Tribal Fish Commission, administered through the Bering Sea Fisherman's Association through grant #AC-2101 between January and October, 2021. Funding for the initial development of the statistical and reporting framework, off of which 'KuskoHarvEst' is based, was funded by the U.S. Fish and Wildlife Service through a Pathways Position during the summers of 2016 - 2018.
-
-
-
-
-
-
-
