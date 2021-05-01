@@ -45,14 +45,27 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   has_starttime = "trip_start" %in% vars
   has_endtime = "trip_end" %in% vars
 
-  # this code still assumes start and end times are on the same calendar day
+  # determine whether both date_start and date_end were supplied, or only a date column
+  has_startdate = "date_start" %in% vars
+  has_enddate = "date_end" %in% vars
+
+  # determine name of the date columns to use
+  startdate_use = ifelse(!has_startdate, "date", "date_start")
+  enddate_use = ifelse(!has_startdate, "date", "date_end")
+
+  # return a warning if only the "date" column was available
+  if (!has_startdate & !has_enddate) {
+    warning("Only the 'date' column was found in the raw data, not 'date_start' and 'date_end'.\nIt is thus assumed that all trips started and ended on the same date.")
+  }
+
+  # build the trip start and end datetime objects
   if (has_starttime) {
-    dat_out$trip_start = combine_datetime(dat_in$date, dat_in$trip_start)
+    dat_out$trip_start = combine_datetime(dat_in[,startdate_use], dat_in$trip_start)
   } else {
     dat_out$trip_start = NA
   }
   if (has_endtime) {
-    dat_out$trip_end = combine_datetime(dat_in$date, dat_in$trip_end)
+    dat_out$trip_end = combine_datetime(dat_in[,enddate_use], dat_in$trip_end)
   } else {
     dat_out$trip_end = NA
   }
