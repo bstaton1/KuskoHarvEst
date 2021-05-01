@@ -40,4 +40,3 @@ scratch/*
 
 # Any rendered output
 *.log
-*.pdf
