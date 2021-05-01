@@ -70,7 +70,18 @@ help_tool = function() {
       shiny::selectizeInput("ex_data_file", label = NULL, choices = ex_data_files, width = "60%"),
 
       # opener for example data file
-      shiny::actionButton("open_ex_data_file", label = "Open the Example Data File", icon = shiny::icon("folder-open"), class = "btn-primary")
+      shiny::actionButton("open_ex_data_file", label = "Open the Example Data File", icon = shiny::icon("folder-open"), class = "btn-primary"),
+
+      # horizontal rule to separate sections
+      shiny::hr(),
+
+      # header for report
+      shiny::h4(shiny::strong("2018 Technical Report")),
+      shiny::p("The Staton (2018) report documents some of the motivators for in-season harvest estimates, data collection methods, analytical methods, and results from the 2018 season. It is recommended reading for users wishing to become familiar with these topics."),
+
+      # clickable link to open the Staton (2018) report
+      shiny::actionLink("open_2018_report", label = "View Staton (2018)", icon = shiny::icon("file-pdf"))
+
     )
   )
 
@@ -91,6 +102,11 @@ help_tool = function() {
     # open example data file when requested
     shiny::observeEvent(input$open_ex_data_file, {
       file.show(input$ex_data_file)
+    })
+
+    # open the 2018 report when requested
+    shiny::observeEvent(input$open_2018_report, {
+      file.show(resource_path("04-documentation/Staton - 2018 - In-season harvest and effort estimates.pdf"))
     })
 
     # Handle the Done button being pressed
