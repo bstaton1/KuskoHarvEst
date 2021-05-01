@@ -46,25 +46,25 @@ It is recommended that you review the documentation for 'KuskoHarvEst' before us
 
 <p align="center">
   <img src="man/figures/readme-screenshots/addin-menu.png" width="600"/>
-<\p>
+</p>
 
 There are dedicated documents with step-by-step instructions and general guidance on how to use each interactive tool and more, accessible through this menu in the 'KuskoHarvEst' help tool:
 
 <p align="center">
   <img src="man/figures/readme-screenshots/help-instructions.png" width="300"/>
-<\p>
+</p>
 
 Additionally, there are example data files to illustrate precisely how the individual raw data files should be formatted.  These are accessible through this menu in the 'KuskoHarvEst' help tool:
 
 <p align="center"> 
   <img src="man/figures/readme-screenshots/help-data.png" width="300"/> 
-<\p>
+</p>
 
 Users new to in-season Kuskokwim River subsistence harvest monitoring and estimation are advised to read the Staton (2018) report -- it details the data collection and analytical methods. This is accessible by clicking the link in this section of the 'KuskoHarvest' help tool:
 
 <p align="center">
   <img src="man/figures/readme-screenshots/help-report.png" width="600"/>
-<\p>
+</p>
 
 ## Acknowledgements
 
