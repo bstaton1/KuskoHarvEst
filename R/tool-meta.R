@@ -16,13 +16,14 @@ meta_tool = function() {
     # populate page with input widgets
     miniUI::miniContentPanel(
       shiny::fillCol(
-        flex = c(2,3,3,3,3,1),
+        flex = c(2,1,3,3,3,3,1),
 
         # descriptive text
         shiny::fillRow(
           shiny::p(shiny::em("Here you will enter some information that helps identify the estimates you will produce later.
                     When you are done, be sure to click save to prevent needing to do this again."))
         ),
+        shiny::actionLink("get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
 
         # opportunity date/times
         shiny::fillRow(
@@ -68,6 +69,11 @@ meta_tool = function() {
 
   # SERVER-SIDE OPERATIONS
   server = function(input, output, session) {
+
+    # when the "get_help" link is clicked:
+    shiny::observeEvent(input$get_help, {
+      file.show(resource_path("04-documentation/02-meta-data-tool.html"))
+    })
 
     # when the "save" button is clicked:
     shiny::observeEvent(input$save_meta, {

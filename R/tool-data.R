@@ -37,7 +37,7 @@ data_tool = function() {
     shinyjs::useShinyjs(),
 
     # create the title
-    miniUI::gadgetTitleBar("KuskoHarvEst Data Tool"),
+    miniUI::gadgetTitleBar("KuskoHarvEst Interview/Flight Data Tool"),
 
     miniUI::miniTabstripPanel(
       miniUI::miniTabPanel(
@@ -48,16 +48,18 @@ data_tool = function() {
             "Options", icon = shiny::icon("cog"),
             miniUI::miniContentPanel(
               shiny::fillCol(
-                flex = c(1,2,2),
-                shiny::fillRow(
+                flex = c(1,0.5,1,2),
+                # shiny::fillRow(
                   shiny::p(shiny::em("Here you will select the interview data files to include and set global options for controlling how data are used.
                        Click 'Update Global Options' first, then click 'Load Raw Data Files'.
                        Summaries will be displayed below and the data can be explored on the 'Output' tab.
-                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'options.rds' and 'interview_data.rds' files are present."))
-                ),
+                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'options.rds' and 'interview_data.rds' files are present.")),
+                # ),
+                shiny::actionLink("get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
                 shiny::fillRow(
-                  shiny::checkboxGroupInput(inputId = "interview_files", choices = interview_files, selected = interview_files,
-                                            label = shiny::h4(shiny::strong("Choose Files to Include"), style = "margin:0;"))
+                  shiny::selectInput(inputId = "interview_files", choices = interview_files, selected = interview_files, multiple = TRUE,
+                                     label = shiny::h4(shiny::strong("Choose Files to Include"), style = "margin:0;"), width = "100%")
+
                 ),
                 shiny::fillCol(
                   flex = c(0.35,1,1),
@@ -126,6 +128,11 @@ data_tool = function() {
 
   # SERVER-SIDE OPERATIONS
   server = function(input, output, session) {
+
+    # when the "get_help" link is clicked:
+    shiny::observeEvent(input$get_help, {
+      file.show(resource_path("04-documentation/03-interview-flight-data-tool.html"))
+    })
 
     # reactive container object
     vals = shiny::reactiveValues()
