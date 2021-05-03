@@ -11,7 +11,7 @@ data_tool = function() {
   # load the meta data file and return an error if it is not present
   meta_file = list.files(output_data_dir, pattern = "meta\\.rds$")
   if (length(meta_file) == 0) {
-    stop ("No meta data file detected - you must run the meta data tool before this tool.")
+    stop ("No meta-data file detected - you must run the meta-data tool before this tool.")
   } else {
     meta = readRDS(file.path(output_data_dir, meta_file))
   }
@@ -19,16 +19,21 @@ data_tool = function() {
   # return an error if the data files haven't been placed in the raw data folder
   data_files = list.files(input_data_dir)
   if (length(data_files) == 0) {
-    stop ("No data files found in the data-raw subdirectory.")
+    stop ("No data files found in the 'data-raw' folder.")
   }
 
   # find which file contains the flight data and return an error if not found
   which_flight = stringr::str_detect(data_files, "Flight_counts")
   if (!any(which_flight)) {
-    stop ("No flight count data file found in the data subdirectory.")
+    stop ("No flight count data file found in the 'data-raw' folder.")
   }
   interview_files = data_files[-which(which_flight)]
   flight_files = data_files[which_flight]
+
+  # return error if no interview data files were found
+  if (length(interview_files) == 0) {
+    stop ("No interview data file(s) found in the 'data-raw' folder.")
+  }
 
   # USER-INTERFACE
   ui = miniUI::miniPage(
@@ -37,7 +42,7 @@ data_tool = function() {
     shinyjs::useShinyjs(),
 
     # create the title
-    miniUI::gadgetTitleBar("KuskoHarvEst Data Tool"),
+    miniUI::gadgetTitleBar("KuskoHarvEst Interview/Flight Data Tool"),
 
     miniUI::miniTabstripPanel(
       miniUI::miniTabPanel(
@@ -48,16 +53,18 @@ data_tool = function() {
             "Options", icon = shiny::icon("cog"),
             miniUI::miniContentPanel(
               shiny::fillCol(
-                flex = c(1,2,2),
-                shiny::fillRow(
+                flex = c(1,0.5,1,2),
+                # shiny::fillRow(
                   shiny::p(shiny::em("Here you will select the interview data files to include and set global options for controlling how data are used.
                        Click 'Update Global Options' first, then click 'Load Raw Data Files'.
                        Summaries will be displayed below and the data can be explored on the 'Output' tab.
-                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'options.rds' and 'interview_data.rds' files are present."))
-                ),
+                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'options.rds' and 'interview_data.rds' files are present.")),
+                # ),
+                shiny::actionLink("get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
                 shiny::fillRow(
-                  shiny::checkboxGroupInput(inputId = "interview_files", choices = interview_files, selected = interview_files,
-                                            label = shiny::h4(shiny::strong("Choose Files to Include"), style = "margin:0;"))
+                  shiny::selectInput(inputId = "interview_files", choices = interview_files, selected = interview_files, multiple = TRUE,
+                                     label = shiny::h4(shiny::strong("Choose Files to Include"), style = "margin:0;"), width = "100%")
+
                 ),
                 shiny::fillCol(
                   flex = c(0.35,1,1),
@@ -127,6 +134,11 @@ data_tool = function() {
   # SERVER-SIDE OPERATIONS
   server = function(input, output, session) {
 
+    # when the "get_help" link is clicked:
+    shiny::observeEvent(input$get_help, {
+      file.show(resource_path("04-documentation/03-interview-flight-data-tool.html"))
+    })
+
     # reactive container object
     vals = shiny::reactiveValues()
     vals$loadable = FALSE
@@ -163,7 +175,7 @@ data_tool = function() {
       vals$interview_data = prepare_interviews_all(input_files = file.path(input_data_dir, input$interview_files), include_village = TRUE, include_goals = TRUE)
       shiny::updateSelectInput(session, "filter_DT_source", choices = unique(vals$interview_data$source), selected = unique(vals$interview_data$source))
       shiny::updateSelectInput(session, "filter_DT_gear", choices = unique(vals$interview_data$gear), selected = unique(vals$interview_data$gear))
-      shiny::updateSelectInput(session, "filter_DT_stratum", choices = unique(vals$interview_data$stratum), selected = unique(vals$interview_data$stratum))
+      shiny::updateSelectInput(session, "filter_DT_stratum", choices = sort(unique(vals$interview_data$stratum)), selected = sort(unique(vals$interview_data$stratum)))
     })
 
     # save the formatted interview data when told

@@ -1,14 +1,118 @@
 ---
-title: "How-to-Use: Meta-data Tool"
-subtitle: "KuskoHarvEst Documentation"
-output: html_document
+title: "**How to Use: Meta-Data Tool**"
+subtitle: "_KuskoHarvEst Documentation_"
+date: '`r paste0("Last Updated: ", KuskoHarvEst:::basic_date(lubridate::today()))`'
+author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d[3])`"
+output: 
+  html_document:
+    number_sections: false
+---
+
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-This is a placeholder file.
-Soon, it will be populated with specific instructions for how to perform one of the key tasks in the new workflow.
+_This document describes how to use the meta-data tool, which allows you to enter specific information about the opportunity and estimate in a standardized form._
 
-Screenshots can be included, as can `code` and output of code, if needed.
+**Steps to Complete Before Using this Tool**:
+
+1. Create a new R project (instructions `r KuskoHarvEst:::link_to_doc("00-general.html")`)
+2. Organize the raw data files and place them in the `data-raw` folder of your project (instructions `r KuskoHarvEst:::link_to_doc("01-raw-data.html")`)
+
+After you have completed these steps, you are ready to proceed to the meta-data entry step. Navigate to the RStudio addins menu, and select the highlighted option:
+
+<p align="center">
+  <img src="screenshots/common/addins-menu-meta-data.png" width="600"/>
+</p>
+
+This window will open within RStudio:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/whole-tool.png" width="600"/>
+</p>
+
+Clicking the link that says "Get Help with Using this tool" will open this document.
+
+### Date/Time Information
+
+This first block of entry boxes reflects the date and times that day that the fishery was open and that the estimates pertain to:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/date-time.png" width="600"/>
+</p>
+
+You can either type the date in directly in MM-DD-YYYY format, or you can use the day selector to ensure the date is formatted properly:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/calendar.png" width="225"/>
+</p>
+
+For the times, enter the minutes and hours of the start time and end time of the opportunity that occurred that day. A couple things to emphasize here:
+
+* Be sure to use military time (the 24-hour clock) -- the above example shows an opportunity that started at 6:00 AM and ended at 6:00 PM the same day.
+* If the opportunity was truly all day (i.e., form midnight to midnight), then enter the date as the day the opener was allowed, enter the start time as `00:00`, and enter the end time as `23:59`.
+* Remember, this program allows producing harvest estimates for on day at a time only.
+
+### Geographic Boundaries
+
+The reader of the output documents will want to know what areas of the Kuskokwim River these estimates pertain to. You can enter the upstream and downstream boundaries of this area here:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/spatial.png" width="600"/>
+</p>
+
+In nearly all cases, this should stay as the default downstream boundary of `Tuntutuliak` to the upstream boundary of `Akiak`. In rare cases, the flights may not be able to cover this whole area, and no option exists for imputing values for the missing counts. In that case, change these values to correspond to the landmarks (villages, tributary confluences, etc.) that best describe the area covered by the estimates.
+
+### Special Action Information
+
+If the opportunity was authorized by a Federal Emergency Special Action, readers of the output document may be interested in gaining more information about it. Using these boxes:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/spact-info.png" width="600"/>
+</p>
+
+You can enter this information:
+
+* The special action number (for example, `3-KS-03-20` for the 6/12/2020 example)
+* The weblink to access the Emergency Special Action document (for example, <https://www.doi.gov/sites/doi.gov/files/uploads/3-ks-03-20-signed.pdf> for the 6/12/2020 example)
+* The weblink to access the News Release announcing the Emergency Special Action (for example, <https://www.fws.gov/uploadedFiles/2020_3-KS-03-20_News%20Release%20FINAL.pdf>)
+
+**NOTE**: these particular links may not work indefinitely, but they were active at the time of original writing (5/2/2020).
+
+**NOTE**: this information is optional to include, but if it is available to you then it is recommended that you include it.
+
+### Contact Person(s)
+
+If readers of the output documents have questions about the data or analysis, they should know who to contact. You can enter this here:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/contact.png" width="600"/>
+</p>
+
+Although it is optional, you are recommended to include the contact information for the person(s) who created the harvest estimates. You are recommended to use the format `Person 1 (p1@email.com), Person 2 (p2@email.com)` if there are multiple people involved.
+
+### Set Net Only Opportunity
+
+If the opportunity allowed only set nets (and not both set and drift nets), then **it is critical** that you check this box:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/set-only.png" width="150"/>
+</p>
+
+### Save and Close
+
+When you are done entering this information, you **must** click the save button at the bottom of the tool:
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/save.png" width="600"/>
+</p>
+
+This creates a file in the `data-use` folder in your project with the name `YYYY_MM_DD_meta.rds`. You will not be able to open this file directly -- it is used by R automatically in later steps. If you need to change the meta-data, relaunch this tool and start over.
+
+When you are done with the tool, you may click the "Done" button at the top right to exit the tool.
+
+<p align="center">
+  <img src="screenshots/02-meta-data-tool/done.png" width="60"/>
+</p>

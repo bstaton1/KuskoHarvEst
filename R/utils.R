@@ -135,3 +135,10 @@ add_vspace = function(kable_input, space = "-1em") {
   attributes(kable_input_new) = attributes(kable_input)
   return(kable_input_new)
 }
+
+#' Create a markdown link to a local documentation file
+#'
+
+link_to_doc = function(doc, text = "here") {
+  paste0('[', text, '](./', doc, '){target="_blank"}')
+}

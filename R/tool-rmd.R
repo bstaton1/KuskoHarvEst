@@ -12,7 +12,7 @@ rmd_tool = function() {
   # load the meta data file and return an error if it is not present
   meta_file = list.files(output_data_dir, pattern = "meta\\.rds$")
   if (length(meta_file) == 0) {
-    stop ("No meta data file detected - you must run the meta data tool before this tool.")
+    stop ("No meta-data file detected - you must run the meta-data tool before this tool.")
   } else {
     meta = readRDS(file.path(output_data_dir, meta_file))
   }
@@ -56,7 +56,8 @@ rmd_tool = function() {
           shiny::h3(shiny::strong("In-season Estimate Report Builder"), style = "margin:0;"),
           shiny::p(shiny::em("Here you will select some options for what to include in the in-season harvest report, create the source code file, and render it to a PDF.
                              After you click 'Build PDF Report', you will see the calculation progress in the backgound -- this takes some time. The PDF will automatically display when complete.",
-                             shiny::strong("If you wish to use different settings after you have already built the PDF, please close the PDF file and this tool first."))),
+                             shiny::strong("If you wish to use different settings after you have already built the PDF, please close the PDF file first."))),
+          shiny::actionLink("est_get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
 
           # widgets for estimate report control
           shiny::sliderInput(inputId = "est_n_boot", label = "Number of Bootstrap Samples", value = 1000, min = 100, max = 1000, step = 100),
@@ -81,7 +82,8 @@ rmd_tool = function() {
           shiny::h3(shiny::strong("Sensitivity Analysis Report Builder"), style = "margin:0;"),
           shiny::p(shiny::em("Here you will select some options for what to include in the sensitivity analysis report, create the source code file, and render it to a PDF.
                              After you click 'Build PDF Report', you will see the calculation progress in the backgound -- this takes some time (possibly several minutes). The PDF will automatically display when complete.",
-                             shiny::strong("If you wish to use different settings after you have already built the PDF, please close the PDF file and this tool first."))),
+                             shiny::strong("If you wish to use different settings after you have already built the PDF, please close the PDF file first."))),
+          shiny::actionLink("sen_get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
 
           # returns a message saying report can't be built if it is a set net only opener
           shiny::uiOutput("sen_setonly_message"),
@@ -104,6 +106,14 @@ rmd_tool = function() {
 
   # SERVER-SIDE OPERATIONS
   server = function(input, output, session) {
+
+    # when the "get_help" link is clicked:
+    shiny::observeEvent(input$est_get_help, {
+      file.show(resource_path("04-documentation/04-report-builder-tool.html"))
+    })
+    shiny::observeEvent(input$sen_get_help, {
+      file.show(resource_path("04-documentation/04-report-builder-tool.html"))
+    })
 
     # reactive container/values
     vals = shiny::reactiveValues()
