@@ -15,7 +15,8 @@ help_tool = function() {
     contents = readLines(x)
     title_line = contents[stringr::str_detect(contents, "^title\\:")]
     title = stringr::str_remove(title_line, "^title\\: ")
-    stringr::str_remove_all(title, '\\"')
+    title = stringr::str_remove_all(title, '\\"')
+    title = stringr::str_remove_all(title, "\\*")
   }))
 
   # build the html file names as a list, and give it names
