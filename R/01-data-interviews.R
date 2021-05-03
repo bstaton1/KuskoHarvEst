@@ -2,7 +2,7 @@
 #'
 #' @export
 
-prepare_interviews = function(input_file, src_name = NULL, include_whitefishes = FALSE, include_village = FALSE, include_goals = FALSE) {
+prepare_interviews = function(input_file, include_village = FALSE, include_goals = FALSE) {
 
   ### STEP 0: load the input data file & format column names
   dat_in = read.csv(input_file, stringsAsFactors = FALSE)
@@ -22,21 +22,19 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   colnames(dat_in) = vars
 
   ### STEP 1: handle the source name
-  if (is.null(src_name)) {
-    src_name = stringr::str_extract(basename(input_file), "[A-Z]+")
-  }
+  src_name = stringr::str_extract(basename(input_file), "^[A-Z]+")
   dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
 
-  ### STEP X: handle the stratum name
+  ### STEP 2: handle the stratum name
   dat_out$stratum = dat_in$stratum
 
-  ### STEP X: handle the gear (net) type
+  ### STEP 3: handle the gear (net) type
   gear_entered = dat_in$gear
   gear_standard = tolower(gear_entered) # make lowercase
   gear_standard = stringr::str_remove(gear_standard, "net")
   dat_out$gear = gear_standard
 
-  ### STEX X: handle net dimensions
+  ### STEX 4: handle net dimensions
   has_mesh = "mesh" %in% vars
   dat_out$net_length = dat_in$length
   if (has_mesh) {
@@ -45,7 +43,7 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
     dat_out$mesh_size = NA
   }
 
-  ### STEP X: handle trip times
+  ### STEP 5: handle trip times
   has_starttime = "trip_start" %in% vars
   has_endtime = "trip_end" %in% vars
 
@@ -77,7 +75,7 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   # calculate trip duration
   dat_out$trip_duration = suppressWarnings(lubridate::as.period(lubridate::interval(dat_out$trip_start, dat_out$trip_end)))
 
-  ### STEP X: handle soak times
+  ### STEP 6: handle soak times
   # extract the soak time variable name and time unit names from raw data
   # some sources use HH:MM format, others use the number of minutes or number of hours
   soak_var = vars[stringr::str_which(vars, "soak")]
@@ -92,12 +90,11 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
     dat_out$soak_duration = suppressWarnings(lubridate::as.period(round(lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes")))))
   }
 
-  ### STEP X: handle which species to keep
+  ### STEP 7: handle which species to keep
   keep_spp = c("chinook", "chum", "sockeye")
-  if (include_whitefishes) keep_spp = c(keep_spp, "whitefish", "sheefish")
   dat_out = cbind(dat_out, dat_in[,keep_spp])
 
-  ### STEP X: add village information if requested
+  ### STEP 8: add village information if requested
   if (include_village) {
     has_village = "village" %in% vars
     if (!has_village) {
@@ -107,7 +104,7 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
     }
   }
 
-  ### STEP X: add information about goal attainment if requested
+  ### STEP 9: add information about goal attainment if requested
   if (include_goals) {
     goal_vars = vars[stringr::str_detect(vars, "goal$")]
     if (length(goal_vars) == 0) {
@@ -120,4 +117,3 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   # return the formatted output
   return(dat_out)
 }
-
