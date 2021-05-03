@@ -12,7 +12,6 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 _This document describes how to use the interview/flight data preparation tool, which allows you to explore the output of the automated quality assurance checks and look at other aspects of the raw data._
