@@ -63,7 +63,7 @@ rmd_tool = function() {
           shiny::checkboxInput(inputId = "est_draft", label = "Mark as Draft", value = TRUE),
           shiny::checkboxInput(inputId = "est_do_setnets", label = "Make Set Net Harvest Estimate", value = TRUE),
           shiny::checkboxInput(inputId = "est_include_johnson_table", label = "Include Johnson River Proximity Table", value = ifelse(meta$set_only, FALSE, TRUE)),
-          shiny::checkboxInput(inputId = "est_include_goal_table", label = "Include Harvest Goal Attainment Table", value = TRUE),
+          shiny::checkboxInput(inputId = "est_include_goal_table", label = "Include Harvest Goal Attainment Table", value = FALSE),
           shiny::checkboxInput(inputId = "est_include_appendix", label = "Include Detailed Appendix", value = TRUE)
         ),
 
