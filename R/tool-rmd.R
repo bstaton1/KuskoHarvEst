@@ -41,7 +41,6 @@ rmd_tool = function() {
 
     # for disabling buttons until actionable
     shinyjs::useShinyjs(),
-    suppressWarnings(tippy::use_tippy()),
 
     # create the title
     miniUI::gadgetTitleBar("KuskoHarvEst Report Builder Tool"),
