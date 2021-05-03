@@ -1,21 +1,37 @@
 Package: KuskoHarvEst
-Title: Workflow and Interface for Producing In-season Harvest Estimates and Reports for Lower Kuskokwim Salmon Fisheries
+Title: Tools for Producing In-season Estimates of Salmon Harvest and Effort Occurring in Short-Duration Subsistence Harvest Opportunities in the Lower Kuskokwim River
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Ben",
            family = "Staton",
            role = c("aut", "cre"),
            email = "bstaton.qes@gmail.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: TO BE COMPLETED LATER
+           comment = c(ORCID = "0000-0002-2342-3482"))
+Description: This package contains two main types of functionality to facilitate harvest and effort estimation.
+    First, there are "core" functions that handle data processing and estimation tasks. However, many potential users
+    of this package are not R programmers, and so the second type of functionality is to enable interactive and automated
+    creation of estimates and reports. The intent is to place the emphasis of the analyst on the raw data files
+    rather than on the intracacies of estimation and automated reporting. 
 License: use_mit_license()
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Depends: 
-    R (>= 2.10),
+    R (>= 3.5)
+Imports:
     shiny (>= 0.13),
     miniUI (>= 0.1.1),
+    shinyTime,
     rstudioapi (>= 0.5),
-    magrittr
+    magrittr,
+    lubridate,
+    stringr (>= 1.3.1),
+    reshape2,
+    shinyjs,
+    DT,
+    rmarkdown,
+    knitr,
+    kableExtra,
+    tinytex,
+    latex2exp
