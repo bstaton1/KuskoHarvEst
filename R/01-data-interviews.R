@@ -7,6 +7,10 @@ prepare_interviews = function(input_file, src_name = NULL, include_whitefishes =
   ### STEP 0: load the input data file & format column names
   dat_in = read.csv(input_file, stringsAsFactors = FALSE)
 
+  # determine and delete the rows that have all NA values: Excel/CSV quirk sometimes includes these
+  all_NA = sapply(1:nrow(dat_in), function(i) all(is.na(dat_in[i,]) | dat_in[i,] == ""))
+  dat_in = dat_in[!all_NA,]
+
   # which variables are available?
   vars = colnames(dat_in)
 
