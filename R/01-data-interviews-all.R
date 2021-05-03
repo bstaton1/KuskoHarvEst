@@ -67,7 +67,7 @@ prepare_interviews_all = function(input_files, ...) {
     interview_data$suit_cr_reliable[cpt_outliers] = FALSE
     interview_data$suit_avg_soak[cpt_outliers] = FALSE
     interview_data$suit_avg_net[cpt_outliers] = FALSE
-    warning("\n", sum(cpt_outliers), " interviews had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
+    warning("\n", sum(cpt_outliers), " interview(s) had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
   }
 
   # combine the notes from each record
