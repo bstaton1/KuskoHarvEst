@@ -12,7 +12,7 @@ rmd_tool = function() {
   # load the meta data file and return an error if it is not present
   meta_file = list.files(output_data_dir, pattern = "meta\\.rds$")
   if (length(meta_file) == 0) {
-    stop ("No meta data file detected - you must run the meta data tool before this tool.")
+    stop ("No meta-data file detected - you must run the meta-data tool before this tool.")
   } else {
     meta = readRDS(file.path(output_data_dir, meta_file))
   }

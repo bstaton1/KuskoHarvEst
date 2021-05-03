@@ -11,7 +11,7 @@ data_tool = function() {
   # load the meta data file and return an error if it is not present
   meta_file = list.files(output_data_dir, pattern = "meta\\.rds$")
   if (length(meta_file) == 0) {
-    stop ("No meta data file detected - you must run the meta data tool before this tool.")
+    stop ("No meta-data file detected - you must run the meta-data tool before this tool.")
   } else {
     meta = readRDS(file.path(output_data_dir, meta_file))
   }
@@ -19,16 +19,21 @@ data_tool = function() {
   # return an error if the data files haven't been placed in the raw data folder
   data_files = list.files(input_data_dir)
   if (length(data_files) == 0) {
-    stop ("No data files found in the data-raw subdirectory.")
+    stop ("No data files found in the 'data-raw' folder.")
   }
 
   # find which file contains the flight data and return an error if not found
   which_flight = stringr::str_detect(data_files, "Flight_counts")
   if (!any(which_flight)) {
-    stop ("No flight count data file found in the data subdirectory.")
+    stop ("No flight count data file found in the 'data-raw' folder.")
   }
   interview_files = data_files[-which(which_flight)]
   flight_files = data_files[which_flight]
+
+  # return error if no interview data files were found
+  if (length(interview_files) == 0) {
+    stop ("No interview data file(s) found in the 'data-raw' folder.")
+  }
 
   # USER-INTERFACE
   ui = miniUI::miniPage(
@@ -170,7 +175,7 @@ data_tool = function() {
       vals$interview_data = prepare_interviews_all(input_files = file.path(input_data_dir, input$interview_files), include_village = TRUE, include_goals = TRUE)
       shiny::updateSelectInput(session, "filter_DT_source", choices = unique(vals$interview_data$source), selected = unique(vals$interview_data$source))
       shiny::updateSelectInput(session, "filter_DT_gear", choices = unique(vals$interview_data$gear), selected = unique(vals$interview_data$gear))
-      shiny::updateSelectInput(session, "filter_DT_stratum", choices = unique(vals$interview_data$stratum), selected = unique(vals$interview_data$stratum))
+      shiny::updateSelectInput(session, "filter_DT_stratum", choices = sort(unique(vals$interview_data$stratum)), selected = sort(unique(vals$interview_data$stratum)))
     })
 
     # save the formatted interview data when told
