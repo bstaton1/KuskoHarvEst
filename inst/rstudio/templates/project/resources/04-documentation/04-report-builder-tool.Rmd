@@ -122,8 +122,6 @@ You can find several new files in your project folder now:
 
 * `output/KuskoHarvEst_bootstrap_YYYY_MM_DD.csv`: This file contains the individual bootstrap values of harvest estimates. This file may be useful in building the season-end report or may be requested from you by the person who creates the in-season assessment documents.
 
-**NOTE**: The first time you build a PDF report this way, the process will take quite a bit longer than every subsequent time. This is because the 'tinytex' R package must install the necessary extensions for TinyTex to work properly. You'll know this is happening because you'll see a lot of text popping up in the R console that talks about "tlmgr".
-
 ## Sensitivity Analysis Report Builder Tab
 
 To build the sensitivity analysis document, navigate to this tab:
