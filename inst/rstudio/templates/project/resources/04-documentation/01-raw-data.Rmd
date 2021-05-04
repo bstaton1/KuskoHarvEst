@@ -147,8 +147,8 @@ The date(s) the trip occurred on, entered as M/D/YYYY format. There are two opti
 
 Using option (1) will cause the program to return a warning later on:
 
-```{r, echo = FALSE, warning = TRUE}
-warning("Only the 'date' column was found in the raw data, not 'date_start' and 'date_end'.\nIt is thus assumed that all trips started and ended on the same date.")
+```{r, comment = NA}
+cat("Warning: Only the 'date' column was found in the raw data, not 'date_start' and 'date_end'.\nIt is thus assumed that all trips started and ended on the same date.")
 ```
 
 Thus, option (2) is preferable to use in all cases because it is explicit -- if all trips began and ended the same day, then the two columns will be identical for each row.
