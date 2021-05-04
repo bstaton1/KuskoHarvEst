@@ -164,7 +164,7 @@ summary {
 <h1 class="title toc-ignore"><strong>Raw Data File Format</strong></h1>
 <h3 class="subtitle"><em>KuskoHarvEst Documentation</em></h3>
 <h4 class="author">Package Version: 0.0.0.9000</h4>
-<h4 class="date">Last Updated: 5/2/2021</h4>
+<h4 class="date">Last Updated: 5/3/2021</h4>
 
 </div>
 
@@ -291,8 +291,9 @@ summary {
 <li>Have one <code>date.start</code> and one <code>date.end</code> column, where each stores the start and end date of each trip. This is included to handle (rare) cases where a set net may be set overnight – fishing started on one day and ended the next.</li>
 </ol>
 <p>Using option (1) will cause the program to return a warning later on:</p>
-<pre><code>## Warning: Only the &#39;date&#39; column was found in the raw data, not &#39;date_start&#39; and &#39;date_end&#39;.
-## It is thus assumed that all trips started and ended on the same date.</code></pre>
+<pre class="r"><code>cat(&quot;Warning: Only the &#39;date&#39; column was found in the raw data, not &#39;date_start&#39; and &#39;date_end&#39;.\nIt is thus assumed that all trips started and ended on the same date.&quot;)</code></pre>
+<pre><code>Warning: Only the &#39;date&#39; column was found in the raw data, not &#39;date_start&#39; and &#39;date_end&#39;.
+It is thus assumed that all trips started and ended on the same date.</code></pre>
 <p>Thus, option (2) is preferable to use in all cases because it is explicit – if all trips began and ended the same day, then the two columns will be identical for each row.</p>
 <p>Interview data should be placed in the data file corresponding to the day the trip started. So for example, if you have a trip that started on one day and ended the next day, it should go in the data file that includes other interviews that started on that same day, even though the end date is different.</p>
 </div>

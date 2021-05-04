@@ -140,6 +140,14 @@ Additionally, there may be several warnings that pop up in the background behind
     ```{r, comment = NA}
     cat("Warning: X interview(s) had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
     ```
+    
+* **Assuming all trips started and ended the same day**: if your interview data files contain only a single `date` column, and not `date.start` and `date.end`, you will see this warning (potentially multiple times, once per interview data file): 
+
+    ```{r, comment = NA}
+    cat("Warning: Only the 'date' column was found in the raw data, not 'date_start' and 'date_end'.\nIt is thus assumed that all trips started and ended on the same date.")
+    ```
+
+    See the raw data format `r KuskoHarvEst:::link_to_doc("01-raw-data.html", "instructions")` for more details.  
 
 However, you may get this error and the tool will close automatically:
 
