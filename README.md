@@ -42,9 +42,9 @@ tinytex::install_tinytex()
 tinytex::tlmgr_install(pkgs = c(
   "sansmathfonts", "setspace", "titlesec", "footmisc",
   "microtype", "caption", "floatrow", "multirow",
-  "colortbl", "wrapfig", "pdflscape", "tabu"
+  "colortbl", "wrapfig", "pdflscape", "tabu",
   "varwidth", "threeparttable", "threeparttablex",
-  "environ", "trimspaces", "ulem", "makecell"
+  "environ", "trimspaces", "ulem", "makecell",
   "fancyhdr", "draftwatermark"
 ))
 ```
