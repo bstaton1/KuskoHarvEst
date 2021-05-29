@@ -79,7 +79,7 @@ make_one_histogram = function(interview_data, gear, variable, n_bins = 10) {
   hist(x, breaks = breaks, ylim = c(0, max(bin_counts)) * 1.4, main = main, xlab = "Value", ylab = "Frequency",
        col = "grey70", border = "white", xaxt = "n", yaxt = "n")
   axis(side = 1); axis(side = 2, las = 2)
-  legend("top", x.intersp = 0, ncol = 2, legend = means_text, bty = "n", cex = 1)
+  legend("topleft", x.intersp = -0.5, ncol = 2, legend = means_text, bty = "n", cex = 1.15)
   usr = par("usr")
   segments(usr[1], usr[3], usr[2], usr[3], xpd = T)
 }
