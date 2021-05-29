@@ -78,6 +78,9 @@ build_yaml = function(doc_type, draft) {
   # make the draft watermark setting
   draft_watermark = paste0('draft-watermark: ', tolower(as.character(draft)))
 
+  # build the call to create the location of logo files
+  graphics_path = paste0('graphics-path: ', '"`r KuskoHarvEst:::resource_path(\'06-logos\')`"')
+
   # make the editor options setting
   editor_options = "editor_options:\n  chunk_output_type: console"
 
@@ -99,6 +102,7 @@ build_yaml = function(doc_type, draft) {
     lfooter,
     rfooter,
     draft_watermark,
+    graphics_path,
     editor_options,
     "---\n"
   )

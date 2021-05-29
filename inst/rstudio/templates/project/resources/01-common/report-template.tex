@@ -36,6 +36,8 @@
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
+\graphicspath{{$graphics-path$}}
+
 % spacing set up: not sure where this came from
 \IfFileExists{parskip.sty}{%
 \usepackage{parskip}
@@ -133,7 +135,22 @@ $if(news-release-url)$
 {\small{News Release: $news-release-url$}}\\
 $endif$
 \end{flushleft}
-\vspace{-10pt}
+
+% add logos
+\begin{minipage}[ht]{0.33\textwidth}
+\centering
+\includegraphics{onc-logo}
+\end{minipage}
+\begin{minipage}[ht]{0.33\textwidth}
+\centering
+\includegraphics{kritfc-logo}
+\end{minipage}
+\begin{minipage}[ht]{0.33\textwidth}
+\centering
+\includegraphics{usfws-logo}
+\end{minipage}
+
+% \vspace{-10pt}
 \rule{\textwidth}{1pt}
 
 % insert body
