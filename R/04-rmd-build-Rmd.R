@@ -9,7 +9,7 @@ build_yaml = function(doc_type, draft) {
   meta = readRDS(list.files(pattern = "meta", full.names = TRUE, recursive = TRUE))
 
   # make the output type setting
-  output = "output: KuskoHarvEst::pdf_report"
+  output = "output: KuskoHarvEst:::pdf_report"
 
   # make the document title setting
   if (doc_type == "estimate_report") {

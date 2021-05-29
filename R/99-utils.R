@@ -59,7 +59,6 @@ percentize = function(x, escape = FALSE, digits = 0) {
 
 #' Format a datetime object to be shorter
 #'
-#' @export
 
 short_datetime = function(datetimes, include_date = F) {
 

@@ -1,7 +1,6 @@
 #' Sample with replacement from a data set
 #' @param interview_data data frame generated with `prepare_interviews()`
 #'   See details.
-#' @export
 
 randomize_data = function(interview_data) {
 

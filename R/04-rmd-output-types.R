@@ -5,9 +5,8 @@ resource_path = function(file) {
   system.file(file.path("rstudio", "templates", "project", "resources", file), package = "KuskoHarvEst")
 }
 
-#' Create path to a package resource file
+#' Rmarkdown output format for PDF reports
 #'
-#' @export
 
 pdf_report = function(...) {
 
