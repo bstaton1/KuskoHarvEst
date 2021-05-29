@@ -1,4 +1,4 @@
 
 ```{r johnson-summary-table}
-johnson_summary_table()
+make_johnson_summary_table()
 ```

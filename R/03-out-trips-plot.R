@@ -2,7 +2,7 @@
 #'
 #' @export
 
-effort_plot = function(flight_data, effort_info, trips_only = FALSE) {
+make_effort_plot = function(flight_data, effort_info, trips_only = FALSE) {
 
   # count how many flights were done
   n_flights = nrow(flight_data)

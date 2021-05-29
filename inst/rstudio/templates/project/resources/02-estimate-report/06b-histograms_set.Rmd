@@ -1,4 +1,4 @@
 
-```{r histograms, fig.width = 7.5, fig.height = 4, fig.cap = make_histogram_caption(interview_data, "set")}
-make_all_histograms(interview_data, "set", c("total_salmon", "chinook", "chum+sockeye", "trip_duration", "soak_duration", "p_chinook"))
+```{r histograms, fig.width = 7.5, fig.height = 4, fig.cap = KuskoHarvEst:::make_histogram_caption(interview_data, "set")}
+make_histograms(interview_data, gear = "set", variables = c("total_salmon", "chinook", "chum+sockeye", "trip_duration", "soak_duration", "p_chinook"), n_bins = 10)
 ```

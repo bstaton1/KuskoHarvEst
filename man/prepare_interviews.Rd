@@ -2,10 +2,10 @@
 % Please edit documentation in R/01-data-interviews.R
 \name{prepare_interviews}
 \alias{prepare_interviews}
-\title{Format interview data for analysis}
+\title{Prepare all interview data}
 \usage{
-prepare_interviews(input_file, include_village = FALSE, include_goals = FALSE)
+prepare_interviews(input_files, ...)
 }
 \description{
-Format interview data for analysis
+Prepare all interview data
 }

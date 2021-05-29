@@ -2,9 +2,9 @@
 # Data Sources {-}
 
 ```{r interview-sources-table}
-interview_data_table(interview_data)
+make_interview_data_table(interview_data)
 ```
 
 ```{r flight-table}
-flight_data_table(flight_data)
+make_flight_data_table(flight_data)
 ```

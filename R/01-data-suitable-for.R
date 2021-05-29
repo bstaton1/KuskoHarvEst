@@ -2,7 +2,6 @@
 #'
 #' A wrapper around a variety of "checking" functions, all of which are non-exported.
 #'
-#' @export
 
 suitable_for = function(interview_data, task) {
 

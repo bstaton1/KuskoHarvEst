@@ -1,3 +1,18 @@
+#' Create a project directory to use with 'KuskoHarvEst'
+#'
+#'
+
+KuskoHarvEst_skeleton = function(path) {
+
+  # create the package directory
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+
+  # create subdirectories
+  dir.create(file.path(path, "data-raw"))
+
+  TRUE
+}
+
 #' Convert date and time variables into a datetime variable
 #'
 #'
@@ -30,7 +45,6 @@ unlist_dfs = function(list) {
 
 #' Convert a proportion to a percent
 #'
-#' @export
 
 percentize = function(x, escape = FALSE, digits = 0) {
   # create the percent version
@@ -45,7 +59,6 @@ percentize = function(x, escape = FALSE, digits = 0) {
 
 #' Format a datetime object to be shorter
 #'
-#' @export
 
 short_datetime = function(datetimes, include_date = F) {
 

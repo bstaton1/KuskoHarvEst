@@ -32,5 +32,5 @@ boot_out <<- rbind(boot_out_total, boot_out_drift, boot_out_set)
   * An estimated total of **`r report(spp = "sockeye")`** sockeye salmon were harvested.
 
 ```{r strata-summary-table}
-strata_summary_table(interview_data, "drift")
+make_strata_summary_table(interview_data, "drift")
 ```

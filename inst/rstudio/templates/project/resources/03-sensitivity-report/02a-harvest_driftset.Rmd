@@ -13,7 +13,7 @@ drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method
 set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
 
 # make the combinations of data sources to leave out
-harvest_combos = KuskoHarvEst:::make_harvest_combos(interview_data)
+harvest_combos = KuskoHarvEst:::create_harvest_combos(interview_data)
 
 # obtain bootstrapped harvest estimates for each scenario
 harvest_scenarios = lapply(1:nrow(harvest_combos), function(i) {
@@ -44,5 +44,5 @@ harvest_scenarios = lapply(1:nrow(harvest_combos), function(i) {
   rbind(boot_out_total, boot_out_drift, boot_out_set)
 })
 
-KuskoHarvEst:::harvest_sensitivity_table(harvest_scenarios, harvest_combos)
+make_harvest_sensitivity_table(harvest_scenarios, harvest_combos)
 ```

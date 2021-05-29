@@ -2,10 +2,10 @@
 % Please edit documentation in R/03-out-histograms.R
 \name{make_histogram_caption}
 \alias{make_histogram_caption}
-\title{Make a figure caption for multipanel histograms}
+\title{Make a figure caption for multi-panel histograms}
 \usage{
 make_histogram_caption(interview_data, gear)
 }
 \description{
-Make a figure caption for multipanel histograms
+Make a figure caption for multi-panel histograms
 }
