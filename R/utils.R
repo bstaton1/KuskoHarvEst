@@ -1,3 +1,18 @@
+#' Create a project directory to use with 'KuskoHarvEst'
+#'
+#'
+
+KuskoHarvEst_skeleton = function(path) {
+
+  # create the package directory
+  dir.create(path, recursive = TRUE, showWarnings = FALSE)
+
+  # create subdirectories
+  dir.create(file.path(path, "data-raw"))
+
+  TRUE
+}
+
 #' Convert date and time variables into a datetime variable
 #'
 #'
