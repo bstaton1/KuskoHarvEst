@@ -1,6 +1,5 @@
 #' Estimate expected catch for the average trip
 #'
-#' @export
 
 estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn")) {
 
