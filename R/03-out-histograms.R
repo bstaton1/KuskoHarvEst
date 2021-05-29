@@ -1,8 +1,7 @@
 #' Make a single histogram showing distribution of a quantity across interviews
 #'
-#' @export
 
-make_one_histogram = function(interview_data, gear, variable, n_bins = 10) {
+make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 
   # set the variables that are accepted, and perform error check
   accepted_variables = c("total_salmon", "chinook", "chum", "sockeye", "chum+sockeye", "soak_duration", "trip_duration", "p_chinook")
@@ -88,7 +87,7 @@ make_one_histogram = function(interview_data, gear, variable, n_bins = 10) {
 #'
 #' @export
 
-make_all_histograms = function(interview_data, gear, variables, n_bins = 10) {
+make_histograms = function(interview_data, gear, variables, n_bins = 10) {
 
   # error check to make sure not more than 6 variables were supplied
   if (length(variables) > 6) {
@@ -99,15 +98,14 @@ make_all_histograms = function(interview_data, gear, variables, n_bins = 10) {
   par(mfrow = c(2,3), mar = c(1.5,1,2,1), oma = c(0,2,0,0))
 
   # loop through variables creating the histogram for each
-  junk = sapply(variables, function(v) make_one_histogram(interview_data, gear, v, n_bins))
+  junk = sapply(variables, function(v) make_histogram(interview_data, gear, v, n_bins))
 
   # add a shared y-axis label
   mtext(side = 2, outer = T, "Frequency", line = 0.5)
 }
 
-#' Make a figure caption for multipanel histograms
+#' Make a figure caption for multi-panel histograms
 #'
-#' @export
 
 make_histogram_caption = function(interview_data, gear) {
   # start the caption
