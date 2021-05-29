@@ -45,7 +45,6 @@ unlist_dfs = function(list) {
 
 #' Convert a proportion to a percent
 #'
-#' @export
 
 percentize = function(x, escape = FALSE, digits = 0) {
   # create the percent version
