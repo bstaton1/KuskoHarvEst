@@ -36,7 +36,6 @@ is_possible_trip = function(interview_data) {
 #'
 #' @details If the soak duration is longer than the trip duration, this is impossible and an error.
 #' The user should fix this entry in the data set before proceeding.
-#' @export
 
 is_possible_soak = function(interview_data) {
   ifelse(!has_trip_times(interview_data) | !has_soak(interview_data), TRUE,
@@ -51,7 +50,6 @@ is_possible_soak = function(interview_data) {
 #'   E.g., soak time should not be used in calculation of the average across trips,
 #'   and if the soak time is excessively short at the time of the interview relative to completed
 #'   trips, it shouldn't be used to inform the average catch rate.
-#' @export
 
 is_complete_trip = function(interview_data) {
   interview_data$source != "LE"
