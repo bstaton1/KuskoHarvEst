@@ -1,7 +1,7 @@
-#' Make combinations of flights to leave out for effort sensitivity analysis
+#' Create combinations of flights to use for effort sensitivity analysis
 #'
 
-make_flight_combos = function(flight_data) {
+create_flight_combos = function(flight_data) {
   # count the number of flights in full data set
   n_flights = nrow(flight_data)
 
@@ -22,10 +22,10 @@ make_flight_combos = function(flight_data) {
   return(combos)
 }
 
-#' Make combinations of interview data sources to leave out for effort sensitivity analysis
+#' Create combinations of interview data sources to use for effort sensitivity analysis
 #'
 
-make_interview_combos = function(interview_data) {
+create_interview_combos = function(interview_data) {
 
   # extract the interview data sources found in the data that have complete trip time information
   sources = unique(interview_data$source[has_trip_times(interview_data)])
@@ -48,10 +48,10 @@ make_interview_combos = function(interview_data) {
   return(combos)
 }
 
-#' Make combinations of interview data sources to leave out for harvest sensitivity analysis
+#' Create combinations of interview data sources to use for harvest sensitivity analysis
 #'
 
-make_harvest_combos = function(interview_data) {
+create_harvest_combos = function(interview_data) {
 
   # extract all interview data source names
   sources = unique(interview_data$source)
@@ -77,11 +77,12 @@ make_harvest_combos = function(interview_data) {
   return(combos)
 }
 
-#' Build a table to report results of effort sensitivity analyses
+#' Make a table to report results of effort sensitivity analyses
 #'
+#' @export
 #' @importFrom magrittr %>%
 
-effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
+make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
 
   # extract primary effort estimation information from each effort estimate
   combo_total_ests = unlist(lapply(effort_scenarios, function(x) x$effort_est_total))
@@ -131,11 +132,12 @@ effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
     add_vspace
 }
 
-#' Build a table to report results from harvest sensitivity analyses
+#' Make a table to report results from harvest sensitivity analyses
 #'
+#' @export
 #' @importFrom magrittr %>%
 
-harvest_sensitivity_table = function(harvest_scenarios, combos) {
+make_harvest_sensitivity_table = function(harvest_scenarios, combos) {
 
   # create names for each combo
   combo_names = sapply(1:nrow(combos), function(i) {

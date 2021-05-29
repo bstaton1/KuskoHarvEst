@@ -137,7 +137,7 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   # return warning if its a set net only opener and the johnson table was requested
   # that table is for drift net estimates only, and can't be produced for a set net only opportunity
   if (include_johnson_table & meta$set_only) {
-    warning ("The output of johnson_summary_table() was requested, but this is a set net only estimate.\nIt will not be included in the output report.")
+    warning ("The output of make_johnson_summary_table() was requested, but this is a set net only estimate.\nIt will not be included in the output report.")
   }
 
   # 1: select the right file to produce data source summaries

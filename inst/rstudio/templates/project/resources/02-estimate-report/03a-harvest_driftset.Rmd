@@ -37,5 +37,5 @@ set_spp = percentize(set_harvest[c("chinook", "chum", "sockeye")]/set_harvest["t
 * Harvest by set nets accounted for an estimated **`r report(gear = "set")`** total salmon (`r paste0(set_spp["chinook"], " Chinook salmon, ", set_spp["chum"], " chum salmon, and ", set_spp["sockeye"], " sockeye salmon")`).
 
 ```{r strata-summary-table}
-strata_summary_table(interview_data, "drift")
+make_strata_summary_table(interview_data, "drift")
 ```

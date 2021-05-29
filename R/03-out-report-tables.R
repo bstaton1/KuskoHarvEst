@@ -3,7 +3,7 @@
 #' @importFrom magrittr %>%
 #' @export
 
-interview_data_table = function(interview_data) {
+make_interview_data_table = function(interview_data) {
   # count the number of interviews from each data source
   tab = sort(table(interview_data$source), decreasing = TRUE)
 
@@ -34,7 +34,7 @@ interview_data_table = function(interview_data) {
 #' @importFrom magrittr %>%
 #' @export
 
-flight_data_table = function(flight_data) {
+make_flight_data_table = function(flight_data) {
 
   # determine if flights were flown on multiple days
   multi_day = ifelse(length(unique(lubridate::date(flight_data$start_time))) > 1 | length(unique(lubridate::date(flight_data$end_time))) > 1, T, F)
@@ -68,7 +68,7 @@ flight_data_table = function(flight_data) {
 #' @importFrom magrittr %>%
 #' @export
 
-strata_summary_table = function(interview_data, gear) {
+make_strata_summary_table = function(interview_data, gear) {
 
   # create nice names for the strata
   strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
@@ -123,7 +123,7 @@ strata_summary_table = function(interview_data, gear) {
 #' @importFrom magrittr %>%
 #' @export
 
-johnson_summary_table = function() {
+make_johnson_summary_table = function() {
   # extract effort estimates above and below Johnson R.
   below_johnson_effort = drift_effort_info$effort_est_stratum["A"]
   above_johnson_effort = sum(drift_effort_info$effort_est_stratum[c("B", "C", "D1")])
@@ -186,7 +186,7 @@ johnson_summary_table = function() {
 #' @importFrom magrittr %>%
 #' @export
 
-appendix_table = function(interview_data, gear, variable) {
+make_appendix_table = function(interview_data, gear, variable) {
 
   # set the variables that are accepted, and perform error check
   accepted_variables = c(
@@ -360,7 +360,7 @@ appendix_table = function(interview_data, gear, variable) {
 #' @importFrom magrittr %>%
 #' @export
 
-goals_summary_table = function(interview_data) {
+make_goals_summary_table = function(interview_data) {
 
   # check to make sure the goal data are present in the data set
   goal_columns = stringr::str_detect(colnames(interview_data), "goal")

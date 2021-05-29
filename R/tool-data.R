@@ -323,7 +323,7 @@ data_tool = function() {
     # create the trips plot
     output$trips_plot = shiny::renderPlot({
       if (!is.null(vals$flight_data) & !is.null(vals$interview_data) & !meta$set_only) {
-        effort_plot(vals$flight_data, estimate_effort(vals$interview_data, vals$flight_data, "drift", "dbl_exp"), trips_only = TRUE)
+        make_effort_plot(vals$flight_data, estimate_effort(vals$interview_data, vals$flight_data, "drift", "dbl_exp"), trips_only = TRUE)
       } else {
         NULL
       }
