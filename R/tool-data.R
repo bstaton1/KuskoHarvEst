@@ -172,7 +172,7 @@ data_tool = function() {
 
     # read in and prepare the interview data and populate the filters in the DT tab
     shiny::observeEvent(input$load_interview_data, {
-      vals$interview_data = prepare_interviews_all(input_files = file.path(input_data_dir, input$interview_files), include_village = TRUE, include_goals = TRUE)
+      vals$interview_data = prepare_interviews(input_files = file.path(input_data_dir, input$interview_files), include_village = TRUE, include_goals = TRUE)
       shiny::updateSelectInput(session, "filter_DT_source", choices = unique(vals$interview_data$source), selected = unique(vals$interview_data$source))
       shiny::updateSelectInput(session, "filter_DT_gear", choices = unique(vals$interview_data$gear), selected = unique(vals$interview_data$gear))
       shiny::updateSelectInput(session, "filter_DT_stratum", choices = sort(unique(vals$interview_data$stratum)), selected = sort(unique(vals$interview_data$stratum)))

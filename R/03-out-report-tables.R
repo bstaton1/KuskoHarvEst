@@ -365,7 +365,7 @@ goals_summary_table = function(interview_data) {
   # check to make sure the goal data are present in the data set
   goal_columns = stringr::str_detect(colnames(interview_data), "goal")
   if (sum(goal_columns) == 0) {
-    stop ("Goal data not found in the interview data.\nBe sure to use include_goals = TRUE when using prepare_interviews() or prepare_interviews_all().")
+    stop ("Goal data not found in the interview data.\nBe sure to use include_goals = TRUE when using prepare_interviews().")
   }
 
   # extract the goal info
