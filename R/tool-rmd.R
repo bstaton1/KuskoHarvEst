@@ -142,7 +142,7 @@ rmd_tool = function() {
 
     # knit the estimate report rmd when instructed
     shiny::observeEvent(input$knit_est_rmd, {
-      est_out_file = file.path(output_dir, stringr::str_replace(vals$est_rmd_file, "Rmd", "pdf"))
+      est_out_file = file.path("output", stringr::str_replace(vals$est_rmd_file, "Rmd", "pdf"))
       rmarkdown::render(input = vals$est_rmd_file,
                         output_file = est_out_file,
                         envir = new.env())
@@ -189,7 +189,7 @@ rmd_tool = function() {
 
     # knit the sensitivity report rmd when instructed
     shiny::observeEvent(input$knit_sen_rmd, {
-      sen_out_file = file.path(output_dir, stringr::str_replace(vals$sen_rmd_file, "Rmd", "pdf"))
+      sen_out_file = file.path("output", stringr::str_replace(vals$sen_rmd_file, "Rmd", "pdf"))
       rmarkdown::render(input = vals$sen_rmd_file,
                         output_file = sen_out_file,
                         envir = new.env())
