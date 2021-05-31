@@ -2,10 +2,14 @@
 % Please edit documentation in R/99-utils.R
 \name{unlist_dfs}
 \alias{unlist_dfs}
-\title{Combine a List of Data Frames}
+\title{Combine a list of data frames}
 \usage{
 unlist_dfs(list)
 }
+\arguments{
+\item{list}{List; each element is a data frame with identical headers}
+}
 \description{
-Combine a List of Data Frames
+Loops over elements of a list object, where each element is a data frame with identical headers
+and applies \code{\link[base:cbind]{base::rbind()}} to them.
 }

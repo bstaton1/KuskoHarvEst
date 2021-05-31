@@ -6,6 +6,9 @@
 \usage{
 unique_start_dates(interview_data)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+}
 \description{
 Determine the unique start dates of all interviews
 }

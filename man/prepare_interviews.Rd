@@ -2,10 +2,16 @@
 % Please edit documentation in R/01-data-interviews.R
 \name{prepare_interviews}
 \alias{prepare_interviews}
-\title{Prepare all interview data}
+\title{Prepare interview data files}
 \usage{
 prepare_interviews(input_files, ...)
 }
+\arguments{
+\item{input_files}{Character; vector of file names that contain interview data}
+
+\item{...}{Optional arguments passed to \code{\link[=prepare_interviews_one]{prepare_interviews_one()}}}
+}
 \description{
-Prepare all interview data
+Calls \code{\link[=prepare_interviews_one]{prepare_interviews_one()}} multiple times, once per interview data file
+and performs data quality checks
 }

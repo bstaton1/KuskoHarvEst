@@ -6,10 +6,15 @@
 \usage{
 is_normal_net(interview_data, net_length_cut = getOption("net_length_cut"))
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{net_length_cut}{Numeric; maximum net length (in feet) allowed, records with net length longer
+than this will have their net length deemed unsuitable for any purpose}
+}
 \description{
 Check if the net characteristics are as expected
 }
 \details{
 Nets that are extremely long are probably mis-recorded and should not be included.
-Could feasibly include a mesh cutoff here if there was interest.
 }

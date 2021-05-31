@@ -6,6 +6,15 @@
 \usage{
 make_strata_summary_table(interview_data, gear)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+}
 \description{
 Create a table to summarize information spatially
 }

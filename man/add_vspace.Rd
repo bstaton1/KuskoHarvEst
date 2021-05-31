@@ -6,6 +6,15 @@
 \usage{
 add_vspace(kable_input, space = "-1em")
 }
+\arguments{
+\item{kable_input}{Output of a \code{knitr::kable() \%>\% kableExtra::fn()} chain.}
+
+\item{space}{Character; LaTex units and magnitude of space to include in a vspace
+call at the bottom of the table}
+}
 \description{
 A function to add vspace to the bottom of a kable
+}
+\details{
+This function should be called as the last step in the chain of commands.
 }

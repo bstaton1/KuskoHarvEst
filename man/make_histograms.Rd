@@ -6,6 +6,21 @@
 \usage{
 make_histograms(interview_data, gear, variables, n_bins = 10)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+
+\item{variables}{Character; vector with length less than 6 indicating which
+variables to draw histograms for. See \code{\link[=make_histogram]{make_histogram()}} for accepted options}
+
+\item{n_bins}{Numeric; the number of bars to draw for the histogram}
+}
 \description{
-Make a multi-panel figure showing multiple histograms
+Calls \code{\link[=make_histogram]{make_histogram()}} several times to build a multipanel figure showing
+summaries of several variables.
 }

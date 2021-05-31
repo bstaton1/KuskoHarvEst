@@ -2,7 +2,7 @@
 % Please edit documentation in R/02-est-bootstrap.R
 \name{bootstrap_harvest}
 \alias{bootstrap_harvest}
-\title{Perform Non-Parametric Bootstrapping On Harvest Estimates}
+\title{Perform non-parametric bootstrapping}
 \usage{
 bootstrap_harvest(
   interview_data,
@@ -13,6 +13,24 @@ bootstrap_harvest(
   seed = 1234
 )
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{effort_info}{List storing the output of \code{\link[=estimate_effort]{estimate_effort()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+
+\item{n_boot}{Numeric; the number of bootstrap iterations to perform}
+
+\item{stratify_interviews}{Logical; should interview data be separated by geographic stratum before performing the estimate?
+Generally this should be \code{TRUE} for \code{gear = "drift"} and \code{FALSE} for \code{gear = "set"}}
+
+\item{seed}{Numeric; the seed of the random number generator to use -- enforces reproducibility}
+}
 \description{
-Perform Non-Parametric Bootstrapping On Harvest Estimates
+Repeatedly calls \code{\link[=estimate_harvest]{estimate_harvest()}}, each time with a data set that has been resampled with replacement
 }

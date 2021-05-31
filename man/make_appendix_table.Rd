@@ -6,6 +6,29 @@
 \usage{
 make_appendix_table(interview_data, gear, variable)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+
+\item{variable}{Character; accepted options are:
+\itemize{
+\item \code{"chinook_rate"}
+\item \code{"chinook"}
+\item \code{"chum+sockeye_rate"}
+\item \code{"chinook"}
+\item \code{"soak_duration"}
+\item \code{"trip_start"}
+\item \code{"trip_end"}
+\item \code{"trip_duration"}
+\item \code{"net_length"}
+\item \code{"p_chinook"}
+}}
+}
 \description{
 Create a table to go in the report appendix
 }

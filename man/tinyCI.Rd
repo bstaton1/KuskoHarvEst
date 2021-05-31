@@ -6,6 +6,13 @@
 \usage{
 tinyCI(x, linebreak = TRUE)
 }
+\arguments{
+\item{x}{Character; the output of \code{\link[=report]{report()}}}
+
+\item{linebreak}{Logical; should a linebreak be inserted between the mean portion and the CI portion?}
+}
 \description{
-Make the CI part of a summary smaller text than the mean
+Adds the appropriate LaTeX code to a summary produced by
+\code{\link[=report]{report()}} to make the CI portion smaller than the mean portion.
+This is a nice touch for tabular output.
 }

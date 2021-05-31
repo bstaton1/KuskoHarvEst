@@ -14,6 +14,29 @@ build_estimate_report_Rmd(
   save_bootstrap = TRUE
 )
 }
+\arguments{
+\item{draft}{Logical; should a draft watermark be printed in the rendered output?}
+
+\item{do_setnets}{Logical; should a set net harvest estimate be produced?}
+
+\item{n_boot}{Numeric; how many bootstrap iterations should be performed?}
+
+\item{include_johnson_table}{Logical; should the output of \code{\link[=make_johnson_summary_table]{make_johnson_summary_table()}} be included?}
+
+\item{include_goal_table}{Logical; should the output of \code{\link[=make_goals_summary_table]{make_goals_summary_table()}} be included?}
+
+\item{include_appendix}{Logical; should the many tables each produced by \code{\link[=make_appendix_table]{make_appendix_table()}} be included?}
+
+\item{save_bootstrap}{Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?}
+}
 \description{
-Automate creation of a Rmd source file for in-season reports
+Based on a set of supplied options, builds the Rmarkdown source file to build
+an in-season report documenting key output from the sampling and estimation
+for a single day of fishing
+}
+\details{
+This function selects from the many Rmarkdown source scripts found in \verb{inst/rstudio/templates/project/resources/}
+(subdirectories: \code{01-common} and \code{02-estimate-report} therein) to automate the construction of the report source code.
+This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
+the features of the new case the code needed to be applied to.
 }

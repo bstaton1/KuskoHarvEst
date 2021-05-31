@@ -6,6 +6,12 @@
 \usage{
 is_soak_outlier(interview_data, soak_sd_cut = getOption("soak_sd_cut"))
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{soak_sd_cut}{Numeric; maximum number of standard deviations the soak time can be from the mean
+without being deemed an outlier}
+}
 \description{
 Check soak time for outliers
 }

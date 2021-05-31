@@ -2,10 +2,11 @@
 % Please edit documentation in R/05-tool-data.R
 \name{data_tool}
 \alias{data_tool}
-\title{An interactive tool to specify opportunity meta-data}
+\title{Interactively prepare interview and flight data}
 \usage{
 data_tool()
 }
 \description{
-An interactive tool to specify opportunity meta-data
+An RStudio add-in that guides the user through preparing the raw
+data files to be used by other components of 'KuskoHarvEst'
 }

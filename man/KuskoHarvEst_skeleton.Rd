@@ -6,6 +6,9 @@
 \usage{
 KuskoHarvEst_skeleton(path)
 }
+\arguments{
+\item{path}{A location to put the new project}
+}
 \description{
-Create a project directory to use with 'KuskoHarvEst'
+Called by the RStudio project template builder
 }

@@ -2,10 +2,11 @@
 % Please edit documentation in R/05-tool-rmd.R
 \name{rmd_tool}
 \alias{rmd_tool}
-\title{An interactive tool to specify opportunity meta-data}
+\title{Interactively construct PDF reports}
 \usage{
 rmd_tool()
 }
 \description{
-An interactive tool to specify opportunity meta-data
+An RStudio add-in that guides the user through constructing and rendering
+the Rmarkdown source scripts for in-season estimate and sensitivity analysis reports
 }

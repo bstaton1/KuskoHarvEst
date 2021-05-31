@@ -6,6 +6,11 @@
 \usage{
 make_harvest_sensitivity_table(harvest_scenarios, combos)
 }
+\arguments{
+\item{harvest_scenarios}{List storing the bootstrapped harvest output from each data scenario}
+
+\item{combos}{The output of \code{\link[=make_harvest_combos]{make_harvest_combos()}}}
+}
 \description{
 Make a table to report results from harvest sensitivity analyses
 }

@@ -11,6 +11,20 @@ estimate_catch_per_trip(
   central_fn = getOption("central_fn")
 )
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+
+\item{randomize}{Logical; should interview data be randomized prior to performing the estimate?}
+
+\item{central_fn}{Function; used to calculate central tendency}
+}
 \description{
-Estimate expected catch for the average trip
+Calculates the expected salmon catch by species for the average trip
+after filtering out only usable records
 }

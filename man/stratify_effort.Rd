@@ -2,10 +2,24 @@
 % Please edit documentation in R/02-est-stratify-effort.R
 \name{stratify_effort}
 \alias{stratify_effort}
-\title{Apportion total effort estimate to strata using a simple rule}
+\title{Apportion total effort estimate to geographic}
 \usage{
 stratify_effort(flight_data, gear, effort_est)
 }
+\arguments{
+\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+
+\item{effort_est}{Numeric; the total effort estimate}
+}
 \description{
-Apportion total effort estimate to strata using a simple rule
+Applies a simple rule to stratify the total effort estimate for a gear type
+}
+\details{
+Calculates the average proportion of effort counted via air in each stratum then multiply by the total effort estimate to apportion
 }

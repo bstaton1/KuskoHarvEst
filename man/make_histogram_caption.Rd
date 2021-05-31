@@ -6,6 +6,17 @@
 \usage{
 make_histogram_caption(interview_data, gear)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+}
 \description{
-Make a figure caption for multi-panel histograms
+Automates the generation of the histogram caption for the PDF output.
+The text varies depending on the gear and the data sources available and
+this function prevents the user from needing to edit it by hand.
 }

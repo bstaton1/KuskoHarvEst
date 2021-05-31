@@ -6,6 +6,10 @@
 \usage{
 resource_path(file)
 }
+\arguments{
+\item{file}{Character; a file name or file path within the resources folder to point to}
+}
 \description{
-Create path to a package resource file
+Constructs a complete file path to a package resource file located in
+\code{rstudio/templates/project/resources} within the 'KuskoHarvEst' library
 }
