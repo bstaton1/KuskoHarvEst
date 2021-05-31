@@ -1,7 +1,9 @@
 #' Automate creation of a YAML header based on pre-defined meta data
 #'
-#' @param doc_type One of `"estimate_report"` or `"sensitivity_report"`
-#' @param draft Logical. Should a draft watermark be printed in the rendered output?
+#' Prevents needing to edit the YAML header by hand
+#'
+#' @param doc_type Character; accepted options are `"estimate_report"` or `"sensitivity_report"`
+#' @param draft Logical; should a draft watermark be printed in the rendered output?
 
 build_yaml = function(doc_type, draft) {
 
@@ -116,6 +118,22 @@ build_yaml = function(doc_type, draft) {
 
 #' Automate creation of a Rmd source file for in-season reports
 #'
+#' Based on a set of supplied options, builds the Rmarkdown source file to build
+#'  an in-season report documenting key output from the sampling and estimation
+#'  for a single day of fishing
+#'
+#' @param draft Logical; should a draft watermark be printed in the rendered output?
+#' @param do_setnets Logical; should a set net harvest estimate be produced?
+#' @param n_boot Numeric; how many bootstrap iterations should be performed?
+#' @param include_johnson_table Logical; should the output of [make_johnson_summary_table()] be included?
+#' @param include_goal_table Logical; should the output of [make_goals_summary_table()] be included?
+#' @param include_appendix Logical; should the many tables each produced by [make_appendix_table()] be included?
+#' @param save_bootstrap Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?
+#'
+#' @details This function selects from the many Rmarkdown source scripts found in `inst/rstudio/templates/project/resources/`
+#'   (subdirectories: `01-common` and `02-estimate-report` therein) to automate the construction of the report source code.
+#'   This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
+#'   the features of the new case the code needed to be applied to.
 
 build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, save_bootstrap = TRUE) {
 
@@ -240,6 +258,19 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 
 #' Automate creation of a Rmd source file for sensitivity analysis reports
 #'
+#' Based on a set of supplied options, builds the Rmarkdown source file to build
+#'  a sensitivity analysis report documenting the output of a variety of analyses
+#'  that leave out certain data sources to gauge the reliability of the estimate.
+#'
+#' @param draft Logical; should a draft watermark be printed in the rendered output?
+#' @param do_setnets Logical; should a set net harvest estimate be produced?
+#' @param n_boot Numeric; how many bootstrap iterations should be performed?
+#' @param include_plots Logical; should the output of [make_effort_plot()] be displayed
+#'   for each data scenario? This can result in many plots and a long document, so it is `FALSE` by default.
+#' @details This function selects from the many Rmarkdown source scripts found in `inst/rstudio/templates/project/resources/`
+#'   (subdirectories: `01-common` and `03-sensitivity-report` therein) to automate the construction of the report source code.
+#'   This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
+#'   the features of the new case the code needed to be applied to.
 
 build_sensitivity_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_plots = FALSE) {
 

@@ -1,5 +1,10 @@
 #' Create path to a package resource file
 #'
+#' Constructs a complete file path to a package resource file located in
+#'   `rstudio/templates/project/resources` within the 'KuskoHarvEst' library
+#'
+#' @param file Character; a file name or file path within the resources folder to point to
+#'
 
 resource_path = function(file) {
   system.file(file.path("rstudio", "templates", "project", "resources", file), package = "KuskoHarvEst")
@@ -7,6 +12,12 @@ resource_path = function(file) {
 
 #' Rmarkdown output format for PDF reports
 #'
+#' A custom output type for PDFs produced by 'KuskoHarvEst'
+#'
+#' @param ... Optional arguments supplied to [rmarkdown::pdf_document()]
+#'
+#' @details The `template` argument and `latex_engine` arguments are defined internally and cannot be
+#'   supplied to `...`. `latex_engine = "pdflatex"` is used.
 
 pdf_report = function(...) {
 
