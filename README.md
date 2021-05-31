@@ -14,8 +14,8 @@ To use 'KuskoHarvEst', you'll need to first download several programs, install t
 
 > **NOTE**: If you already have R and RStudio, but they were installed later than in the last ~6-12 months, it is advised that you uninstall the older versions and install the newest versions. Be sure to use the correct version for your operating system (for example, Mac or Windows).
 
-* [Program R](https://cran.rstudio.com/): this is the program that runs the code, but the interface is entirely code-based and not easy to work with.
-* [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/): this is a program that makes working with R much easier, and allows construction of custom  interactive interfaces (drop down menus, text entry boxes, etc.).
+* [Program R](https://cran.rstudio.com/){target="_blank"}: this is the program that runs the code, but the interface is entirely code-based and not easy to work with.
+* [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/){target="_blank"}: this is a program that makes working with R much easier, and allows construction of custom  interactive interfaces (drop down menus, text entry boxes, etc.).
 
 After downloading the programs, you must install them. You may need administrative privileges to do this -- if so and you do not have them, contact your organization's Information Technology specialist for help (you will not need administrative privileges for any other steps). During the installation process, you will be presented with several options -- you can accept the defaults in all cases (just keep clicking the "Next" button until you get a window saying the software was successfully installed).
 
@@ -30,7 +30,7 @@ remotes::install_github("bstaton1/KuskoHarvEst")
 
 ### LaTeX Distribution and Additional Packages
 
-LaTeX is the program that allows building PDF documents from code. Rather than require installation of a complete distribution (e.g., MikTeX, which is very large), 'KuskoHarvEst' depends on '[tinytex](https://yihui.org/tinytex/)'. This is an R package that installs a minimal LaTeX distribution (<0.1GB in size) which includes only the core functionality by default, then allows you to easily install only the additional LaTeX packages you need. After the above code is done running, type this code into the console and press <kbd>ENTER</kbd>:
+LaTeX is the program that allows building PDF documents from code. Rather than require installation of a complete distribution (e.g., MikTeX, which is very large), 'KuskoHarvEst' depends on ['tinytex'](https://yihui.org/tinytex/){target="_blank"}. This is an R package that installs a minimal LaTeX distribution (<0.1GB in size) which includes only the core functionality by default, then allows you to easily install only the additional LaTeX packages you need. After the above code is done running, type this code into the console and press <kbd>ENTER</kbd>:
 
 ```R
 tinytex::install_tinytex()
@@ -109,6 +109,6 @@ Users new to in-season Kuskokwim River subsistence harvest monitoring and estima
 
 Several people provided valuable feedback on the functionality included in this package, in alphabetical order they are: B. Bechtol, G. Decossas, J. Esquible, D. Lowrey, J. Spaeder, K. Russell, and K. Whitworth. L. Coggins co-developed the statistical foundations of the harvest/effort estimators with B. Staton starting in 2016, with earlier work done in 2015. The graphic of the fisher in the 'KuskoHarvEst' package logo was created by N. Tamburello. 
 
-This package is totally reliant on [RStudio Desktop](https://www.rstudio.com/products/rstudio/), [Rmarkdown](https://rmarkdown.rstudio.com/), and [Shiny](https://shiny.rstudio.com/) to do its job. The software developers are owed gratitude for making the construction of intuitive workflows like those contained in 'KuskoHarvEst' possible. 
+This package is totally reliant on [RStudio Desktop](https://www.rstudio.com/products/rstudio/){target="_blank"}, [Rmarkdown](https://rmarkdown.rstudio.com/){target="_blank"}, and [Shiny](https://shiny.rstudio.com/){target="_blank"} to do its job. The software developers are owed gratitude for making the construction of intuitive workflows like those contained in 'KuskoHarvEst' possible. 
 
 Funding for the development of this package was provided by the Kuskokwim River Inter-Tribal Fish Commission, administered by the Bering Sea Fisherman's Association through grant #AC-2101 to Quantitative Ecological Services, LLC for the project period January and October, 2021. The initial development of the statistical and reporting framework, off of which 'KuskoHarvEst' is based, was funded by the U.S. Fish and Wildlife Service through a Pathways Position during the summers of 2016 - 2018.
