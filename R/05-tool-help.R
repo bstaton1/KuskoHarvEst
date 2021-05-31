@@ -1,4 +1,8 @@
-#' An interactive tool to find package help
+#' Interactively access tutorials and helpful information
+#'
+#' An RStudio add-in that guides the user to the documentation
+#'   for learning how to use 'KuskoHarvEst' and provides access to
+#'   example data files and historical reports
 #'
 
 help_tool = function() {

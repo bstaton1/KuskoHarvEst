@@ -1,4 +1,7 @@
-#' An interactive tool to specify opportunity meta-data
+#' Interactively construct PDF reports
+#'
+#' An RStudio add-in that guides the user through constructing and rendering
+#'   the Rmarkdown source scripts for in-season estimate and sensitivity analysis reports
 #'
 
 rmd_tool = function() {
