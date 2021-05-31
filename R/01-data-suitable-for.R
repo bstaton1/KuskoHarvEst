@@ -1,6 +1,20 @@
-#' Determine which records are suitable for particular tasks
+#' Determine which interview records are suitable for specific tasks
 #'
-#' A wrapper around a variety of "checking" functions, all of which are non-exported.
+#' A wrapper around a variety of data checking functions.
+#'
+#' @inheritParams estimate_harvest
+#' @param task Character; the type of task to determine whether each interview record is suitable for. Five options are accepted:
+#'   * `task = "effort"`
+#'   * `task = "catch_rate_info"`
+#'   * `task = "catch_rate_info_reliable"`
+#'   * `task = "avg_soak"`
+#'   * `task = "avg_net_length"`
+#' @details The checks for each task include:
+#'   * `"effort"`: Interview must have gear type, trip start and end times, and be from a completed trip
+#'   * `"catch_rate_info"`: Checks if interview has all necessary info for calculating catch rate: gear, soak time, and net length
+#'   * `"catch_rate_reliable"`: Checks if catch rate data is reliable; must be: a not very short incomplete trip, not a soak outlier, and not a abnormally long net
+#'   * `"avg_soak"`: Checks if soak time is available, that it is a completed trip, and that it is not a soak outlier
+#'   * `"avg_net_length"`: Checks if the net length is of a normal length
 #'
 
 suitable_for = function(interview_data, task) {
@@ -29,7 +43,7 @@ suitable_for = function(interview_data, task) {
   # is the soak time usable in calculating the average for any expected trip?
   # the soak time *must* be from a completed trip to be used
   if (task == "avg_soak") {
-    suitable = has_soak(interview_data) & is_complete_trip(interview_data)
+    suitable = has_soak(interview_data) & is_complete_trip(interview_data) & !is_soak_outlier(interview_data)
   }
 
   # is the net length usable in calculating the average for any expected trip?

@@ -1,5 +1,9 @@
-#' Prepare flight data
+#' Prepare flight data file
 #'
+#' Reads in and formats the data file containing flight counts of active fishing trips
+#'   into a standardized format to be used by other functions
+#'
+#' @param input_file Character; the name of the flight data file
 #' @export
 
 prepare_flights = function(input_file) {

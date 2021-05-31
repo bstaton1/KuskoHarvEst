@@ -1,6 +1,9 @@
 #' Sample with replacement from a data set
-#' @param interview_data data frame generated with `prepare_interviews()`
-#'   See details.
+#'
+#' Samples with replacement from a data frame containing interview data
+#'
+#' @inheritParams estimate_harvest
+#'
 
 randomize_data = function(interview_data) {
 

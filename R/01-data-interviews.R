@@ -1,5 +1,10 @@
-#' Prepare all interview data
+#' Prepare interview data files
 #'
+#' Calls [prepare_interviews_one()] multiple times, once per interview data file
+#'   and performs data quality checks
+#'
+#' @param input_files Character; vector of file names that contain interview data
+#' @param ... Optional arguments passed to [prepare_interviews_one()]
 #' @export
 
 prepare_interviews = function(input_files, ...) {
