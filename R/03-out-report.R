@@ -1,6 +1,28 @@
 #' Return summarized harvest estimates
 #'
+#' Summarizes bootstrapped harvest estimates into a point estimate
+#'   and confidence limits, by species, gear, and geographic stratum
+#'
+#' @param spp Character; the species to summarize.
+#'   Accepted options are `"chinook"`, `"chum"`, `"sockeye"`, or `"total"`.
+#'   Defaults to `"total"`.
+#' @param gear Character; the gear type to summarize.
+#'   Accepted options are `"drift"`, `"set"`, or `"total"`.
+#'   Defaults to `"total"`.
+#' @param stratum Character; the geographic stratum to summarize.
+#'   Accepted options are `"A"`, `"B"`, `"C"`, `"D1"`, or `"total"`.
+#'   Defaults to `"total"`.
+#' @param CI Logical; should the confidence intervals be returned?
+#' @param conf_level Numeric; the confidence level of the confidence interval.
+#'   E.g., `0.95` corresponds to a 95% confidence interval (the default).
+#'   Ignored if `CI = FALSE`
+#' @param digits Numeric; the rounding rule (passed to [base::round()]); defaults to `-1`
+#' @param return_numeric; Logical; should summary be returned as numeric class rather than character?
+#' @param boot_out_use; Data frame; the output of [bootstrap_harvest()] to be summarized.
+#'   Defaults to `NULL`, in which case the function searches for an object in existence named `boot_out` which will be used.
+#'
 #' @export
+#'
 
 report = function(spp = "total", gear = "total", stratum = "total", CI = TRUE, conf_level = 0.95, digits = -1, return_numeric = FALSE, boot_out_use = NULL) {
 
