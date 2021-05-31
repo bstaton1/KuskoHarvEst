@@ -1,4 +1,10 @@
-#' Perform Non-Parametric Bootstrapping On Harvest Estimates
+#' Perform non-parametric bootstrapping
+#'
+#' Repeatedly calls [estimate_harvest()], each time with a data set that has been resampled with replacement
+#'
+#' @inheritParams estimate_harvest
+#' @param n_boot Numeric; the number of bootstrap iterations to perform
+#' @param seed Numeric; the seed of the random number generator to use -- enforces reproducibility
 #'
 #' @export
 

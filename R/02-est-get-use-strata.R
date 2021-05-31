@@ -1,4 +1,18 @@
-#' Create stratum pooling strategy for interviews
+#' Get a pooling strategy for stratifying interviews
+#'
+#' Uses a consistent rule to determine which interviews will
+#'   be used to inform stratum-specific estimates
+#'
+#' @inheritParams estimate_harvest
+#' @param pooling_threshold Numeric; the minimum number of interviews required to avoid pooling
+#' @details If the number of interviews that document fishing trips occurring in a stratum is
+#'   less than `pooling_threshold`, then data must be borrowed from a nearby stratum
+#'   to inform the stratum-specific estimate. Pooling rules are as follows:
+#'     * If stratum D1 has few interviews, data will be borrowed from stratum C
+#'     * If stratum C has few interviews, data will be borrowed from stratum B
+#'     * If stratum B has few interviews, data will be borrowed from stratum C
+#'     * If stratum A has few interviews, data will be borrowed from stratum B
+#'     * Interviews with stratum recorded as `NA` may be used in any stratum
 #'
 
 get_use_strata = function(interview_data, pooling_threshold = getOption("pooling_threshold"), gear = "drift") {
