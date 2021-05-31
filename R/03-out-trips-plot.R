@@ -1,5 +1,10 @@
 #' Create a plot summarizing effort estimation
 #'
+#' @inheritParams estimate_effort
+#' @inheritParams estimate_harvest
+#' @param trips_only Logical; should figure only show trip/flight times, or should
+#'   effort estimation summaries be displayed at the bottom of the figure?
+#'
 #' @export
 
 make_effort_plot = function(flight_data, effort_info, trips_only = FALSE) {

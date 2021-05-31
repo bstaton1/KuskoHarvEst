@@ -1,5 +1,8 @@
 #' Create combinations of flights to use for effort sensitivity analysis
 #'
+#' @inheritParams estimate_effort
+#' @details Based on the number of flights conducted, constructs a set of combinations
+#'   of data scenarios where some flights are discarded.
 
 create_flight_combos = function(flight_data) {
   # count the number of flights in full data set
@@ -23,6 +26,11 @@ create_flight_combos = function(flight_data) {
 }
 
 #' Create combinations of interview data sources to use for effort sensitivity analysis
+#'
+#' @inheritParams estimate_harvest
+#' @details Based on the data sources that conducted interviews, constructs a set of combinations
+#'   of data scenarios where some sources are discarded. All combinations of keeping/leaving out each
+#'   data source are included, unlike [create_harvest_combos()].
 #'
 
 create_interview_combos = function(interview_data) {
@@ -49,6 +57,11 @@ create_interview_combos = function(interview_data) {
 }
 
 #' Create combinations of interview data sources to use for harvest sensitivity analysis
+#'
+#' @inheritParams estimate_harvest
+#' @details Based on the data sources that conducted interviews, constructs a set of combinations
+#'   of data scenarios where some sources are discarded. Each scenario (beyond the original set)
+#'   includes just one data source, unlike [create_interview_combos()].
 #'
 
 create_harvest_combos = function(interview_data) {
@@ -79,8 +92,15 @@ create_harvest_combos = function(interview_data) {
 
 #' Make a table to report results of effort sensitivity analyses
 #'
+#' @inheritParams estimate_effort
+#' @param effort_scenarios List; contains the output of executing [estimate_effort()]
+#'   repeatedly, once per combination of flights or interview data sources. Each list element is the output from a different
+#'   data scenario.
+#' @param combos The output of [make_flight_combos()] or [make_interview_combos()]
+#'
 #' @export
 #' @importFrom magrittr %>%
+#'
 
 make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
 
@@ -134,8 +154,12 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
 
 #' Make a table to report results from harvest sensitivity analyses
 #'
+#' @param harvest_scenarios List storing the bootstrapped harvest output from each data scenario
+#' @param combos The output of [make_harvest_combos()]
+#'
 #' @export
 #' @importFrom magrittr %>%
+#'
 
 make_harvest_sensitivity_table = function(harvest_scenarios, combos) {
 

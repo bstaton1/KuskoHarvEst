@@ -2,16 +2,33 @@
 % Please edit documentation in R/02-est-harvest.R
 \name{estimate_harvest}
 \alias{estimate_harvest}
-\title{Estimate harvest for all strata and species}
+\title{Estimate harvest}
 \usage{
 estimate_harvest(
   interview_data,
   effort_info,
   gear,
   randomize = FALSE,
-  stratify_interviews = TRUE
+  stratify_interviews
 )
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{effort_info}{List storing the output of \code{\link[=estimate_effort]{estimate_effort()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+
+\item{randomize}{Logical; should interview data be randomized prior to performing the estimate?}
+
+\item{stratify_interviews}{Logical; should interview data be separated by geographic stratum before performing the estimate?
+Generally this should be \code{TRUE} for \code{gear = "drift"} and \code{FALSE} for \code{gear = "set"}}
+}
 \description{
-Estimate harvest for all strata and species
+Estimates harvest separated by species and geographic stratum that occurred in a day of fishing
+for a given gear type
 }

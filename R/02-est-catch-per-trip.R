@@ -1,5 +1,11 @@
 #' Estimate expected catch for the average trip
 #'
+#' Calculates the expected salmon catch by species for the average trip
+#'   after filtering out only usable records
+#'
+#' @inheritParams estimate_harvest
+#' @param central_fn Function; used to calculate central tendency
+#'
 
 estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn")) {
 

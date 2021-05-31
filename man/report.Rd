@@ -15,6 +15,33 @@ report(
   boot_out_use = NULL
 )
 }
+\arguments{
+\item{spp}{Character; the species to summarize.
+Accepted options are \code{"chinook"}, \code{"chum"}, \code{"sockeye"}, or \code{"total"}.
+Defaults to \code{"total"}.}
+
+\item{gear}{Character; the gear type to summarize.
+Accepted options are \code{"drift"}, \code{"set"}, or \code{"total"}.
+Defaults to \code{"total"}.}
+
+\item{stratum}{Character; the geographic stratum to summarize.
+Accepted options are \code{"A"}, \code{"B"}, \code{"C"}, \code{"D1"}, or \code{"total"}.
+Defaults to \code{"total"}.}
+
+\item{CI}{Logical; should the confidence intervals be returned?}
+
+\item{conf_level}{Numeric; the confidence level of the confidence interval.
+E.g., \code{0.95} corresponds to a 95\% confidence interval (the default).
+Ignored if \code{CI = FALSE}}
+
+\item{digits}{Numeric; the rounding rule (passed to \code{\link[base:Round]{base::round()}}); defaults to \code{-1}}
+
+\item{return_numeric;}{Logical; should summary be returned as numeric class rather than character?}
+
+\item{boot_out_use;}{Data frame; the output of \code{\link[=bootstrap_harvest]{bootstrap_harvest()}} to be summarized.
+Defaults to \code{NULL}, in which case the function searches for an object in existence named \code{boot_out} which will be used.}
+}
 \description{
-Return summarized harvest estimates
+Summarizes bootstrapped harvest estimates into a point estimate
+and confidence limits, by species, gear, and geographic stratum
 }

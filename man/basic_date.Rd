@@ -6,6 +6,10 @@
 \usage{
 basic_date(datetime)
 }
+\arguments{
+\item{datetime}{Object of class \code{datetime}}
+}
 \description{
-Create a basic date from date time object
+Convert a \code{datetime} object to a character
+class that is easier to read for humans.
 }

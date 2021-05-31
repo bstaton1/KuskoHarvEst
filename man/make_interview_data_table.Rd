@@ -6,6 +6,9 @@
 \usage{
 make_interview_data_table(interview_data)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+}
 \description{
 Create a table to report the number of interviews by data source
 }

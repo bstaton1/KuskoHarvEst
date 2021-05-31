@@ -2,7 +2,7 @@
 % Please edit documentation in R/02-est-get-use-strata.R
 \name{get_use_strata}
 \alias{get_use_strata}
-\title{Create stratum pooling strategy for interviews}
+\title{Get a pooling strategy for stratifying interviews}
 \usage{
 get_use_strata(
   interview_data,
@@ -10,6 +10,28 @@ get_use_strata(
   gear = "drift"
 )
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{pooling_threshold}{Numeric; the minimum number of interviews required to avoid pooling}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+}
 \description{
-Create stratum pooling strategy for interviews
+Uses a consistent rule to determine which interviews will
+be used to inform stratum-specific estimates
+}
+\details{
+If the number of interviews that document fishing trips occurring in a stratum is
+less than \code{pooling_threshold}, then data must be borrowed from a nearby stratum
+to inform the stratum-specific estimate. Pooling rules are as follows:
+* If stratum D1 has few interviews, data will be borrowed from stratum C
+* If stratum C has few interviews, data will be borrowed from stratum B
+* If stratum B has few interviews, data will be borrowed from stratum C
+* If stratum A has few interviews, data will be borrowed from stratum B
+* Interviews with stratum recorded as \code{NA} may be used in any stratum
 }

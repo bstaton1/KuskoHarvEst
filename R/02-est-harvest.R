@@ -1,8 +1,19 @@
-#' Estimate harvest for all strata and species
+#' Estimate harvest
 #'
+#' Estimates harvest separated by species and geographic stratum that occurred in a day of fishing
+#'   for a given gear type
+#'
+#' @param interview_data Data frame storing interview data; created using [prepare_interviews()]
+#' @param effort_info List storing the output of [estimate_effort()]
+#' @param gear Character; which gear type to use? Only two options are accepted:
+#'   * `gear = "drift"` for drift nets
+#'   * `gear = "set"` for set nets
+#' @param randomize Logical; should interview data be randomized prior to performing the estimate?
+#' @param stratify_interviews Logical; should interview data be separated by geographic stratum before performing the estimate?
+#'   Generally this should be `TRUE` for `gear = "drift"` and `FALSE` for `gear = "set"`
 #' @export
 
-estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE, stratify_interviews = TRUE) {
+estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE, stratify_interviews) {
 
   # extract the strata names
   strata_names = names(effort_info$effort_est_stratum)

@@ -7,10 +7,10 @@
 build_yaml(doc_type, draft)
 }
 \arguments{
-\item{doc_type}{One of \code{"estimate_report"} or \code{"sensitivity_report"}}
+\item{doc_type}{Character; accepted options are \code{"estimate_report"} or \code{"sensitivity_report"}}
 
-\item{draft}{Logical. Should a draft watermark be printed in the rendered output?}
+\item{draft}{Logical; should a draft watermark be printed in the rendered output?}
 }
 \description{
-Automate creation of a YAML header based on pre-defined meta data
+Prevents needing to edit the YAML header by hand
 }

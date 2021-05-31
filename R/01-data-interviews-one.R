@@ -1,4 +1,11 @@
-#' Format interview data for analysis
+#' Prepare one interview data file
+#'
+#' Reads in and formats one data file containing interview data
+#'   into a standardized format to be used by other functions
+#'
+#' @param input_file Character; the name of one file that contains interview data from a single source and fishing day
+#' @param include_village Logical; should the village of the fisher be included in the output?
+#' @param include_goals Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?
 #'
 
 prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE) {

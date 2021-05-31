@@ -2,10 +2,12 @@
 % Please edit documentation in R/05-tool-help.R
 \name{help_tool}
 \alias{help_tool}
-\title{An interactive tool to find package help}
+\title{Interactively access tutorials and helpful information}
 \usage{
 help_tool()
 }
 \description{
-An interactive tool to find package help
+An RStudio add-in that guides the user to the documentation
+for learning how to use 'KuskoHarvEst' and provides access to
+example data files and historical reports
 }

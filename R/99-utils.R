@@ -1,5 +1,8 @@
 #' Create a project directory to use with 'KuskoHarvEst'
 #'
+#' Called by the RStudio project template builder
+#'
+#' @param path A location to put the new project
 #'
 
 KuskoHarvEst_skeleton = function(path) {
@@ -15,6 +18,10 @@ KuskoHarvEst_skeleton = function(path) {
 
 #' Convert date and time variables into a datetime variable
 #'
+#' @param dates Character; vector with elements in `M/D/YYYY` format
+#' @param times Character; vector with elements in `H:MM` format
+#'
+#' @return A vector with of class `datetime`, with the time zone set to US/Alaska
 #'
 
 combine_datetime = function(dates, times) {
@@ -28,8 +35,12 @@ combine_datetime = function(dates, times) {
   return(step2)
 }
 
-#' Combine a List of Data Frames
+#' Combine a list of data frames
 #'
+#' Loops over elements of a list object, where each element is a data frame with identical headers
+#'   and applies [base::rbind()] to them.
+#'
+#' @param list List; each element is a data frame with identical headers
 #'
 
 unlist_dfs = function(list) {
@@ -45,6 +56,12 @@ unlist_dfs = function(list) {
 
 #' Convert a proportion to a percent
 #'
+#' @param x Numeric; vector containing values on the proportional scale to be converted to a percentage value
+#' @param escape Logical; should the percent symbol be escaped? Aids in placing this output into LaTeX tables
+#' @param digits Numeric; supplied to [base::round()]. Defaults to `0`.
+#'
+#' @return Character vector storing percentage values. If a non-zero value would be rounded to zero, `"<1%"` is returned instead.
+#'
 
 percentize = function(x, escape = FALSE, digits = 0) {
   # create the percent version
@@ -59,8 +76,15 @@ percentize = function(x, escape = FALSE, digits = 0) {
 
 #' Format a datetime object to be shorter
 #'
+#' Convert a `datetime` object to a character
+#'   class that is easier to read for humans.
+#'
+#' @param datetimes Object of class `datetime`
+#' @param include_dates Logical; if `TRUE` `(M/D)` will be appended to the back of the output.
+#'   If `FALSE`, only the time (12-hour clock) will be returned.
+#'
 
-short_datetime = function(datetimes, include_date = F) {
+short_datetime = function(datetimes, include_date = FALSE) {
 
   # extract the day and month, and format them as M/D
   dates_short = paste(
@@ -85,6 +109,12 @@ short_datetime = function(datetimes, include_date = F) {
 
 #' Make the CI part of a summary smaller text than the mean
 #'
+#' Adds the appropriate LaTeX code to a summary produced by
+#'   [report()] to make the CI portion smaller than the mean portion.
+#'   This is a nice touch for tabular output.
+#'
+#' @param x Character; the output of [report()]
+#' @param linebreak Logical; should a linebreak be inserted between the mean portion and the CI portion?
 
 tinyCI = function(x, linebreak = TRUE) {
   # if x has CIs
@@ -111,6 +141,11 @@ tinyCI = function(x, linebreak = TRUE) {
 
 #' Capitalize a character string
 #'
+#' Applies [base::toupper()] to the first character in each
+#'   element of a character vector
+#'
+#' @param x Character; a vector of character strings for which the
+#'   first character should be converted to uppercase
 
 capitalize = function (x) {
   if (!is.character(x)) stop("x must be of class 'character'")
@@ -120,6 +155,12 @@ capitalize = function (x) {
 }
 
 #' Create a date for use in file names
+#'
+#' Converts a `datetime` object to a
+#'   character class with format `YYYY_MM_DD`. This format
+#'   is useful in constructing file names.
+#'
+#' @param x and object of class `datetime`
 #'
 
 file_date = function(x) {
@@ -131,6 +172,11 @@ file_date = function(x) {
 
 #' Create a basic date from date time object
 #'
+#' Convert a `datetime` object to a character
+#'   class that is easier to read for humans.
+#'
+#' @param datetime Object of class `datetime`
+#'
 
 basic_date = function(datetime) {
   day = lubridate::day(datetime)
@@ -141,6 +187,11 @@ basic_date = function(datetime) {
 
 #' A function to add vspace to the bottom of a kable
 #'
+#' @param kable_input Output of a `knitr::kable() %>% kableExtra::fn()` chain.
+#' @param space Character; LaTex units and magnitude of space to include in a vspace
+#'   call at the bottom of the table
+#' @details This function should be called as the last step in the chain of commands.
+#'
 
 add_vspace = function(kable_input, space = "-1em") {
   kable_input_new = paste(c(as.character(kable_input), "\n\\vspace{", space, "}"), collapse = "")
@@ -150,6 +201,9 @@ add_vspace = function(kable_input, space = "-1em") {
 }
 
 #' Create a markdown link to a local documentation file
+#'
+#' @param doc Character; file path to the documentation file in question
+#' @param text Character; the text to display as the clickable link
 #'
 
 link_to_doc = function(doc, text = "here") {

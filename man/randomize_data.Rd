@@ -7,9 +7,8 @@
 randomize_data(interview_data)
 }
 \arguments{
-\item{interview_data}{data frame generated with \code{prepare_interviews()}
-See details.}
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
 }
 \description{
-Sample with replacement from a data set
+Samples with replacement from a data frame containing interview data
 }

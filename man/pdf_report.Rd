@@ -6,6 +6,13 @@
 \usage{
 pdf_report(...)
 }
+\arguments{
+\item{...}{Optional arguments supplied to \code{\link[rmarkdown:pdf_document]{rmarkdown::pdf_document()}}}
+}
 \description{
-Rmarkdown output format for PDF reports
+A custom output type for PDFs produced by 'KuskoHarvEst'
+}
+\details{
+The \code{template} argument and \code{latex_engine} arguments are defined internally and cannot be
+supplied to \code{...}. \code{latex_engine = "pdflatex"} is used.
 }

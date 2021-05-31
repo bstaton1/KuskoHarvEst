@@ -1,7 +1,10 @@
 #' Create a table to report the number of interviews by data source
 #'
+#' @inheritParams estimate_harvest
+#'
 #' @importFrom magrittr %>%
 #' @export
+#'
 
 make_interview_data_table = function(interview_data) {
   # count the number of interviews from each data source
@@ -30,6 +33,8 @@ make_interview_data_table = function(interview_data) {
 }
 
 #' Create a table to report the flights and the counts that were made on each
+#'
+#' @inheritParams estimate_effort
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -64,6 +69,8 @@ make_flight_data_table = function(flight_data) {
 }
 
 #' Create a table to summarize information spatially
+#'
+#' @inheritParams estimate_harvest
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -119,6 +126,8 @@ make_strata_summary_table = function(interview_data, gear) {
 }
 
 #' Create a table to summarize catch rates and species composition relative to Johnson River
+#'
+#' @details Relies an an object names `boot_out` to be in existence
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -182,6 +191,19 @@ make_johnson_summary_table = function() {
 }
 
 #' Create a table to go in the report appendix
+#'
+#' @inheritParams estimate_harvest
+#' @param variable Character; accepted options are:
+#'   * `"chinook_rate"`
+#'   * `"chinook"`
+#'   * `"chum+sockeye_rate"`
+#'   * `"chinook"`
+#'   * `"soak_duration"`
+#'   * `"trip_start"`
+#'   * `"trip_end"`
+#'   * `"trip_duration"`
+#'   * `"net_length"`
+#'   * `"p_chinook"`
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -356,6 +378,8 @@ make_appendix_table = function(interview_data, gear, variable) {
 }
 
 #' Create a table displaying reported harvest goal attainment
+#'
+#' @inheritParams estimate_harvest
 #'
 #' @importFrom magrittr %>%
 #' @export

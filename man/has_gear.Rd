@@ -6,6 +6,9 @@
 \usage{
 has_gear(interview_data)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+}
 \description{
 Check if the gear was recorded
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/01-data-interviews-one.R
 \name{prepare_interviews_one}
 \alias{prepare_interviews_one}
-\title{Format interview data for analysis}
+\title{Prepare one interview data file}
 \usage{
 prepare_interviews_one(
   input_file,
@@ -10,6 +10,14 @@ prepare_interviews_one(
   include_goals = FALSE
 )
 }
+\arguments{
+\item{input_file}{Character; the name of one file that contains interview data from a single source and fishing day}
+
+\item{include_village}{Logical; should the village of the fisher be included in the output?}
+
+\item{include_goals}{Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?}
+}
 \description{
-Format interview data for analysis
+Reads in and formats one data file containing interview data
+into a standardized format to be used by other functions
 }

@@ -4,8 +4,15 @@
 \alias{short_datetime}
 \title{Format a datetime object to be shorter}
 \usage{
-short_datetime(datetimes, include_date = F)
+short_datetime(datetimes, include_date = FALSE)
+}
+\arguments{
+\item{datetimes}{Object of class \code{datetime}}
+
+\item{include_dates}{Logical; if \code{TRUE} \code{(M/D)} will be appended to the back of the output.
+If \code{FALSE}, only the time (12-hour clock) will be returned.}
 }
 \description{
-Format a datetime object to be shorter
+Convert a \code{datetime} object to a character
+class that is easier to read for humans.
 }

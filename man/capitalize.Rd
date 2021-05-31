@@ -6,6 +6,11 @@
 \usage{
 capitalize(x)
 }
+\arguments{
+\item{x}{Character; a vector of character strings for which the
+first character should be converted to uppercase}
+}
 \description{
-Capitalize a character string
+Applies \code{\link[base:chartr]{base::toupper()}} to the first character in each
+element of a character vector
 }

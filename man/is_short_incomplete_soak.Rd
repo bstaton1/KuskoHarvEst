@@ -6,6 +6,9 @@
 \usage{
 is_short_incomplete_soak(interview_data)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+}
 \description{
 Check incomplete trips for very short soak times
 }
@@ -14,5 +17,5 @@ For incomplete trips, if the interview was conducted early into an incomplete
 trip, its catch rate information is not likely representative of that from completed trips.
 This function looks for incomplete interviews that have soak time shorter than the shortest recorded
 soak time among completed trips for that gear type. Records with a \code{TRUE} value returned should
-not return
+not be used in harvest estimation
 }

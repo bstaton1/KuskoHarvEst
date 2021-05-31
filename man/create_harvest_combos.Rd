@@ -6,6 +6,14 @@
 \usage{
 create_harvest_combos(interview_data)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+}
 \description{
 Create combinations of interview data sources to use for harvest sensitivity analysis
+}
+\details{
+Based on the data sources that conducted interviews, constructs a set of combinations
+of data scenarios where some sources are discarded. Each scenario (beyond the original set)
+includes just one data source, unlike \code{\link[=create_interview_combos]{create_interview_combos()}}.
 }

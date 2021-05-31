@@ -2,21 +2,33 @@
 ##### FUNCTIONS TO CHECK WHETHER EACH CRITICAL DATA SOURCE EXISTS #####
 
 #' Check if the gear was recorded
+#'
+#' @inheritParams estimate_harvest
+
 has_gear = function(interview_data) {
   !is.na(interview_data$gear)
 }
 
 #' Check if the trip times were recorded
+#'
+#' @inheritParams estimate_harvest
+
 has_trip_times = function(interview_data) {
   !is.na(interview_data$trip_start) & !is.na(interview_data$trip_end)
 }
 
 #' Check if the net length was recorded
+#'
+#' @inheritParams estimate_harvest
+
 has_net_length = function(interview_data) {
   !is.na(interview_data$net_length)
 }
 
 #' Check if soak duration was recorded
+#'
+#' @inheritParams estimate_harvest
+
 has_soak = function(interview_data) {
   !is.na(interview_data$soak_duration)
 }
@@ -25,8 +37,9 @@ has_soak = function(interview_data) {
 
 #' Check for impossible trip times
 #'
+#' @inheritParams estimate_harvest
 #' @details If the trip end time is before the trip start time, this is impossible and an error.
-#' The user should fix this entry in the data set before proceeding.
+#'   The user should fix this entry in the data set before proceeding.
 
 is_possible_trip = function(interview_data) {
   ifelse(!has_trip_times(interview_data), TRUE, ifelse(interview_data[,"trip_start"] < interview_data[,"trip_end"], TRUE, FALSE))
@@ -34,8 +47,8 @@ is_possible_trip = function(interview_data) {
 
 #' Check for impossible soak times
 #'
+#' @inheritParams estimate_harvest
 #' @details If the soak duration is longer than the trip duration, this is impossible and an error.
-#' The user should fix this entry in the data set before proceeding.
 
 is_possible_soak = function(interview_data) {
   ifelse(!has_trip_times(interview_data) | !has_soak(interview_data), TRUE,
@@ -46,6 +59,7 @@ is_possible_soak = function(interview_data) {
 
 #' Check if interview is for a completed trip
 #'
+#' @inheritParams estimate_harvest
 #' @details Data need special care if from an incomplete trip.
 #'   E.g., soak time should not be used in calculation of the average across trips,
 #'   and if the soak time is excessively short at the time of the interview relative to completed
@@ -57,8 +71,10 @@ is_complete_trip = function(interview_data) {
 
 #' Check if the net characteristics are as expected
 #'
+#' @inheritParams estimate_harvest
+#' @param net_length_cut Numeric; maximum net length (in feet) allowed, records with net length longer
+#'   than this will have their net length deemed unsuitable for any purpose
 #' @details Nets that are extremely long are probably mis-recorded and should not be included.
-#' Could feasibly include a mesh cutoff here if there was interest.
 
 is_normal_net = function(interview_data, net_length_cut = getOption("net_length_cut")) {
   ifelse(!has_net_length(interview_data), TRUE, ifelse(interview_data[,"net_length"] <= net_length_cut, TRUE, FALSE))
@@ -66,6 +82,9 @@ is_normal_net = function(interview_data, net_length_cut = getOption("net_length_
 
 #' Check soak time for outliers
 #'
+#' @inheritParams estimate_harvest
+#' @param soak_sd_cut Numeric; maximum number of standard deviations the soak time can be from the mean
+#'   without being deemed an outlier
 #' @details Consider soak time an outlier if its value is larger than
 #'   the mean plus XSDs of the remaining values for that gear type. The user
 #'   chooses the value of X with the argument `soak_sd_cut`. This function applies
@@ -106,11 +125,12 @@ is_soak_outlier = function(interview_data, soak_sd_cut = getOption("soak_sd_cut"
 
 #' Check incomplete trips for very short soak times
 #'
+#' @inheritParams estimate_harvest
 #' @details For incomplete trips, if the interview was conducted early into an incomplete
 #'   trip, its catch rate information is not likely representative of that from completed trips.
 #'   This function looks for incomplete interviews that have soak time shorter than the shortest recorded
 #'   soak time among completed trips for that gear type. Records with a `TRUE` value returned should
-#'   not return
+#'   not be used in harvest estimation
 
 is_short_incomplete_soak = function(interview_data) {
 
@@ -146,6 +166,16 @@ is_short_incomplete_soak = function(interview_data) {
 }
 
 #' Determine if an interview is an outlier in terms of catch per trip
+#'
+#' @inheritParams estimate_harvest
+#' @param catch_per_trip_cut Numeric; the maximum proportional change in average catch per trip allowed
+#'   when an interview is discarded for that interview to be considered reliable
+#' @details This function recalculates the average catch per trip (non-stratified)
+#'   by leaving out each interview sequentially. It then determines the proportional change
+#'   from the original estimate with all data included. If the absolute proportional change when
+#'   leaving out an interview is greater than `catch_per_trip_cut` the catch rate data from that
+#'   interview will be deemed unreliable.
+#'   Calculations done only for drift net interviews -- set net interviews are skipped.
 
 is_catch_per_trip_outlier = function(interview_data, catch_per_trip_cut = getOption("catch_per_trip_cut")) {
 
@@ -179,6 +209,7 @@ is_catch_per_trip_outlier = function(interview_data, catch_per_trip_cut = getOpt
 
 #' Determine the unique start dates of all interviews
 #'
+#' @inheritParams estimate_harvest
 
 unique_start_dates = function(interview_data) {
   start_dates = lubridate::date(interview_data$trip_start)

@@ -2,10 +2,12 @@
 % Please edit documentation in R/05-tool-meta.R
 \name{meta_tool}
 \alias{meta_tool}
-\title{An interactive tool to specify opportunity meta-data}
+\title{Interactively enter the opportunity meta-data}
 \usage{
 meta_tool()
 }
 \description{
-An interactive tool to specify opportunity meta-data
+An RStudio add-in that guides the user through entering certain meta-data
+that is used by other components of 'KuskoHarvEst'.
+Example meta-data include the date/times of the opener, spatial coverage of the data, and contact information for the analyst
 }

@@ -6,10 +6,12 @@
 \usage{
 is_possible_soak(interview_data)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+}
 \description{
 Check for impossible soak times
 }
 \details{
 If the soak duration is longer than the trip duration, this is impossible and an error.
-The user should fix this entry in the data set before proceeding.
 }

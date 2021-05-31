@@ -4,13 +4,26 @@
 \alias{estimate_effort}
 \title{Estimate effort}
 \usage{
-estimate_effort(
-  interview_data,
-  flight_data,
-  gear = "drift",
-  method = "dbl_exp"
-)
+estimate_effort(interview_data, flight_data, gear, method = "dbl_exp")
+}
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
+
+\item{gear}{Character; which gear type to use? Only two options are accepted:
+\itemize{
+\item \code{gear = "drift"} for drift nets
+\item \code{gear = "set"} for set nets
+}}
+
+\item{method}{Character; which effort estimator should be applied? Only two options are accepted:
+\itemize{
+\item \code{method = "dbl_exp"} to perform corrections for trips counted on consecutive flights and trips not counted at all - generally used for drift nets
+\item \code{method = "max_per_stratum"} to perform a simple calculation of the maximum number of trips counted in a given stratum - generally used for set nets
+}}
 }
 \description{
-Estimate effort
+Estimates total effort (completed trips) that occurred in a day of fishing
+for a given gear type
 }

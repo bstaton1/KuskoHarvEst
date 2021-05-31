@@ -6,6 +6,9 @@
 \usage{
 make_flight_data_table(flight_data)
 }
+\arguments{
+\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
+}
 \description{
 Create a table to report the flights and the counts that were made on each
 }

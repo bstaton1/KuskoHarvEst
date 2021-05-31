@@ -6,6 +6,14 @@
 \usage{
 make_effort_plot(flight_data, effort_info, trips_only = FALSE)
 }
+\arguments{
+\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
+
+\item{effort_info}{List storing the output of \code{\link[=estimate_effort]{estimate_effort()}}}
+
+\item{trips_only}{Logical; should figure only show trip/flight times, or should
+effort estimation summaries be displayed at the bottom of the figure?}
+}
 \description{
 Create a plot summarizing effort estimation
 }

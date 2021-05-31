@@ -1,8 +1,17 @@
 #' Estimate effort
 #'
+#' Estimates total effort (completed trips) that occurred in a day of fishing
+#'   for a given gear type
+#'
+#' @inheritParams estimate_harvest
+#' @param flight_data Data frame storing flight data; created using [prepare_flights()]
+#' @param method Character; which effort estimator should be applied? Only two options are accepted:
+#'   * `method = "dbl_exp"` to perform corrections for trips counted on consecutive flights and trips not counted at all - generally used for drift nets
+#'   * `method = "max_per_stratum"` to perform a simple calculation of the maximum number of trips counted in a given stratum - generally used for set nets
+#'
 #' @export
 
-estimate_effort = function(interview_data, flight_data, gear = "drift", method = "dbl_exp") {
+estimate_effort = function(interview_data, flight_data, gear, method = "dbl_exp") {
 
   if (method == "dbl_exp") {
     # STEP 1: how many flights were performed, and give them names

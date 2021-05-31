@@ -1,4 +1,7 @@
-#' An interactive tool to specify opportunity meta-data
+#' Interactively prepare interview and flight data
+#'
+#' An RStudio add-in that guides the user through preparing the raw
+#'   data files to be used by other components of 'KuskoHarvEst'
 #'
 
 data_tool = function() {

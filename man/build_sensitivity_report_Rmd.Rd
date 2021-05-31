@@ -11,6 +11,24 @@ build_sensitivity_report_Rmd(
   include_plots = FALSE
 )
 }
+\arguments{
+\item{draft}{Logical; should a draft watermark be printed in the rendered output?}
+
+\item{do_setnets}{Logical; should a set net harvest estimate be produced?}
+
+\item{n_boot}{Numeric; how many bootstrap iterations should be performed?}
+
+\item{include_plots}{Logical; should the output of \code{\link[=make_effort_plot]{make_effort_plot()}} be displayed
+for each data scenario? This can result in many plots and a long document, so it is \code{FALSE} by default.}
+}
 \description{
-Automate creation of a Rmd source file for sensitivity analysis reports
+Based on a set of supplied options, builds the Rmarkdown source file to build
+a sensitivity analysis report documenting the output of a variety of analyses
+that leave out certain data sources to gauge the reliability of the estimate.
+}
+\details{
+This function selects from the many Rmarkdown source scripts found in \verb{inst/rstudio/templates/project/resources/}
+(subdirectories: \code{01-common} and \code{03-sensitivity-report} therein) to automate the construction of the report source code.
+This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
+the features of the new case the code needed to be applied to.
 }

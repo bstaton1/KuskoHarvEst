@@ -6,6 +6,14 @@
 \usage{
 combine_datetime(dates, times)
 }
+\arguments{
+\item{dates}{Character; vector with elements in \code{M/D/YYYY} format}
+
+\item{times}{Character; vector with elements in \code{H:MM} format}
+}
+\value{
+A vector with of class \code{datetime}, with the time zone set to US/Alaska
+}
 \description{
 Convert date and time variables into a datetime variable
 }

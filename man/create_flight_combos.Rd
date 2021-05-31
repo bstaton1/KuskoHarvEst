@@ -6,6 +6,13 @@
 \usage{
 create_flight_combos(flight_data)
 }
+\arguments{
+\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
+}
 \description{
 Create combinations of flights to use for effort sensitivity analysis
+}
+\details{
+Based on the number of flights conducted, constructs a set of combinations
+of data scenarios where some flights are discarded.
 }

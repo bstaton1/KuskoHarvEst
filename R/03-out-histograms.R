@@ -1,4 +1,18 @@
-#' Make a single histogram showing distribution of a quantity across interviews
+#' Make a single histogram
+#'
+#' Histogram shows the distribution of a variable across interviews
+#'
+#' @inheritParams estimate_harvest
+#' @param variable a variable to show the distribution for. Accepted options are:
+#'   * `"total_salmon"`
+#'   * `"chinook"`
+#'   * `"chum"`
+#'   * `"sockeye"`
+#'   * `"chum+sockeye"`
+#'   * `"soak_duration"`
+#'   * `"trip_duration"`
+#'   * `"p_chinook"`
+#' @param n_bins Numeric; the number of bars to draw for the histogram
 #'
 
 make_histogram = function(interview_data, gear, variable, n_bins = 10) {
@@ -85,6 +99,14 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 
 #' Make a multi-panel figure showing multiple histograms
 #'
+#' Calls [make_histogram()] several times to build a multipanel figure showing
+#'   summaries of several variables.
+#'
+#' @inheritParams estimate_harvest
+#' @param variables Character; vector with length less than 6 indicating which
+#'   variables to draw histograms for. See [make_histogram()] for accepted options
+#' @param n_bins Numeric; the number of bars to draw for the histogram
+#'
 #' @export
 
 make_histograms = function(interview_data, gear, variables, n_bins = 10) {
@@ -105,6 +127,12 @@ make_histograms = function(interview_data, gear, variables, n_bins = 10) {
 }
 
 #' Make a figure caption for multi-panel histograms
+#'
+#' Automates the generation of the histogram caption for the PDF output.
+#'   The text varies depending on the gear and the data sources available and
+#'   this function prevents the user from needing to edit it by hand.
+#'
+#' @inheritParams estimate_harvest
 #'
 
 make_histogram_caption = function(interview_data, gear) {

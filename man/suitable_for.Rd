@@ -2,10 +2,32 @@
 % Please edit documentation in R/01-data-suitable-for.R
 \name{suitable_for}
 \alias{suitable_for}
-\title{Determine which records are suitable for particular tasks}
+\title{Determine which interview records are suitable for specific tasks}
 \usage{
 suitable_for(interview_data, task)
 }
+\arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
+\item{task}{Character; the type of task to determine whether each interview record is suitable for. Five options are accepted:
+\itemize{
+\item \code{task = "effort"}
+\item \code{task = "catch_rate_info"}
+\item \code{task = "catch_rate_info_reliable"}
+\item \code{task = "avg_soak"}
+\item \code{task = "avg_net_length"}
+}}
+}
 \description{
-A wrapper around a variety of "checking" functions, all of which are non-exported.
+A wrapper around a variety of data checking functions.
+}
+\details{
+The checks for each task include:
+\itemize{
+\item \code{"effort"}: Interview must have gear type, trip start and end times, and be from a completed trip
+\item \code{"catch_rate_info"}: Checks if interview has all necessary info for calculating catch rate: gear, soak time, and net length
+\item \code{"catch_rate_reliable"}: Checks if catch rate data is reliable; must be: a not very short incomplete trip, not a soak outlier, and not a abnormally long net
+\item \code{"avg_soak"}: Checks if soak time is available, that it is a completed trip, and that it is not a soak outlier
+\item \code{"avg_net_length"}: Checks if the net length is of a normal length
+}
 }

@@ -1,4 +1,8 @@
-#' An interactive tool to specify opportunity meta-data
+#' Interactively enter the opportunity meta-data
+#'
+#' An RStudio add-in that guides the user through entering certain meta-data
+#'   that is used by other components of 'KuskoHarvEst'.
+#'   Example meta-data include the date/times of the opener, spatial coverage of the data, and contact information for the analyst
 #'
 
 meta_tool = function() {

@@ -6,6 +6,11 @@
 \usage{
 link_to_doc(doc, text = "here")
 }
+\arguments{
+\item{doc}{Character; file path to the documentation file in question}
+
+\item{text}{Character; the text to display as the clickable link}
+}
 \description{
 Create a markdown link to a local documentation file
 }

@@ -1,4 +1,11 @@
-#' Apportion total effort estimate to strata using a simple rule
+#' Apportion total effort estimate to geographic
+#'
+#' Applies a simple rule to stratify the total effort estimate for a gear type
+#'
+#' @inheritParams estimate_effort
+#' @param effort_est Numeric; the total effort estimate
+#' @details Calculates the average proportion of effort counted via air in each stratum then multiply by the total effort estimate to apportion
+#'
 
 stratify_effort = function(flight_data, gear, effort_est) {
 

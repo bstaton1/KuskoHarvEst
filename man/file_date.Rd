@@ -6,6 +6,11 @@
 \usage{
 file_date(x)
 }
+\arguments{
+\item{x}{and object of class \code{datetime}}
+}
 \description{
-Create a date for use in file names
+Converts a \code{datetime} object to a
+character class with format \code{YYYY_MM_DD}. This format
+is useful in constructing file names.
 }
