@@ -270,8 +270,8 @@ make_appendix_table = function(interview_data, gear, variable) {
   # prepare information: trip duration
   if (variable == "trip_duration") {
     x_data = x_data[KuskoHarvEst:::is_possible_trip(x_data),]
-    x = as.numeric(x_data$soak_duration, "hours")
-    cap = paste0("Summary of ", gear, " net active fishing hours by fishing area.")
+    x = as.numeric(x_data$trip_duration, "hours")
+    cap = paste0("Summary of ", gear, " net total trip duration by fishing area.")
     digits = 1
   }
 
