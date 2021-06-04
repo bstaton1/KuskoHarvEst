@@ -1,5 +1,9 @@
 # *NEWS*
 
+# KuskoHarvEst 1.0.1 (2020-06-03)
+
+* Fixed small bug in appendix tables dealing with soak time and trip duration (#114)
+
 # KuskoHarvEst 1.0.0 (2020-06-01)
 
 * First complete version of package, to be used in 2021 season.
