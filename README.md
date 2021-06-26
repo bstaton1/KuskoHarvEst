@@ -45,7 +45,7 @@ tinytex::tlmgr_install(pkgs = c(
   "colortbl", "wrapfig", "pdflscape", "tabu",
   "varwidth", "threeparttable", "threeparttablex",
   "environ", "trimspaces", "ulem", "makecell",
-  "fancyhdr", "draftwatermark"
+  "fancyhdr", "draftwatermark", "parskip"
 ))
 ```
 
