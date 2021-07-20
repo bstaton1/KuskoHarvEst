@@ -45,6 +45,13 @@ make_effort_plot = function(flight_data, effort_info, trips_only = FALSE) {
     times_counted = as.numeric(trips[,"f1"])
   }
 
+  # if no flight was made, flight data will have all NAs
+  # change not_counted to all TRUEs and times_counted to all zeros
+  if (all(is.na(flight_data[,4:ncol(flight_data)]))) {
+    trips$not_counted = rep(TRUE, nrow(trips))
+    times_counted = rep(0, length(times_counted))
+  }
+
   # draw on each interviewed trips' start and end times
   segments(1:nrow(trips), trips$trip_start, 1:nrow(trips), trips$trip_end,
            col = ifelse(trips$not_counted, "blue", "black"),
