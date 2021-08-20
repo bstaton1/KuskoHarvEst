@@ -1,3 +1,15 @@
+#' Create path to a package resource file
+#'
+#' Constructs a complete file path to a package resource file located in
+#'   `rstudio/templates/project/resources` within the 'KuskoHarvEst' library
+#'
+#' @param file Character; a file name or file path within the resources folder to point to
+#'
+
+resource_path = function(file) {
+  system.file(file.path("rstudio", "templates", "project", "resources", file), package = "KuskoHarvEst")
+}
+
 #' Create a project directory to use with 'KuskoHarvEst'
 #'
 #' Called by the RStudio project template builder
