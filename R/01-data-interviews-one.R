@@ -11,7 +11,7 @@
 prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE) {
 
   ### STEP 0: load the input data file & format column names
-  dat_in = read.csv(input_file, stringsAsFactors = FALSE)
+  dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))
 
   # determine and delete the rows that have all NA values: Excel/CSV quirk sometimes includes these
   all_NA = sapply(1:nrow(dat_in), function(i) all(is.na(dat_in[i,]) | dat_in[i,] == ""))
@@ -32,15 +32,23 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
   dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
 
   ### STEP 2: handle the stratum name
-  dat_out$stratum = dat_in$stratum
+  dat_out$stratum = stringr::str_remove(toupper(dat_in$stratum), " ")
+
+  # determine if any records have an unknown stratum (e.g., O). If so, remove them and return warning
+  unknown_stratum = !(dat_out$stratum %in% c(strata_names$stratum, NA))
+  if (any(unknown_stratum)) {
+    warning("There were ", sum(unknown_stratum), " records with invalid stratum values: ", paste(unique(dat_out$stratum[unknown_stratum]), collapse = ", "), "\n  They have been discarded.")
+    dat_in = dat_in[!unknown_stratum,]
+    dat_out = dat_out[!unknown_stratum,]
+  }
 
   ### STEP 3: handle the gear (net) type
-  gear_entered = dat_in$gear
+  gear_entered = stringr::str_remove(dat_in$gear, " ")
   gear_standard = tolower(gear_entered) # make lowercase
   gear_standard = stringr::str_remove(gear_standard, "net")
   dat_out$gear = gear_standard
 
-  ### STEX 4: handle net dimensions
+  ### STEP 4: handle net dimensions
   has_mesh = "mesh" %in% vars
   dat_out$net_length = dat_in$length
   if (has_mesh) {
