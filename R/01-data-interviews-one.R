@@ -11,7 +11,7 @@
 prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE) {
 
   ### STEP 0: load the input data file & format column names
-  dat_in = read.csv(input_file, stringsAsFactors = FALSE)
+  dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))
 
   # determine and delete the rows that have all NA values: Excel/CSV quirk sometimes includes these
   all_NA = sapply(1:nrow(dat_in), function(i) all(is.na(dat_in[i,]) | dat_in[i,] == ""))

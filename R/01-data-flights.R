@@ -9,7 +9,7 @@
 prepare_flights = function(input_file) {
 
   ### STEP 0: read in data file
-  dat_in = read.csv(input_file, stringsAsFactors = FALSE)
+  dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))
 
   ### STEP 1: handle dates/times
   dat_out = data.frame(flight = dat_in$flight)
