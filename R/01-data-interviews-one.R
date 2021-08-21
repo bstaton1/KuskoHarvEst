@@ -34,6 +34,14 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
   ### STEP 2: handle the stratum name
   dat_out$stratum = stringr::str_remove(toupper(dat_in$stratum), " ")
 
+  # determine if any records have an unknown stratum (e.g., O). If so, remove them and return warning
+  unknown_stratum = !(dat_out$stratum %in% c(strata_names$stratum, NA))
+  if (any(unknown_stratum)) {
+    warning("There were ", sum(unknown_stratum), " records with invalid stratum values: ", paste(unique(dat_out$stratum[unknown_stratum]), collapse = ", "), "\n  They have been discarded.")
+    dat_in = dat_in[!unknown_stratum,]
+    dat_out = dat_out[!unknown_stratum,]
+  }
+
   ### STEP 3: handle the gear (net) type
   gear_entered = stringr::str_remove(dat_in$gear, " ")
   gear_standard = tolower(gear_entered) # make lowercase
