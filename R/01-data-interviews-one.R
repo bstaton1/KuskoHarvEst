@@ -32,15 +32,15 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
   dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
 
   ### STEP 2: handle the stratum name
-  dat_out$stratum = dat_in$stratum
+  dat_out$stratum = stringr::str_remove(toupper(dat_in$stratum), " ")
 
   ### STEP 3: handle the gear (net) type
-  gear_entered = dat_in$gear
+  gear_entered = stringr::str_remove(dat_in$gear, " ")
   gear_standard = tolower(gear_entered) # make lowercase
   gear_standard = stringr::str_remove(gear_standard, "net")
   dat_out$gear = gear_standard
 
-  ### STEX 4: handle net dimensions
+  ### STEP 4: handle net dimensions
   has_mesh = "mesh" %in% vars
   dat_out$net_length = dat_in$length
   if (has_mesh) {

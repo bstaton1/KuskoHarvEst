@@ -11,6 +11,10 @@ prepare_flights = function(input_file) {
   ### STEP 0: read in data file
   dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))
 
+  # determine and delete the rows that have all NA values: Excel/CSV quirk sometimes includes these
+  all_NA = sapply(1:nrow(dat_in), function(i) all(is.na(dat_in[i,]) | dat_in[i,] == ""))
+  dat_in = dat_in[!all_NA,]
+
   ### STEP 1: handle dates/times
   dat_out = data.frame(flight = dat_in$flight)
   dat_out$start_time = combine_datetime(dat_in$date, dat_in$start)
@@ -23,6 +27,10 @@ prepare_flights = function(input_file) {
 
   # reformat count data: make wide
   dat_out = reshape2::dcast(dat_out, flight + start_time + end_time ~ stratum + gear, value.var = "count")
+
+  # ensure gear is formatted properly
+  dat_out$gear = stringr::str_remove(tolower(dat_out$gear), " ")
+  dat_out$gear = stringr::str_remove(dat_out$gear, "net")
 
   # return the formatted output
   return(dat_out)
