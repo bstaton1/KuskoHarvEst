@@ -21,16 +21,16 @@ prepare_flights = function(input_file) {
   dat_out$end_time = combine_datetime(dat_in$date, dat_in$end)
   dat_out = cbind(dat_out, dat_in[,colnames(dat_in)[-which(colnames(dat_in) %in% c("date", "start", "end", "flight"))]])
 
-  ### STEP 2: make one row per flight
+  ### STEP 2: ensure gear is formatted properly
+  dat_out$gear = stringr::str_remove(tolower(dat_out$gear), " ")
+  dat_out$gear = stringr::str_remove(dat_out$gear, "net")
+
+  ### STEP 3: make one row per flight
   # reformat count data: make long
   dat_out = reshape2::melt(dat_out, id.vars = c("flight", "start_time", "end_time", "gear"), variable.name = "stratum", value.name = "count")
 
   # reformat count data: make wide
   dat_out = reshape2::dcast(dat_out, flight + start_time + end_time ~ stratum + gear, value.var = "count")
-
-  # ensure gear is formatted properly
-  dat_out$gear = stringr::str_remove(tolower(dat_out$gear), " ")
-  dat_out$gear = stringr::str_remove(dat_out$gear, "net")
 
   # return the formatted output
   return(dat_out)
