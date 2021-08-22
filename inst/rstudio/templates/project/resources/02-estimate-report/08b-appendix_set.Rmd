@@ -46,11 +46,3 @@ make_appendix_table(interview_data, "set", "soak_duration")
 ```{r trip-duration-appendix-table}
 make_appendix_table(interview_data, "set", "trip_duration")
 ```
-
-```{r trip-start-appendix-table}
-make_appendix_table(interview_data, "set", "trip_start")
-```
-
-```{r trip-end-appendix-table}
-make_appendix_table(interview_data, "set", "trip_end")
-```
