@@ -196,6 +196,10 @@ make_johnson_summary_table = function() {
 #' @param variable Character; accepted options are:
 #'   * `"chinook_rate"`
 #'   * `"chinook"`
+#'   * `"chum_rate"`
+#'   * `"chum"`
+#'   * `"sockeye_rate"`
+#'   * `"sockeye"`
 #'   * `"chum+sockeye_rate"`
 #'   * `"chinook"`
 #'   * `"soak_duration"`
@@ -216,6 +220,8 @@ make_appendix_table = function(interview_data, gear, variable) {
     "chinook",
     "chum+sockeye",
     "chum+sockeye_rate",
+    "chum", "sockeye",
+    "chum_rate", "sockeye_rate",
     "soak_duration",
     "trip_start", "trip_end", "trip_duration",
     "net_length",
@@ -256,6 +262,36 @@ make_appendix_table = function(interview_data, gear, variable) {
     x_data = x_data[x_data$suit_cr_reliable,]
     x = (x_data$chum + x_data$sockeye)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
     cap = paste0("Summary of ", gear, " net catch rate of chum+sockeye salmon by fishing area (salmon per 150 feet of net per hour).")
+    digits = 1
+  }
+
+  # prepare information: chum catch per trip
+  if (variable == "chum") {
+    x = x_data$chum
+    cap = paste0("Summary of ", gear, " net catch per trip of chum salmon by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: chum catch rate per trip
+  if (variable == "chum_rate") {
+    x_data = x_data[x_data$suit_cr_reliable,]
+    x = (x_data$chum)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = paste0("Summary of ", gear, " net catch rate of chum salmon by fishing area (salmon per 150 feet of net per hour).")
+    digits = 1
+  }
+
+  # prepare information: sockeye catch per trip
+  if (variable == "sockeye") {
+    x = x_data$chum
+    cap = paste0("Summary of ", gear, " net catch per trip of sockeye salmon by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: sockeye catch rate per trip
+  if (variable == "sockeye_rate") {
+    x_data = x_data[x_data$suit_cr_reliable,]
+    x = (x_data$sockeye)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = paste0("Summary of ", gear, " net catch rate of chum salmon by fishing area (salmon per 150 feet of net per hour).")
     digits = 1
   }
 
