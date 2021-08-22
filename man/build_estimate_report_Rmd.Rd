@@ -11,6 +11,7 @@ build_estimate_report_Rmd(
   include_johnson_table = TRUE,
   include_goal_table = FALSE,
   include_appendix = FALSE,
+  split_chum_sockeye = FALSE,
   save_bootstrap = TRUE
 )
 }
@@ -26,6 +27,8 @@ build_estimate_report_Rmd(
 \item{include_goal_table}{Logical; should the output of \code{\link[=make_goals_summary_table]{make_goals_summary_table()}} be included?}
 
 \item{include_appendix}{Logical; should the many tables each produced by \code{\link[=make_appendix_table]{make_appendix_table()}} be included?}
+
+\item{split_chum_sockeye}{Logical; should histograms and appendix tables show summaries of chum+sockeye, or summaries for these species separately?}
 
 \item{save_bootstrap}{Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?}
 }

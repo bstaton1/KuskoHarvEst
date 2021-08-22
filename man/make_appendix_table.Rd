@@ -19,6 +19,10 @@ make_appendix_table(interview_data, gear, variable)
 \itemize{
 \item \code{"chinook_rate"}
 \item \code{"chinook"}
+\item \code{"chum_rate"}
+\item \code{"chum"}
+\item \code{"sockeye_rate"}
+\item \code{"sockeye"}
 \item \code{"chum+sockeye_rate"}
 \item \code{"chinook"}
 \item \code{"soak_duration"}
