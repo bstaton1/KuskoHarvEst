@@ -50,7 +50,7 @@ build_yaml = function(doc_type, draft) {
   }
 
   # make the special action name setting
-  if (!is.na(meta$spact_url)) {
+  if (!is.na(meta$spact_name)) {
     special_action = paste0('special-action: "', meta$spact_name, '"')
   } else {
     special_action = NULL
