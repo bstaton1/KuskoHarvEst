@@ -7,7 +7,7 @@
 #' @param flight_data Data frame storing flight data; created using [prepare_flights()]
 #' @param method Character; which effort estimator should be applied? Only two options are accepted:
 #'   * `method = "dbl_exp"` to perform corrections for trips counted on consecutive flights and trips not counted at all - generally used for drift nets
-#'   * `method = "max_per_stratum"` to perform a simple calculation of the maximum number of trips counted in a given stratum - generally used for set nets
+#'   * `method = "max_per_stratum"` to perform a simple calculation of the maximum number of trips counted in a given stratum - generally used for set nets. If this method is used, a further constraint is added to force the total effort estimate to be at least as large as the total number of interviews for that gear type.
 #'
 #' @export
 
@@ -133,7 +133,13 @@ estimate_effort = function(interview_data, flight_data, gear, method = "dbl_exp"
     # STEP 2: find the sum of the maximum number of effort counted on any flight in each stratum
     effort_est_total = sum(apply(flight_counts, 2, function(x) max(x)))
 
-    # STEP 3: stratify the total effort estiamte
+    # STEP 3: if the effort estimate based on flights is less than the number of interviews, use the number of interviews
+    if (effort_est_total < nrow(interview_data[interview_data$gear == gear,])) {
+      effort_est_total = nrow(interview_data[interview_data$gear == gear,])
+    }
+
+    # STEP 4: stratify the total effort estimate
+    # any rounding involved here will round up always
     effort_est_stratum = stratify_effort(flight_data, gear, effort_est_total)
 
     # rewrite the total effort to make sure it is equal to the sum of the stratum-specific version
