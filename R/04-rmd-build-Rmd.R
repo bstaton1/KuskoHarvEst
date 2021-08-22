@@ -128,6 +128,7 @@ build_yaml = function(doc_type, draft) {
 #' @param include_johnson_table Logical; should the output of [make_johnson_summary_table()] be included?
 #' @param include_goal_table Logical; should the output of [make_goals_summary_table()] be included?
 #' @param include_appendix Logical; should the many tables each produced by [make_appendix_table()] be included?
+#' @param split_chum_sockeye Logical; should histograms and appendix tables show summaries of chum+sockeye, or summaries for these species separately?
 #' @param save_bootstrap Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?
 #'
 #' @details This function selects from the many Rmarkdown source scripts found in `inst/rstudio/templates/project/resources/`
@@ -135,7 +136,7 @@ build_yaml = function(doc_type, draft) {
 #'   This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
 #'   the features of the new case the code needed to be applied to.
 
-build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, save_bootstrap = TRUE) {
+build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, split_chum_sockeye = FALSE, save_bootstrap = TRUE) {
 
   # read in the meta data file
   meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
@@ -245,6 +246,9 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 
   # replace the n_boot placeholder text with the number supplied
   Rmd_contents = stringr::str_replace(Rmd_contents, "N_BOOT_REPLACE", as.character(n_boot))
+
+  # replace the split_chum_sockeye placeholder text with the logical indicator supplied
+  Rmd_contents = stringr::str_replace(Rmd_contents, "SPLIT_CHUM_SOCKEYE_REPLACE", as.character(split_chum_sockeye))
 
   # build the file name
   Rmd_file = paste0("KuskoHarvEst_", file_date(meta$start_date), ".Rmd")
