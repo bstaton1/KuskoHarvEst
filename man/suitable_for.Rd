@@ -20,7 +20,7 @@ suitable_for(interview_data, task)
 }
 \value{
 If \code{task != "notes"}, a logical vector with one element corresponding to each interview record will be returned (\code{TRUE} indicates suitability).
-If \code{task == "notes"}, a character vector with each element storing a comma-separated list of noteworthy check failures for each record will be returned.
+If \code{task == "notes"}, a character vector with each element storing a semi-colon-separated list of noteworthy check failures for each record will be returned.
 }
 \description{
 A wrapper around a variety of data checking functions.

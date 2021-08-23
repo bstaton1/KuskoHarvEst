@@ -17,7 +17,7 @@
 #'   * `"avg_net_length"`: Checks if the net length is of a normal length
 #'   * `"notes"`: Returns noteworthy check failures
 #' @return If `task != "notes"`, a logical vector with one element corresponding to each interview record will be returned (`TRUE` indicates suitability).
-#'   If `task == "notes"`, a character vector with each element storing a comma-separated list of noteworthy check failures for each record will be returned.
+#'   If `task == "notes"`, a character vector with each element storing a semi-colon-separated list of noteworthy check failures for each record will be returned.
 
 suitable_for = function(interview_data, task) {
 
@@ -42,6 +42,7 @@ suitable_for = function(interview_data, task) {
     # discard empties
     notes = stringr::str_remove_all(notes, "NA; ")
     notes = stringr::str_remove_all(notes, "NA")
+    notes = stringr::str_remove_all(notes, "; $")
 
     # rename object for returning
     suitable = notes
