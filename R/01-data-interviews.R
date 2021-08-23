@@ -63,7 +63,7 @@ prepare_interviews = function(input_files, ...) {
   # if any are found, change the soak time to be the same as the trip duration, and include a note
   impossible_soaks = !is_possible_soak(interview_data)
   if (any(impossible_soaks)) {
-    impossible_soak_notes[impossible_soaks] = paste0("Impossible soak duration (", interview_data[impossible_soaks,"soak_duration"], ") edited to trip duration")
+    impossible_soak_notes[impossible_soaks] = paste0("Long soak duration (", interview_data[impossible_soaks,"soak_duration"], ") edited to trip duration (", interview_data[impossible_soaks,"trip_duration"], ")")
     interview_data$soak_duration[impossible_soaks] = interview_data$trip_duration[impossible_soaks]
     warning("\n", sum(impossible_soaks), " interview(s) had soak duration reported longer than trip duration.\nFor these records, the soak duration has been set to the trip duration,\nand a note has been included in the output.")
   }
@@ -71,7 +71,7 @@ prepare_interviews = function(input_files, ...) {
   # perform checks for if the average catch per trip is an outlier
   cpt_outliers = is_catch_per_trip_outlier(interview_data)
   if (any(cpt_outliers)) {
-    outlier_cpt_notes[cpt_outliers] = "Interview has a large influence on the average catch per trip, its catch rate info, soak time, and net length have been deemed unsuitable"
+    outlier_cpt_notes[cpt_outliers] = "Catch per trip highly influential, catch rate rate, soak time, and net length deemed unsuitable for average"
     interview_data$suit_cr_reliable[cpt_outliers] = FALSE
     interview_data$suit_avg_soak[cpt_outliers] = FALSE
     interview_data$suit_avg_net[cpt_outliers] = FALSE
