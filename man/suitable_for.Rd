@@ -18,6 +18,10 @@ suitable_for(interview_data, task)
 \item \code{task = "avg_net_length"}
 }}
 }
+\value{
+If \code{task != "notes"}, a logical vector with one element corresponding to each interview record will be returned (\code{TRUE} indicates suitability).
+If \code{task == "notes"}, a character vector with each element storing a comma-separated list of noteworthy check failures for each record will be returned.
+}
 \description{
 A wrapper around a variety of data checking functions.
 }
@@ -29,5 +33,6 @@ The checks for each task include:
 \item \code{"catch_rate_reliable"}: Checks if catch rate data is reliable; must be: a not very short incomplete trip, not a soak outlier, and not a abnormally long net
 \item \code{"avg_soak"}: Checks if soak time is available, that it is a completed trip, and that it is not a soak outlier
 \item \code{"avg_net_length"}: Checks if the net length is of a normal length
+\item \code{"notes"}: Returns noteworthy check failures
 }
 }
