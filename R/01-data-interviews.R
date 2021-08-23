@@ -24,12 +24,6 @@ prepare_interviews = function(input_files, ...) {
     stop ("More than one unique start date was found in the interview data:\n(", paste(start_dates, collapse = "; "), ")\nYou must edit the raw data to ensure all interviews are from trips that started on the same day.")
   }
 
-  # perform suitability checks and combine logical flags with the data
-  tasks = c("effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak", "avg_net_length")
-  suitable = sapply(tasks, suitable_for, interview_data = interview_data)
-  colnames(suitable) = paste0("suit_", c("effort", "cr_info", "cr_reliable", "avg_soak", "avg_net"))
-  interview_data = cbind(interview_data, suitable)
-
   # discard any trips lacking gear type information
   # if the interview is lacking gear, it is totally useless.
   # trip times can't be used for effort estimation b/c gear uncertainty
@@ -40,7 +34,16 @@ prepare_interviews = function(input_files, ...) {
     warning("\n", sum(no_gear), " interview(s) had missing gear type information.\nThese records have been discarded since they\ncannot be used for anything.")
   }
 
-  # create empty note objects
+  # perform suitability checks and combine logical flags with the data
+  tasks = c("effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak", "avg_net_length")
+  suitable = sapply(tasks, suitable_for, interview_data = interview_data)
+  colnames(suitable) = paste0("suit_", c("effort", "cr_info", "cr_reliable", "avg_soak", "avg_net"))
+  interview_data = cbind(interview_data, suitable)
+
+  # extract notes on suitability
+  suitability_notes = suitable_for(interview_data, task = "notes")
+
+  # create empty note objects for checks performed within this function
   impossible_trip_notes = rep(NA, nrow(interview_data))
   impossible_soak_notes = rep(NA, nrow(interview_data))
   outlier_cpt_notes = rep(NA, nrow(interview_data))
@@ -60,7 +63,7 @@ prepare_interviews = function(input_files, ...) {
   # if any are found, change the soak time to be the same as the trip duration, and include a note
   impossible_soaks = !is_possible_soak(interview_data)
   if (any(impossible_soaks)) {
-    impossible_soak_notes[impossible_soaks] = paste0("Impossible soak duration (", interview_data[impossible_soaks,"soak_duration"], ") edited to trip duration")
+    impossible_soak_notes[impossible_soaks] = paste0("Long soak duration (", interview_data[impossible_soaks,"soak_duration"], ") edited to trip duration (", interview_data[impossible_soaks,"trip_duration"], ")")
     interview_data$soak_duration[impossible_soaks] = interview_data$trip_duration[impossible_soaks]
     warning("\n", sum(impossible_soaks), " interview(s) had soak duration reported longer than trip duration.\nFor these records, the soak duration has been set to the trip duration,\nand a note has been included in the output.")
   }
@@ -68,7 +71,7 @@ prepare_interviews = function(input_files, ...) {
   # perform checks for if the average catch per trip is an outlier
   cpt_outliers = is_catch_per_trip_outlier(interview_data)
   if (any(cpt_outliers)) {
-    outlier_cpt_notes[cpt_outliers] = "Interview has a large influence on the average catch per trip, its catch rate info, soak time, and net length have been deemed unsuitable"
+    outlier_cpt_notes[cpt_outliers] = "Catch per trip highly influential, catch rate rate, soak time, and net length deemed unsuitable for average"
     interview_data$suit_cr_reliable[cpt_outliers] = FALSE
     interview_data$suit_avg_soak[cpt_outliers] = FALSE
     interview_data$suit_avg_net[cpt_outliers] = FALSE
@@ -76,7 +79,10 @@ prepare_interviews = function(input_files, ...) {
   }
 
   # combine the notes from each record
-  notes = paste(impossible_trip_notes, impossible_soak_notes, outlier_cpt_notes, sep = "; ")
+  notes = sapply(1:nrow(interview_data), function(i) {
+    paste(suitability_notes[i], impossible_trip_notes[i], impossible_soak_notes[i], outlier_cpt_notes[i], sep = "; ")
+  })
+  notes = stringr::str_remove_all(notes, "NA; ")
   notes = stringr::str_remove_all(notes, "NA")
   notes = stringr::str_remove_all(notes, "; $")
   notes = stringr::str_remove_all(notes, "^; ")
