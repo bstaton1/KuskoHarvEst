@@ -40,7 +40,10 @@ prepare_interviews = function(input_files, ...) {
   colnames(suitable) = paste0("suit_", c("effort", "cr_info", "cr_reliable", "avg_soak", "avg_net"))
   interview_data = cbind(interview_data, suitable)
 
-  # create empty note objects
+  # extract notes on suitability
+  suitability_notes = suitable_for(interview_data, task = "notes")
+
+  # create empty note objects for checks performed within this function
   impossible_trip_notes = rep(NA, nrow(interview_data))
   impossible_soak_notes = rep(NA, nrow(interview_data))
   outlier_cpt_notes = rep(NA, nrow(interview_data))
@@ -76,7 +79,10 @@ prepare_interviews = function(input_files, ...) {
   }
 
   # combine the notes from each record
-  notes = paste(impossible_trip_notes, impossible_soak_notes, outlier_cpt_notes, sep = "; ")
+  notes = sapply(1:nrow(interview_data), function(i) {
+    paste(suitability_notes[i], impossible_trip_notes[i], impossible_soak_notes[i], outlier_cpt_notes[i], sep = "; ")
+  })
+  notes = stringr::str_remove_all(notes, "NA; ")
   notes = stringr::str_remove_all(notes, "NA")
   notes = stringr::str_remove_all(notes, "; $")
   notes = stringr::str_remove_all(notes, "^; ")
