@@ -67,19 +67,19 @@ In nearly all cases, this should stay as the default downstream boundary of `Tun
 
 ### Special Action Information
 
-If the opportunity was authorized by a Federal Emergency Special Action, readers of the output document may be interested in gaining more information about it. Using these boxes:
+Generally, the harvest opportunity will be authorized by an official announcement and readers of the output document may be interested in gaining more information about it. Using these boxes:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/spact-info.png" width="600"/>
+  <img src="screenshots/02-meta-data-tool/announcement-info.png" width="600"/>
 </p>
 
 You can enter this information:
 
-* The special action number (for example, `3-KS-03-20` for the 6/12/2020 example)
-* The weblink to access the Emergency Special Action document (for example, <https://www.doi.gov/sites/doi.gov/files/uploads/3-ks-03-20-signed.pdf> for the 6/12/2020 example)
-* The weblink to access the News Release announcing the Emergency Special Action (for example, <https://www.fws.gov/uploadedFiles/2020_3-KS-03-20_News%20Release%20FINAL.pdf>)
+* The announcement number (for example, `3-KS-03-20` for the Federal Emergency Special Action that announced the 6/12/2020 opportunity)
+* The weblink to access the announcement document (for example, <https://www.doi.gov/sites/doi.gov/files/uploads/3-ks-03-20-signed.pdf> for 6/12/2020)
+* The weblink to access the news release of the announcement (for example, <https://www.fws.gov/uploadedFiles/2020_3-KS-03-20_News%20Release%20FINAL.pdf>)
 
-**NOTE**: these particular links may not work indefinitely, but they were active at the time of original writing (5/2/2020).
+**NOTE**: these particular links may not work indefinitely, but they were active at the time of writing (8/28/2021).
 
 **NOTE**: this information is optional to include, but if it is available to you then it is recommended that you include it.
 
