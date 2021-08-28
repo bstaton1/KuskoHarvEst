@@ -49,23 +49,23 @@ build_yaml = function(doc_type, draft) {
     contact = NULL
   }
 
-  # make the special action name setting
-  if (!is.na(meta$spact_name)) {
-    special_action = paste0('special-action: "', meta$spact_name, '"')
+  # make the announcement number (ID) setting
+  if (!is.na(meta$announce_name)) {
+    announcement = paste0('announcement: "', meta$announce_name, '"')
   } else {
-    special_action = NULL
+    announcement = NULL
   }
 
   # make the special action URL setting
-  if (!is.na(meta$spact_url)) {
-    special_action_url = paste0('special-action-url: "', meta$spact_url, '"')
+  if (!is.na(meta$announce_url)) {
+    announcement_url = paste0('announcement-url: "', meta$announce_url, '"')
   } else {
-    special_action_url = NULL
+    announcement_url = NULL
   }
 
   # make the special action URL setting
-  if (!is.na(meta$spact_news_url)) {
-    news_release_url = paste0('news-release-url: "', meta$spact_news_url, '"')
+  if (!is.na(meta$announce_news_url)) {
+    news_release_url = paste0('news-release-url: "', meta$announce_news_url, '"')
   } else {
     news_release_url = NULL
   }
@@ -98,8 +98,8 @@ build_yaml = function(doc_type, draft) {
     ds_bound,
     us_bound,
     contact,
-    special_action,
-    special_action_url,
+    announcement,
+    announcement_url,
     news_release_url,
     lfooter,
     rfooter,
