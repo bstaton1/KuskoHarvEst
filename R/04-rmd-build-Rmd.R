@@ -10,110 +10,56 @@ build_yaml = function(doc_type, draft) {
   # read in the meta data file
   meta = readRDS(list.files(pattern = "meta", full.names = TRUE, recursive = TRUE))
 
-  # make the output type setting
-  output = "output: KuskoHarvEst:::pdf_report"
-
-  # make the document title setting
-  if (doc_type == "estimate_report") {
-    title = 'title: "Kuskokwim River In-season Harvest and Effort Estimates"'
-  } else {
-    title = 'title: "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"'
+  # a small function to handle processing of logicals
+  logical_handler = function(x) {
+    result = ifelse(x, "true", "false")
+    class(result) = "verbatim"
+    return(result)
   }
 
-  # make the opener-label setting
-  opener_label = paste0('opener-label: "', basic_date(meta$start_date), ' Subsistence Harvest Opportunity (', ifelse(meta$set_only, 'Set Nets Only)"', 'Drift & Set Nets)"'))
+  # create the R code to point to the graphics directory
+  graphics_path = '`r KuskoHarvEst:::resource_path("06-logos")`'
+  class(graphics_path) = "verbatim"
 
-  # make the footer-label setting
-  rfooter = stringr::str_replace(opener_label, "^opener-label", "rfooter")
-  rfooter = stringr::str_remove(rfooter, "Subsistence Harvest ")
-
-  # make the opener-start setting
-  include_date = ifelse(lubridate::date(meta$start_date) == lubridate::date(meta$start_date), FALSE, TRUE)
-  opener_start = paste0('opener-start: "', short_datetime(meta$start_date, include_date = include_date), '"')
-
-  # make the opener-end setting
-  opener_end = paste0('opener-end: "', short_datetime(meta$end_date, include_date = include_date), '"')
-
-  # make the opener duration setting
-  hours_open = round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1)
-  opener_duration = paste0('opener-duration: "', paste0(hours_open, ' Hours'), '"')
-
-  # make the downstream and upstream boundaries settings
-  ds_bound = paste0('ds-bound: "', meta$ds_bound, '"')
-  us_bound = paste0('us-bound: "', meta$us_bound, '"')
-
-  # make the contact person(s) setting
-  if (!is.na(meta$contact_persons)) {
-    contact = paste0('contact: "', meta$contact_persons, '"')
-  } else {
-    contact = NULL
-  }
-
-  # make the announcement number (ID) setting
-  if (!is.na(meta$announce_name)) {
-    announcement = paste0('announcement: "', meta$announce_name, '"')
-  } else {
-    announcement = NULL
-  }
-
-  # make the special action URL setting
-  if (!is.na(meta$announce_url)) {
-    announcement_url = paste0('announcement-url: "', meta$announce_url, '"')
-  } else {
-    announcement_url = NULL
-  }
-
-  # make the special action URL setting
-  if (!is.na(meta$announce_news_url)) {
-    news_release_url = paste0('news-release-url: "', meta$announce_news_url, '"')
-  } else {
-    news_release_url = NULL
-  }
-
-  # make the doc label setting
-  if (doc_type == 'estimate_report') {
-    lfooter = 'lfooter: "In-season Harvest and Effort Estimates"'
-  } else {
-    lfooter = 'lfooter: "Sensitivity Analyses"'
-  }
-
-  # make the draft watermark setting
-  draft_watermark = paste0('draft-watermark: ', tolower(as.character(draft)))
-
-  # build the call to create the location of logo files
-  graphics_path = paste0('graphics-path: ', '"`r KuskoHarvEst:::resource_path(\'06-logos\')`"')
-
-  # make the editor options setting
-  editor_options = "editor_options:\n  chunk_output_type: console"
-
-  # combine all settings into a vector with YAML fences at start and end
-  yaml_contents = c(
-    "---",
-    output,
-    title,
-    opener_label,
-    opener_start,
-    opener_end,
-    opener_duration,
-    ds_bound,
-    us_bound,
-    contact,
-    announcement,
-    announcement_url,
-    news_release_url,
-    lfooter,
-    rfooter,
-    draft_watermark,
-    graphics_path,
-    editor_options,
-    "---\n"
+  # create a list with yaml key mappings (i.e., settings for Rmarkdown and the LaTeX template)
+  yaml_in = list(
+    output = "KuskoHarvEst:::pdf_report",
+    editor_options = list(chunk_output_type = "console"),
+    title = ifelse(doc_type == "estimate_report", "Kuskokwim River In-season Harvest and Effort Estimates", "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"),
+    "opener-label" = paste0(basic_date(meta$start_date), " Subsistence Harvest Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
+    rfooter = paste0(basic_date(meta$start_date), " Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
+    "opener-start" = short_datetime(meta$start_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-end" = short_datetime(meta$end_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-duration" = paste0(round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1), " Hours"),
+    "ds-bound" = meta$ds_bound,
+    "us-bound" = meta$us_bound,
+    lfooter = ifelse(doc_type == "estimate_report", "In-season Harvest and Effort Estimates", "Sensitivity Analyses"),
+    "draft-watermark" = draft,
+    "graphics-path" = graphics_path
   )
+  # class(yaml_in$title) = class(yaml_in$`opener-label`) = class(yaml_in$rfooter) = class(yaml_in$`opener-start`) = class(yaml_in$`opener-end`) = "verbatim"
 
-  # build a single string that contains everything
-  out = paste(yaml_contents, collapse = "\n")
+  # append the contact person(s) setting if found in meta
+  if (!is.na(meta$contact_persons)) yaml_in = append(yaml_in, list(contact = meta$contact_persons))
 
-  # return the output
-  return(out)
+  # append the annoucement number (ID) setting if found in meta
+  if (!is.na(meta$announce_name)) yaml_in = append(yaml_in, list(announcement = meta$announce_name))
+
+  # append the announcement URL setting if found in meta
+  if (!is.na(meta$announce_url)) yaml_in = append(yaml_in, list("announcement-url" = meta$announce_url))
+
+  # append the news release URL setting if found in meta
+  if (!is.na(meta$announce_news_url)) yaml_in = append(yaml_in, list("news-release-url" = meta$announce_news_url))
+
+  # convert the list into yaml
+  yaml_out = yaml::as.yaml(yaml_in, indent.mapping.sequence = TRUE, handlers = list(logical = logical_handler))
+
+  # add yaml fences
+  yaml_out = paste("---\n", yaml_out, "---\n", sep = "")
+
+  # return the converted yaml header
+  return(yaml_out)
+
 }
 
 #' Automate creation of a Rmd source file for in-season reports
