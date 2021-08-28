@@ -47,9 +47,9 @@ meta_tool = function() {
         # special action identifiers
         shiny::fillRow(
           flex = c(1,2,2),
-          shiny::textInput(inputId = "spact_name", label = "Special Action #", placeholder = "Optional"),
-          shiny::textInput(inputId = "spact_url", label = "Special Action URL", placeholder = "Optional"),
-          shiny::textInput(inputId = "spact_news_url", label = "News Release URL", placeholder = "Optional")
+          shiny::textInput(inputId = "announce_name", label = "Announcement #", placeholder = "Optional"),
+          shiny::textInput(inputId = "announce_url", label = "Announcement URL", placeholder = "Optional"),
+          shiny::textInput(inputId = "announce_news_url", label = "News Release URL", placeholder = "Optional")
         ),
 
         # contact information
@@ -96,9 +96,9 @@ meta_tool = function() {
         end_date = end_date,
         ds_bound = input$downstream_end,
         us_bound = input$upstream_end,
-        spact_name = ifelse(input$spact_name == "", NA, input$spact_name),
-        spact_url = ifelse(input$spact_url == "", NA, input$spact_url),
-        spact_news_url = ifelse(input$spact_news_url == "", NA, input$spact_news_url),
+        announce_name = ifelse(input$announce_name == "", NA, input$announce_name),
+        announce_url = ifelse(input$announce_url == "", NA, input$announce_url),
+        announce_news_url = ifelse(input$announce_news_url == "", NA, input$announce_news_url),
         contact_persons = ifelse(input$contact_persons == "", NA, input$contact_persons),
         set_only = input$set_only
       )
