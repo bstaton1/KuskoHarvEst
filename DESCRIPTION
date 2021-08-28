@@ -34,4 +34,5 @@ Imports:
     knitr,
     kableExtra,
     tinytex,
-    latex2exp
+    latex2exp,
+    yaml
