@@ -7,7 +7,8 @@
 prepare_interviews_one(
   input_file,
   include_village = FALSE,
-  include_goals = FALSE
+  include_goals = FALSE,
+  include_nonsalmon = FALSE
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ prepare_interviews_one(
 \item{include_village}{Logical; should the village of the fisher be included in the output?}
 
 \item{include_goals}{Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?}
+
+\item{include_nonsalmon}{Logical; should the catches of non-salmon species (whitefish and sheefish) be returned?}
 }
 \description{
 Reads in and formats one data file containing interview data

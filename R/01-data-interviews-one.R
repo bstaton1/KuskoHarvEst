@@ -6,9 +6,10 @@
 #' @param input_file Character; the name of one file that contains interview data from a single source and fishing day
 #' @param include_village Logical; should the village of the fisher be included in the output?
 #' @param include_goals Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?
+#' @param include_nonsalmon Logical; should the catches of non-salmon species (whitefish and sheefish) be returned?
 #'
 
-prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE) {
+prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE, include_nonsalmon = FALSE) {
 
   ### STEP 0: load the input data file & format column names
   dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))
@@ -104,9 +105,27 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
     dat_out$soak_duration = suppressWarnings(lubridate::as.period(round(lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes")))))
   }
 
-  ### STEP 7: handle which species to keep
-  keep_spp = c("chinook", "chum", "sockeye")
-  dat_out = cbind(dat_out, dat_in[,keep_spp])
+  ### STEP 7: handle which catches by species
+
+  # Pacific salmon species. these columns are always present
+  dat_out = cbind(dat_out, dat_in[,c("chinook", "chum", "sockeye")])
+
+  # include nonsalmon species if requested
+  if (include_nonsalmon) {
+    # "whitefish" - non-salmon. this column is not always present, create empty column if missing
+    if ("whitefish" %in% vars) {
+      dat_out = cbind(dat_out, whitefish = dat_in[,"whitefish"])
+    } else {
+      dat_out$whitefish = NA
+    }
+
+    # sheefish - non-salmon. this column is not always present, create empty column if missing
+    if ("sheefish" %in% vars) {
+      dat_out = cbind(dat_out, sheefish = dat_in[,"sheefish"])
+    } else {
+      dat_out$sheefish = NA
+    }
+  }
 
   ### STEP 8: add village information if requested
   if (include_village) {
