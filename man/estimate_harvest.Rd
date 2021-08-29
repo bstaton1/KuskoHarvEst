@@ -9,7 +9,8 @@ estimate_harvest(
   effort_info,
   gear,
   randomize = FALSE,
-  stratify_interviews
+  stratify_interviews,
+  nonsalmon = FALSE
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ estimate_harvest(
 
 \item{stratify_interviews}{Logical; should interview data be separated by geographic stratum before performing the estimate?
 Generally this should be \code{TRUE} for \code{gear = "drift"} and \code{FALSE} for \code{gear = "set"}}
+
+\item{nonsalmon}{Logical; should estimates be returned for whitefish and sheefish rather than for Chinook, chum, and sockeye salmon?}
 }
 \description{
 Estimates harvest separated by species and geographic stratum that occurred in a day of fishing
