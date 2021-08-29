@@ -5,10 +5,11 @@
 #' @inheritParams estimate_harvest
 #' @param n_boot Numeric; the number of bootstrap iterations to perform
 #' @param seed Numeric; the seed of the random number generator to use -- enforces reproducibility
-#'
+#' @param nonsalmon Logical; should estimates be returned for whitefish and sheefish rather than for Chinook, chum, and sockeye salmon?
+
 #' @export
 
-bootstrap_harvest = function(interview_data, effort_info, gear, n_boot = 1000, stratify_interviews = TRUE, seed = 1234) {
+bootstrap_harvest = function(interview_data, effort_info, gear, n_boot = 1000, stratify_interviews = TRUE, nonsalmon = FALSE, seed = 1234) {
 
   # set the random seed
   set.seed(seed)
@@ -20,7 +21,8 @@ bootstrap_harvest = function(interview_data, effort_info, gear, n_boot = 1000, s
       effort_info = effort_info,
       gear = gear,
       randomize = TRUE,
-      stratify_interviews = stratify_interviews
+      stratify_interviews = stratify_interviews,
+      nonsalmon = nonsalmon
     )
     out = cbind(iter = i, out)
     return(out)
