@@ -5,12 +5,16 @@
 #'
 #' @inheritParams estimate_harvest
 #' @param central_fn Function; used to calculate central tendency
-#'
+#' @param nonsalmon Logical; should estimates be returned for whitefish and sheefish rather than for Chinook, chum, and sockeye salmon?
 
-estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn")) {
+estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn"), nonsalmon = FALSE) {
 
   # set the species to keep
-  keep_spp = c("chinook", "chum", "sockeye")
+  if (!nonsalmon) {
+    keep_spp = c("chinook", "chum", "sockeye")
+  } else {
+    keep_spp = c("sheefish", "whitefish")
+  }
 
   # subset only the data for this gear
   interview_data = interview_data[interview_data$gear == gear,]
