@@ -12,6 +12,9 @@
 #' @param stratum Character; the geographic stratum to summarize.
 #'   Accepted options are `"A"`, `"B"`, `"C"`, `"D1"`, or `"total"`.
 #'   Defaults to `"total"`.
+#' @param date Character; the date to summarize.
+#'   Should be supplied in YYYY-MM-DD format if not `NULL`.
+#'   Defaults to `NULL`, in which case the date is ignored when summarizing.
 #' @param CI Logical; should the confidence intervals be returned?
 #' @param conf_level Numeric; the confidence level of the confidence interval.
 #'   E.g., `0.95` corresponds to a 95% confidence interval (the default).
@@ -24,7 +27,7 @@
 #' @export
 #'
 
-report = function(spp = "total", gear = "total", stratum = "total", CI = TRUE, conf_level = 0.95, digits = -1, return_numeric = FALSE, boot_out_use = NULL) {
+report = function(spp = "total", gear = "total", stratum = "total", date = NULL, CI = TRUE, conf_level = 0.95, digits = -1, return_numeric = FALSE, boot_out_use = NULL) {
 
   # error handle
   if (is.null(boot_out_use)) {
@@ -33,6 +36,11 @@ report = function(spp = "total", gear = "total", stratum = "total", CI = TRUE, c
     } else {
       boot_out_use = boot_out
     }
+  }
+
+  # select output from the requested date
+  if (!is.null(date)) {
+    boot_out_use = boot_out_use[boot_out_use$date == date,]
   }
 
   # convert to long form
