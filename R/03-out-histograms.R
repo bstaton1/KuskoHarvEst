@@ -84,7 +84,7 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
   # calculate the mean by data source
   means = tapply(x, x_data$source, mean, na.rm = TRUE)
   means = round(c(All = mean(x, na.rm = TRUE), means), 1)
-  means_text = paste0(names(means), " Mean = ", unname(means))
+  means_text = paste0(names(means), " Mean: ", unname(means))
 
   # make the plot
   par(mgp = c(2,0.35,0), tcl = -0.15, xaxs = "i", yaxs = "i")
