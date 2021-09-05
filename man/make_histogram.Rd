@@ -22,6 +22,8 @@ make_histogram(interview_data, gear, variable, n_bins = 10)
 \item \code{"chum"}
 \item \code{"sockeye"}
 \item \code{"chum+sockeye"}
+\item \code{"trip_start"}
+\item \code{"trip_end"}
 \item \code{"soak_duration"}
 \item \code{"trip_duration"}
 \item \code{"p_chinook"}
