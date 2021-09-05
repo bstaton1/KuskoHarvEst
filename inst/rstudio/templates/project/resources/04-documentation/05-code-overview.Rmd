@@ -343,7 +343,6 @@ See the section on [construcing Rmarkdown source scripts](#Rmd) for details on w
 
 * `resource_path()` -- returns the path to a file or directory in the user's 'KuskoHarvEst' installed package within the path `.../library/KuskoHarvEst/rstudio/templates/project/resources/`. This location stores many important files that need to be easily accessed. 
 * `KuskoHarvEst_skeleton()` -- builds a blank project from a template that is suitable for 'KuskoHarvEst' usage
-* `unlist_df()` -- combines data frames that are stored as list elements
 * `percentize()` -- converts a number (e.g., `0.105`) to a percent suitable for printing in documents (e.g., `"10.5%"`)
 * `tinyCI()` -- adds LaTeX code to the output of `report()` to format the confidence intervals smaller than the mean text
 * `capitalize()` -- captializes the first letter of a character string
