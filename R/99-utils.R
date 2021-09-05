@@ -47,25 +47,6 @@ combine_datetime = function(dates, times) {
   return(step2)
 }
 
-#' Combine a list of data frames
-#'
-#' Loops over elements of a list object, where each element is a data frame with identical headers
-#'   and applies [base::rbind()] to them.
-#'
-#' @param list List; each element is a data frame with identical headers
-#'
-
-unlist_dfs = function(list) {
-  # empty object
-  output = NULL
-
-  # loop through list elements, combining the data frame in each with all previous
-  for (i in 1:length(list)) output = rbind(output, list[[i]])
-
-  # return the output
-  return(output)
-}
-
 #' Convert a proportion to a percent
 #'
 #' @param x Numeric; vector containing values on the proportional scale to be converted to a percentage value

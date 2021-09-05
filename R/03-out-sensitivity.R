@@ -117,7 +117,7 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
 
   # format the conditional probabilities for each scenario
   if (n_flights > 1) {
-    combo_conditionals = unlist_dfs(lapply(effort_scenarios, function(x) {
+    combo_conditionals = lapply(effort_scenarios, function(x) {
       x = unname(x$p_T1_given_T2)
       if (length(x) < length(cond_names)) {
         x = percentize(c(x, rep(NA, length(cond_names) - length(x))), escape = TRUE)
@@ -128,7 +128,8 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
       x = as.data.frame(as.list(x))
       names(x) = cond_names
       x
-    }))
+    })
+    combo_conditionals = do.call(rbind, combo_conditionals)
   } else {
     combo_conditionals = NULL
   }

@@ -343,10 +343,9 @@ See the section on [construcing Rmarkdown source scripts](#Rmd) for details on w
 
 * `resource_path()` -- returns the path to a file or directory in the user's 'KuskoHarvEst' installed package within the path `.../library/KuskoHarvEst/rstudio/templates/project/resources/`. This location stores many important files that need to be easily accessed. 
 * `KuskoHarvEst_skeleton()` -- builds a blank project from a template that is suitable for 'KuskoHarvEst' usage
-* `unlist_df()` -- combines data frames that are stored as list elements
 * `percentize()` -- converts a number (e.g., `0.105`) to a percent suitable for printing in documents (e.g., `"10.5%"`)
 * `tinyCI()` -- adds LaTeX code to the output of `report()` to format the confidence intervals smaller than the mean text
-* `capitalize()` -- captializes the first letter of a character string
+* `capitalize()` -- capitalizes the first letter of a character string
 * `combine_datetime()` -- combines a date (stored as M/D/YYYY) and time (stored as H:MM) into a standardized date time object that can be used by any 'lubridate' function; provides standardized treatment of dates and times
 * `file_date()` -- converts a datetime object into a format suitable to serve in a file name 
 * `basic_date()` -- converts a datetime object into a more human-readable format
@@ -364,7 +363,7 @@ See the section on [construcing Rmarkdown source scripts](#Rmd) for details on w
     KuskoHarvEst:::source_names
     ```
 
-* An object names `strata_names` that includes information about what each of the stratum codes mean. **If new boundaries of the strata are defined, or if new strata are to be included, this object needs to be updated.**
+* An object named `strata_names` that includes information about what each of the stratum codes mean. **If new boundaries of the strata are defined, or if new strata are to be included, this object needs to be updated.**
 
     ```{r}
     KuskoHarvEst:::strata_names
