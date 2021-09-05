@@ -51,12 +51,12 @@ prepare_interviews = function(input_files, ...) {
   # perform checks for impossible trip times
   impossible_trips = !is_possible_trip(interview_data)
   if (any(impossible_trips)) {
-    impossible_trip_notes[impossible_trips] = paste0("Impossible trip times reported, trip times set to NA.")
+    impossible_trip_notes[impossible_trips] = paste0("Impossible trip times reported so have been discarded.")
     interview_data$suit_effort[impossible_trips] = FALSE
     interview_data$trip_duration[impossible_trips] = NA
     interview_data$trip_start[impossible_trips] = NA
     interview_data$trip_end[impossible_trips] = NA
-    warning("\n", sum(impossible_trips), " interview(s) had impossible trip times reported.\nFor these records, the trip times have been set to NA,\nand a note has been included in the output.")
+    warning("\n", sum(impossible_trips), " interview(s) had impossible trip times reported.\nFor these records, the trip times have been set to NA,\nand a note has been included in the output.\nYou may wish to see if there is a typo in the raw data for these records.")
   }
 
   # perform checks for impossible soak times
