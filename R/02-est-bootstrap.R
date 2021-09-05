@@ -27,7 +27,7 @@ bootstrap_harvest = function(interview_data, effort_info, gear, n_boot = 1000, s
   })
 
   # combine the output of each bootstrapped sample into a data frame
-  output = unlist_dfs(output)
+  output = do.call(rbind, output)
 
   # return the output
   return(output)

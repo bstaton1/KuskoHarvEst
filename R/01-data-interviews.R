@@ -16,7 +16,7 @@ prepare_interviews = function(input_files, ...) {
   interview_data_list = lapply(input_files, function(file) prepare_interviews_one(file, ...))
 
   # combine individual list elements into a data frame
-  interview_data = unlist_dfs(interview_data_list)
+  interview_data = do.call(rbind, interview_data_list)
 
   # check to make sure only one unique start date is found in the data
   start_dates = unique_start_dates(interview_data)
