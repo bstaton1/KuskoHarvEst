@@ -4,7 +4,7 @@
 \alias{make_histograms}
 \title{Make a multi-panel figure showing multiple histograms}
 \usage{
-make_histograms(interview_data, gear, variables, n_bins = 10)
+make_histograms(interview_data, gear, variables, mfrow = c(2, 3), n_bins = 10)
 }
 \arguments{
 \item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
@@ -15,12 +15,18 @@ make_histograms(interview_data, gear, variables, n_bins = 10)
 \item \code{gear = "set"} for set nets
 }}
 
-\item{variables}{Character; vector with length less than 6 indicating which
+\item{variables}{Character; vector indicating which
 variables to draw histograms for. See \code{\link[=make_histogram]{make_histogram()}} for accepted options}
+
+\item{mfrow}{Numeric; vector of length 2 specifying how to organize the histogram panels in \code{c(rows,colums)}.
+Supplied to \code{\link[graphics:par]{graphics::par()}} and defaults to \code{c(2,3)}.}
 
 \item{n_bins}{Numeric; the number of bars to draw for the histogram}
 }
 \description{
 Calls \code{\link[=make_histogram]{make_histogram()}} several times to build a multipanel figure showing
 summaries of several variables.
+}
+\note{
+If 6 or fewer variables are supplied, the panels will be organized as
 }
