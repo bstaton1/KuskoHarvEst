@@ -142,21 +142,19 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 #'   summaries of several variables.
 #'
 #' @inheritParams estimate_harvest
-#' @param variables Character; vector with length less than 6 indicating which
+#' @param variables Character; vector indicating which
 #'   variables to draw histograms for. See [make_histogram()] for accepted options
+#' @param mfrow Numeric; vector of length 2 specifying how to organize the histogram panels in `c(rows,colums)`.
+#'   Supplied to [graphics::par()] and defaults to `c(2,3)`.
 #' @param n_bins Numeric; the number of bars to draw for the histogram
+#' @note If 6 or fewer variables are supplied, the panels will be organized as
 #'
 #' @export
 
-make_histograms = function(interview_data, gear, variables, n_bins = 10) {
-
-  # error check to make sure not more than 6 variables were supplied
-  if (length(variables) > 6) {
-    stop ("A maximum of 6 variables can be plotted.")
-  }
+make_histograms = function(interview_data, gear, variables, mfrow = c(2,3), n_bins = 10) {
 
   # graphics device settings
-  par(mfrow = c(2,3), mar = c(1.5,1,2,1), oma = c(0,2,0,0))
+  par(mfrow = mfrow, mar = c(1.5,1,2,1), oma = c(0,2,0,0))
 
   # loop through variables creating the histogram for each
   junk = sapply(variables, function(v) make_histogram(interview_data, gear, v, n_bins))
