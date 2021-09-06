@@ -174,3 +174,6 @@ saveRDS(flight_df, file.path(out_dir, "all_flight_data.rds"))
 
 # bootstrap estimates
 saveRDS(boot_out, file.path(out_dir, "all_bootstrap_harvest_estimates.rds"))
+
+# print a message when complete
+cat("\n\nAll Calculations Complete")
