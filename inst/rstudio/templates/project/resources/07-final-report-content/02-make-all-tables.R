@@ -57,3 +57,31 @@ flight_df$total = rowSums(flight_df[,c("A", "B", "C", "D1")])
 # export the output file
 write.csv(flight_df, file.path(out_dir, "all-setnet-counts.csv"), row.names = FALSE)
 
+##### TABLE 3: ALL EFFORT ESTIMATES FOR DRIFT NETS #####
+
+# load output
+effort_df = readRDS(file.path(in_dir, "all_drift_effort_estimates.rds"))
+
+# reshape the effort estimates
+effort_df = reshape2::dcast(effort_df, date ~ stratum, value.var = "estimate")
+
+# reformat the date variable
+effort_df$date = KuskoHarvEst:::basic_date(effort_df$date)
+
+# export the output file
+write.csv(effort_df, file.path(out_dir, "all-driftnet-effort-estimates.csv"), row.names = FALSE)
+
+##### TABLE 4: ALL EFFORT ESTIMATES FOR SET NETS #####
+
+# load output
+effort_df = readRDS(file.path(in_dir, "all_set_effort_estimates.rds"))
+
+# reshape the effort estimates
+effort_df = reshape2::dcast(effort_df, date ~ stratum, value.var = "estimate")
+
+# reformat the date variable
+effort_df$date = KuskoHarvEst:::basic_date(effort_df$date)
+
+# export the output file
+write.csv(effort_df, file.path(out_dir, "all-setnet-effort-estimates.csv"), row.names = FALSE)
+
