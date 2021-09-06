@@ -132,3 +132,83 @@ mtext(side = 4, outer = T, line = 0.5, "Proportion of Set Net Trips Per Stratum"
 # close the graphics device
 dev.off()
 
+##### INTERVIEWS #####
+
+# load output
+interviews = readRDS(file.path(in_dir, "all_interview_data.rds"))
+
+# calculate the number of interviews by opener and data source
+by_source = table(lubridate::date(interviews$trip_start), interviews$source)
+total = table(lubridate::date(interviews$trip_start))
+ests = cbind(by_source, total)
+ests = as.data.frame(ests)
+
+# extract/format date
+dates = KuskoHarvEst:::basic_date(rownames(ests))
+dates = substr(dates, 1, nchar(dates) - 5)
+rownames(ests) = NULL
+
+# calculate the proportion of all effort found in each stratum
+p = apply(ests[,c("BBH", "CBM", "FC")], 1, function(x) x/sum(x))
+
+# which bar to label with stratum labels
+label_bar_BBH = 1
+label_bar_CBM = 1
+label_bar_FC = 1
+
+# open a graphics device
+png(file.path(out_dir, "interviews-by-opener.png"), h = 5 * ppi, w = 7 * ppi, res = ppi)
+
+# set graphics parameters
+par(mfrow = c(1,2), mar = c(2,2,1,1), oma = c(0,2,0,2), xaxs = "i", yaxs = "i", tcl = -0.15, mgp = c(2,0.35,0))
+
+# make barplot: total effort estimate by date
+mp = barplot(ests$total, ylim = c(0, max(ests$total, na.rm = TRUE)), las = 1, col = "grey75", space = 0.1)
+usr = par("usr")
+segments(usr[1], usr[3], usr[2], usr[3], xpd = TRUE)
+axis(side = 1, at = mp, labels = dates, las = 2)
+
+# bake stacked barplot: proportion of effort in each stratum by date
+par(mar = c(2,1,1,2))
+mp = barplot(p, beside = F, ylim = c(0,1), col = c("grey45", "grey65", "grey85", "grey95"), space = 0.1, yaxt = "n", xaxt = "n")
+usr = par("usr")
+axis(side = 4, at = seq(0,1,0.2), labels = seq(0,1,0.2), las = 2)
+segments(usr[1], usr[3], usr[2], usr[3], xpd = TRUE)
+axis(side = 1, at = mp, labels = dates, las = 2)
+
+# label the bar with stratum
+text(x = mp[label_bar_BBH], y = p[1,label_bar_BBH]/2, labels = "BBH", font = 2, srt = 90)
+text(x = mp[label_bar_CBM], y = (sum(p[1:2,label_bar_CBM]) + p[1,label_bar_CBM])/2, labels = "CBM", font = 2, srt = 90)
+text(x = mp[label_bar_FC], y = (sum(p[1:3,label_bar_FC]) + sum(p[1:2,label_bar_FC]))/2, labels = "FC", font = 2, srt = 90)
+
+# add yaxis labels
+mtext(side = 2, outer = T, line = 0.5, "Total Interviews")
+mtext(side = 4, outer = T, line = 0.5, "Proportion of Interviews by Source")
+
+# close the graphics device
+dev.off()
+
+##### HARVEST BY SPECIES AND OPENER #####
+
+# read in the output
+ests = read.csv(file.path(in_dir, "all-harvest-summaries.csv"))
+
+# subset only estimates that will be plotted
+ests = subset(ests, stratum == "total" & gear == "total" & date != "total" & species != "total")
+
+# format the dates
+dates = unique(KuskoHarvEst:::basic_date(ests$date))
+dates = substr(dates, 1, nchar(dates) - 5)
+
+# extract the mean, lwr, and upr estimates by species and stratum, formatted for barplotting
+means = as.matrix(reshape2::dcast(ests, species ~ date, value.var = "mean")[,-1])
+lwrs = as.matrix(reshape2::dcast(ests, species ~ date, value.var = "lwr95ci")[,-1])
+uprs = as.matrix(reshape2::dcast(ests, species ~ date, value.var = "upr95ci")[,-1])
+
+# open a graphics device
+png(file.path(out_dir, "harvest-by-species-and-opener.png"), h = 5 * ppi, w = 7 * ppi, res = ppi)
+
+# set graphics parameters
+par(mar = c(2,4,2,2), tcl = -0.15, mgp = c(2,0.35,0))
+
+# make the grouped barplot
