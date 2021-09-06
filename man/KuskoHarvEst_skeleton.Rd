@@ -2,12 +2,15 @@
 % Please edit documentation in R/99-utils.R
 \name{KuskoHarvEst_skeleton}
 \alias{KuskoHarvEst_skeleton}
-\title{Create a project directory to use with 'KuskoHarvEst'}
+\title{Create a project directory to use for use with 'KuskoHarvEst'}
 \usage{
-KuskoHarvEst_skeleton(path)
+KuskoHarvEst_skeleton(path, is_for_final_report)
 }
 \arguments{
 \item{path}{A location to put the new project}
+
+\item{is_for_final_report}{Logical; is the project for compiling all estimates
+into tables and figures for final reporting rather than producing estimates for one day in-season?}
 }
 \description{
 Called by the RStudio project template builder
