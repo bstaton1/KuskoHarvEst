@@ -188,6 +188,36 @@ mtext(side = 4, outer = T, line = 0.5, "Proportion of Interviews by Source")
 # close the graphics device
 dev.off()
 
+##### ALL HISTOGRAMS #####
+
+# load output
+interviews = readRDS(file.path(in_dir, "all_interview_data.rds"))
+
+# specify which variables to make histograms for
+hist_variables = c("total_salmon", "chinook", "chum", "sockeye", "trip_start", "trip_duration", "soak_duration", "p_chinook")
+
+# format the dates to make histograms for
+dates = unique(lubridate::date(interviews$trip_start))
+dates = dates[!is.na(dates)]
+
+# a function to make one histogram file for one opener
+hist_function = function(plot_date) {
+
+  cat("\rMaking Histogram File for", as.character(plot_date))
+
+  gear = ifelse(as.character(plot_date) %in% set_only_openers, "set", "drift")
+
+  file_date = KuskoHarvEst:::file_date(plot_date)
+  file_name = file.path(out_dir, paste0("histograms_", gear, "_", file_date, ".png"))
+
+  png(file_name, h = 8 * ppi, w = 5 * ppi, res = ppi)
+  KuskoHarvEst::make_histograms(subset(interviews, lubridate::date(trip_start) == plot_date), gear, hist_variables, mfrow = c(4,2))
+  dev.off()
+}
+
+# loop through dates, making the histogram figure file for each
+junk = sapply(dates, hist_function); rm(junk)
+
 ##### HARVEST BY SPECIES AND OPENER #####
 
 # read in the output
