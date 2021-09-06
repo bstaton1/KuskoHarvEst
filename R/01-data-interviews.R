@@ -40,9 +40,6 @@ prepare_interviews = function(input_files, ...) {
   colnames(suitable) = paste0("suit_", c("effort", "cr_info", "cr_reliable", "avg_soak", "avg_net"))
   interview_data = cbind(interview_data, suitable)
 
-  # extract notes on suitability
-  suitability_notes = suitable_for(interview_data, task = "notes")
-
   # create empty note objects for checks performed within this function
   impossible_trip_notes = rep(NA, nrow(interview_data))
   impossible_soak_notes = rep(NA, nrow(interview_data))
@@ -65,6 +62,8 @@ prepare_interviews = function(input_files, ...) {
   if (any(impossible_soaks)) {
     impossible_soak_notes[impossible_soaks] = paste0("Long soak duration (", interview_data[impossible_soaks,"soak_duration"], ") edited to trip duration (", interview_data[impossible_soaks,"trip_duration"], ")")
     interview_data$soak_duration[impossible_soaks] = interview_data$trip_duration[impossible_soaks]
+    interview_data$suit_cr_reliable = suitable_for(interview_data, "catch_rate_info_reliable")
+    interview_data$suit_avg_soak = suitable_for(interview_data, "avg_soak")
     warning("\n", sum(impossible_soaks), " interview(s) had soak duration reported longer than trip duration.\nFor these records, the soak duration has been set to the trip duration,\nand a note has been included in the output.")
   }
 
@@ -77,6 +76,9 @@ prepare_interviews = function(input_files, ...) {
     interview_data$suit_avg_net[cpt_outliers] = FALSE
     warning("\n", sum(cpt_outliers), " interview(s) had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
   }
+
+  # extract notes on suitability
+  suitability_notes = suitable_for(interview_data, task = "notes")
 
   # combine the notes from each record
   notes = sapply(1:nrow(interview_data), function(i) {
