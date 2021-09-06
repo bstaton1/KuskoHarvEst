@@ -242,3 +242,94 @@ png(file.path(out_dir, "harvest-by-species-and-opener.png"), h = 5 * ppi, w = 7 
 par(mar = c(2,4,2,2), tcl = -0.15, mgp = c(2,0.35,0))
 
 # make the grouped barplot
+mp = barplot(means, beside = TRUE, ylim = c(0, max(uprs, na.rm = TRUE) * 1.05), names.arg = dates, yaxt = "n", col = c("grey50", "grey70", "grey90"))
+
+# handle axes
+usr = par("usr")
+segments(usr[1], usr[3], usr[2], usr[3], xpd = T)
+axis(side = 1, at = mp[2,], labels = FALSE)
+at_y = axisTicks(usr[3:4], log = FALSE)
+axis(side = 2, at = at_y, labels = prettyNum(at_y, big.mark = ",", scientific = FALSE), las = 2)
+mtext(side = 2, line = 3, "Harvest")
+
+# add error bars (suppress warnings about NA length arrows)
+suppressWarnings(arrows(mp, lwrs, mp, uprs, code = 3, angle = 90, length = 0.05))
+
+# add a legend
+legend("topleft", legend = c("Chinook", "Chum", "Sockeye"), pch = 22, pt.cex = 2.5, pt.bg = c("grey50", "grey70", "grey90"), bty = "n")
+
+# close the device
+dev.off()
+
+##### TOTAL HARVEST BY SPECIES #####
+# read in the output
+ests = read.csv(file.path(in_dir, "all-harvest-summaries.csv"))
+
+# subset only estimates that will be plotted
+ests = subset(ests, stratum == "total" & gear == "total" & date == "total")
+ests$species = factor(ests$species, levels = c("total", "chinook", "chum", "sockeye"))
+ests = ests[order(ests$species),]
+ests = ests[,-which(colnames(ests) %in% c("date", "gear", "stratum"))]
+
+# open a graphics device
+png(file.path(out_dir, "harvest-by-species.png"), h = 5 * ppi, w = 7 * ppi, res = ppi)
+
+# set graphics parameters
+par(mar = c(2,4,2,2), tcl = -0.15, mgp = c(2,0.35,0))
+
+# make the barplot
+mp = barplot(ests$mean, beside = TRUE, ylim = c(0, max(ests$upr95ci, na.rm = TRUE) * 1.05),
+             names.arg = c("Total", "Chinook", "Chum", "Sockeye"), yaxt = "n")
+
+# add error bars (suppress warnings about NA length arrows)
+suppressWarnings(arrows(mp, ests$lwr95ci, mp, ests$upr95ci, code = 3, angle = 90, length = 0.05))
+
+# handle axes
+usr = par("usr")
+segments(usr[1], usr[3], usr[2], usr[3], xpd = TRUE)
+at_y = axisTicks(usr[3:4], log = FALSE)
+axis(side = 1, at = mp, labels = FALSE)
+axis(side = 2, at = at_y, labels = prettyNum(at_y, big.mark = ",", scientific = FALSE), las = 2)
+mtext(side = 2, line = 3, "Harvest")
+
+# close the graphics device
+dev.off()
+
+##### TOTAL HARVEST BY SPECIES AND STRATUM #####
+
+# read in the output
+ests = read.csv(file.path(in_dir, "all-harvest-summaries.csv"))
+
+# subset only estimates that will be plotted
+ests = subset(ests, gear == "total" & date == "total" & stratum != "total" & species != "total")
+
+# extract the mean, lwr, and upr estimates by species and stratum, formatted for barplotting
+means = as.matrix(reshape2::dcast(ests, species ~ stratum, value.var = "mean")[,-1])
+lwrs = as.matrix(reshape2::dcast(ests, species ~ stratum, value.var = "lwr95ci")[,-1])
+uprs = as.matrix(reshape2::dcast(ests, species ~ stratum, value.var = "upr95ci")[,-1])
+
+# open a graphics device
+png(file.path(out_dir, "harvest-by-species-and-stratum.png"), h = 5 * ppi, w = 7 * ppi, res = ppi)
+
+# set graphics parameters
+par(mar = c(2,4,2,2), tcl = -0.15, mgp = c(2,0.35,0))
+
+# make the grouped barplot
+mp = barplot(means, beside = TRUE, ylim = c(0, max(uprs, na.rm = TRUE) * 1.05), names.arg = c("A", "B", "C", "D"), yaxt = "n", col = c("grey50", "grey70", "grey90"))
+
+# handle axes
+usr = par("usr")
+segments(usr[1], usr[3], usr[2], usr[3], xpd = T)
+axis(side = 1, at = mp[2,], labels = FALSE)
+at_y = axisTicks(usr[3:4], log = FALSE)
+axis(side = 2, at = at_y, labels = prettyNum(at_y, big.mark = ",", scientific = FALSE), las = 2)
+mtext(side = 2, line = 3, "Harvest")
+
+# add error abrs
+arrows(mp, lwrs, mp, uprs, code = 3, angle = 90, length = 0.05)
+
+# add a legend
+legend("topleft", legend = c("Chinook", "Chum", "Sockeye"), pch = 22, pt.cex = 2.5, pt.bg = c("grey50", "grey70", "grey90"), bty = "n")
+
+# close the device
+dev.off()
