@@ -69,7 +69,7 @@ suitable_for = function(interview_data, task) {
   # is the soak time usable in calculating the average for any expected trip?
   # the soak time *must* be from a completed trip to be used
   if (task == "avg_soak") {
-    suitable = has_soak(interview_data) & is_complete_trip(interview_data) & !is_soak_outlier(interview_data)
+    suitable = is_complete_trip(interview_data) & !is_soak_outlier(interview_data)
   }
 
   # is the net length usable in calculating the average for any expected trip?
