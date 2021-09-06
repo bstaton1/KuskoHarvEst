@@ -1,0 +1,203 @@
+---
+title: "**Automated Interview Data Checks**"
+subtitle: "_KuskoHarvEst Documentation_"
+date: '`r paste0("Last Updated: ", KuskoHarvEst:::basic_date(lubridate::today()))`'
+author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d[3])`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: false
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+_This document provides an overview of the automated checks performed by 'KuskoHarvEst' prior to using interview data records in the estimates._
+
+**Most users will not need to review this document**. It is intended for completeness and transparency, especially since the code that implements these checks is not the most straight-forward. However, it should be useful for users who are curious about why the software deems some interviews unsuitable for a purpose.
+
+Prior to the development of 'KuskoHarvEst', the analyst needed to make subjective choices regarding whether an interview looked questionable and decide whether to include or exclude it.
+However, the rules used by analysts may vary and the same analyst may not always use the same rules, meaning that the estimates were not guaranteed to be reproducible.
+A major feature of the 'KuskoHarvEst' workflow is the implementation of a set of automated, objective, and agreed upon rules for deciding which interviews are suitable to be used for a given purpose in the estimation and reporting workflow.
+
+# Suitability Categories
+
+After processing the raw data files with either `prepare_interviews()` or the `r KuskoHarvEst:::link_to_doc("03-interview-flight-data-tool.html", "raw data preparation tool")`, six new columns will be added to the interview data set. The first five columns store a `TRUE` or a `FALSE` value: `TRUE` indicates the interview in that row is suitable for a given purpose indicated by the column name. These columns store the answer to each of these questions (`TRUE` means "yes"):
+
+* `suit_effort` -- Are the recorded trip times suitable to be used in the effort estimator?
+* `suit_cr_info` -- Is all critical catch rate information recorded?
+* `suit_cr_reliable` -- Is all critical catch rate information deemed reliable to be used for informing the average catch per trip?
+* `suit_avg_soak` -- Is the recorded soak time reliable enough to inform the average soak time across trips?
+* `suit_avg_net` -- Is the recorded net length reliable enough to inform the average net length across trips?
+
+The intent of these columns is to keep track of which how each interview can be used.
+For example, an interview might be missing much of the key information for a trip but record the time it started and ended.
+In this case it could at least be used for informing the effort estimator, which relies only on the trip times.
+
+In addition to these five "logical flags", a sixth and more human-readable column is added called `note`.
+This column stores more detailed information that may help the user determine why an interview failed one or more of the checks.
+
+# Checks Performed {.tabset .tabset-pills}
+
+This section outlines each of the checks that would result in an interview record receiving a `FALSE` in one or more of the five suitability categories described above.
+
+**Terminology**
+
+* **Decision rule** -- the rules used to come to the `TRUE/FALSE` suitability decision.
+* **Incomplete trip** -- if the interview was conducted before the fisher trip was complete, the data require special care. The vast majority of interviews are completed trips -- incomplete trip interviews have only been obtained by law enforcement officers in 2016 -- 2018.
+* **Impossible trip times** -- if the trip end time is recorded to be before the trip start time.
+* **Impossible soak time** -- if the soak duration is longer than the reported trip duration.
+* **Soak time outlier** -- if the soak time for an interview is `x` or more standard deviations away from the mean of all other soak times for that gear type, it is considered an outlier. `x` takes on the value of `getOption("soak_sd_cut")` and should be 3 by default.
+* **Net length outlier** -- if the net length for an interview is longer than `y`, it is considered an outlier. `y` takes on the value of `getOption("net_length_cut")` and should be 350 by default.
+* **Catch/trip outlier** -- if leaving the interview out changes the average all salmon catch per trip by more than `z` * 100%, then it is considered a catch per trip outlier. `z` takes on the value of `getOption("catch_per_trip_cut")` and should be 0.05 by default.
+
+Click through the buttons below for more details about the checks in the decision rule for each of the suitability categories.
+
+## `suit_effort`
+
+#### Need for Decision Rule
+
+The effort estimator requires trip start/end times to determine if each trip was available to be counted by airplane.
+This allows correcting for trips that would have been double counted or not counted at all.
+Performing this check ensures that only interviews with appropriate trip time information are used by the effort estimator.
+
+#### Description of Decision Rule
+
+An interview will be deemed unsuitable for informing the effort estimator if any of the following occur:
+
+(a) it is missing trip times
+(b) if it is an incomplete trip
+(c) if the reported trip times are impossible (i.e., end time is before the start time)
+
+If (c) is the case, users will be notified with a warning.
+
+#### User Control of Decision Rule
+
+None, except that if the trip times are impossible it could likely be the result of a typo in the raw data.
+Users are advised to attempt fixing these by hand.
+
+#### R Functions Used
+
+* `has_trip_times()`
+* `is_complete_trip()`
+* `is_possible_trip()`
+
+## `suit_cr_info`
+
+#### Need for Decision Rule
+
+The harvest estimator relies on the catch rate reported by the interview, expressed as the catch per foot of net soaked per hour.
+This check indicates which records lack the necessary information for this calculation.
+
+#### Description of Decision Rule
+
+An interview will be deemed unsuitable for calculating the catch rate if any of the following occur:
+
+(a) if the soak time is missing
+(b) if the net length is missing
+
+#### User Control of Decision Rule
+
+None.
+
+#### R Functions Used
+
+* `has_soak()`
+* `has_net_length()`
+
+## `suit_cr_reliable`
+
+#### Need for Decision Rule
+
+The harvest estimator relies on the catch rate reported by the interview, expressed as the catch per foot of net soaked per hour.
+This check verifies that the information needed to perform this calculation is reliable.
+
+#### Description of Decision Rule
+
+An interview's catch rate data will be deemed unreliable if any of the following occur:
+
+(a) if the soak time is an outlier
+(b) if the net length is an outlier
+(c) if it is a catch/trip outlier
+(d) if it is an incomplete trip and the soak time was shorter than the shortest completed trip of the same gear type
+
+#### User Control of Decision Rule
+
+The classification of a soak time outlier can be controlled by `options("soak_sd_cut")` (3 is the default, lower values will deem more soak times unsuitable). The classification of a net length outlier can be controlled by `options("net_length_cut")` (350 is the default).
+
+#### R Functions Used
+
+* `is_soak_outlier()`
+* `is_normal_net()`
+* `is_catch_per_trip_outlier()`
+* `is_short_incomplete_trip()`
+
+## `suit_avg_soak`
+
+#### Need for Decision Rule
+
+The harvest estimator uses the soak time for the average trip. Completing this check is intended to ensure that only reliable soak times are included in that calculation.
+
+#### Description of Decision Rule
+
+An interview be deemed to have an unsuitable soak time for the average if any of the following occur:
+
+(a) it is an incomplete trip
+(b) it is a soak time outlier
+
+#### User Control of Decision Rule
+
+The classification of a soak time outlier can be controlled by `options("soak_sd_cut")` (3 is the default, lower values will deem more soak times unsuitable).
+
+#### R Functions Used
+
+* `is_complete_trip()`
+* `is_soak_outlier()`
+
+## `suit_avg_net`
+
+#### Need for Decision Rule
+
+The harvest estimator uses the net length for the average trip. Completing this check ensures that only reliable net lengths are included in that calculation.
+
+#### Description of Decision Rule
+
+An interview be deemed to have an unsuitable net length for the average if any of the following occur:
+
+(a) it is a net length outlier
+
+#### User Control of Decision Rule
+
+The classification of a net length outlier can be controlled by `options("net_length_cut")` (350 is the default).
+
+#### R Functions Used
+
+* `is_normal_net()`
+
+# Other Checks
+
+#### Failure Causing
+
+If there is more than one unique start date among the trips included, the software will crash -- this is intentional. The sofware is intended to estimate harvest for one day of fishing at a time, so if the data contain more than one date it will crash.
+
+Should this occur, users will see an error message and must find the conflicting dates and either correct the typo or exclude the data from the dates that should not be included.
+
+#### Data Modifying
+
+Two cases require automated editing the data:
+
+1. **Impossible trip times** -- if the trip end time is recorded have occurred before the trip start time, the times are clearly impossible. The program will automatically convert the trip start and end times to `NA` (i.e., missing) for impossible trips and a warning will be returned to the user. Users are advised determine if a data entry error caused this to occur and fix it in the raw data if this is the case.
+2. **Impossible soak times** -- if the soak time is recorded to have been longer than the total trip time, this is clearly impossible. The program will automatically convert the soak duration to be equal to the trip duration and a warning will be returned to the user.
+
+#### Discard Criteria
+
+In some rare cases, an interview is totally unusable and is therefore discarded prior to any further analysis. There are currently two reasons that would cause this:
+
+1. If the gear type (set net or drift net) is missing
+2. If the reported stratum is not recognized as being within the study area, i.e. one of: `r paste(KuskoHarvEst:::strata_names$stratum, collapse = ", ")`, or NA.
+
+In both cases, a warning will be returned to the user notifying them that these interviews were discarded.
