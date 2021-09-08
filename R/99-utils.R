@@ -10,20 +10,38 @@ resource_path = function(file) {
   system.file(file.path("rstudio", "templates", "project", "resources", file), package = "KuskoHarvEst")
 }
 
-#' Create a project directory to use with 'KuskoHarvEst'
+#' Create a project directory to use for use with 'KuskoHarvEst'
 #'
 #' Called by the RStudio project template builder
 #'
 #' @param path A location to put the new project
+#' @param is_for_final_report Logical; is the project for compiling all estimates
+#'   into tables and figures for final reporting rather than producing estimates for one day in-season?
 #'
 
-KuskoHarvEst_skeleton = function(path) {
+KuskoHarvEst_skeleton = function(path, is_for_final_report) {
 
-  # create the package directory
+  # create the project directory
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
-  # create subdirectories
-  dir.create(file.path(path, "data-raw"))
+  if (!is_for_final_report) {
+    # create subdirectories
+    dir.create(file.path(path, "data-raw"))
+  } else {
+    # create subdirectories
+    dir.create(file.path(path, "raw-data-files"))
+
+    # find the files
+    resource_path = resource_path("07-final-report-content")
+    files = list.files(resource_path)
+
+    # build full file paths
+    source = file.path(resource_path, files)
+    target = file.path(path, files)
+
+    # copy the files into the new project
+    file.copy(source, target)
+  }
 
   TRUE
 }

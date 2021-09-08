@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 _This document describes the overall workflow in terms of the order of major tasks you will complete, and how to find the tools you will use to complete each task._
 
-# The Workflow {-}
+# The In-Season Workflow {-}
 
 You will interact with intuitive menu-driven interfaces contained in 'KuskoHarvEst' to create documents that summarize the data and results of harvest estimation for a given harvest opportunity.
 Your workflow for a given opportunity will be:
@@ -76,6 +76,8 @@ Although these features are flexible, you are advised to:
   <img src="screenshots/00-general/new-project-info.png" width="500"/>
 </p>
 
+**NOTE**: Make sure the checkbox labeled "Check this box if season is complete..." is **unchecked**. See `r KuskoHarvEst:::link_to_doc("07-final-report-content.html")` for details on when to check this box.
+
 After you click "Create Project", RStudio will open that project.
 You can see which project is active (or close, open, etc. other projects) from this menu in the upper right-hand corner of RStudio:
 
@@ -124,3 +126,7 @@ The tool that allows you to perform these tasks can be accessed through the RStu
 <p align="center">
   <img src="screenshots/common/addins-menu-build-reports.png" width="600"/>
 </p>
+
+# Post-Season Workflow {-}
+
+After each season, a season-wide summary report has been written by the primary analysts that season. The report contains many figures and tables and 'KuskoHarvEst' contains some features to help you make this content at the end of the season. See See `r KuskoHarvEst:::link_to_doc("07-final-report-content.html")` for more details.
