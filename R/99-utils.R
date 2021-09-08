@@ -220,3 +220,21 @@ add_vspace = function(kable_input, space = "-1em") {
 link_to_doc = function(doc, text = "here") {
   paste0('[', text, '](./', doc, '){target="_blank"}')
 }
+
+#' Summation-informed rounding
+#'
+#' Rounds a vector such that the sum of the rounded vector equals the sum of the unrounded vector
+#'
+#' @param x Numeric; vector to be rounded
+#' @param digits Numeric; number of decimal points to round to
+#' @references The source code for this function was copied from [this Stack Overflow answer](https://stackoverflow.com/a/35930285/3911200)
+
+smart_round = function(x, digits = 0) {
+  # copied from https://stackoverflow.com/a/35930285/3911200
+  up = 10 ^ digits
+  x = x * up
+  y = floor(x)
+  indices = tail(order(x-y), round(sum(x)) - sum(y))
+  y[indices] = y[indices] + 1
+  y/up
+}
