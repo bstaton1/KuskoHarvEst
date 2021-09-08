@@ -16,7 +16,8 @@ make_interview_data_table = function(interview_data) {
   tab = rbind(tab, Total = sum(tab))
 
   # append the percent of all interviews by source
-  tab = cbind(tab, Percent = percentize(tab[,1]/tab["Total",1]))
+  p = smart_round(tab[,1]/tab["Total",1], digits = 2)
+  tab = cbind(tab, Percent = percentize(p))
 
   # formatting
   tab = cbind("Data Source" = rownames(tab), tab); rownames(tab) = NULL
