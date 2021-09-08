@@ -27,7 +27,8 @@ boot_out <<- rbind(boot_out_total, boot_out_drift, boot_out_set)
 
 ```{r set-summaries}
 set_harvest = sapply(c("chinook", "chum", "sockeye", "total"), function(sp) report(sp, gear = "set", CI = FALSE, return_numeric = TRUE))
-set_spp = KuskoHarvEst:::percentize(set_harvest[c("chinook", "chum", "sockeye")]/set_harvest["total"])
+set_spp = KuskoHarvEst:::smart_round(set_harvest[c("chinook", "chum", "sockeye")]/set_harvest["total"], 2)
+set_spp = KuskoHarvEst:::percentize(set_spp)
 ```
 
 * An estimated total of **`r report()`** salmon were harvested.
