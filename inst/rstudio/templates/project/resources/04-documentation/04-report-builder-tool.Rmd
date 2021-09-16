@@ -110,6 +110,8 @@ Here is what each item controls:
 
 * **Present Some Summaries for Chum and Sockeye Separately**: If checked, the histograms and appendix tables will show summaries for chum and sockeye salmon separately. The default (unchecked) will show summaries for these species summed together as "chum+sockeye".
 
+* **Include Appendix with Non-Salmon Harvest Estimates**: If checked, an appendix will be added to the output that displays estimated harvest of non-salmon species.
+
 When you are done selecting these options, click the "Save Rmarkdown Source File" button and then the "Build PDF Report" button (note that you cannot click the second without clicking the first button). After you click "Build PDF Report", you will see some text appear in the R console behind the tool indicating that calculations are happening. When these are complete, a PDF file will automatically be opened showing you the results. **If you wish to make changes to the PDF file after it has already been created, close the PDF file if it is still open, reselect the correct settings, then click both buttons again.**
 
 <p align="center">

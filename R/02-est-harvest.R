@@ -11,9 +11,11 @@
 #' @param randomize Logical; should interview data be randomized prior to performing the estimate?
 #' @param stratify_interviews Logical; should interview data be separated by geographic stratum before performing the estimate?
 #'   Generally this should be `TRUE` for `gear = "drift"` and `FALSE` for `gear = "set"`
+#' @param nonsalmon Logical; should estimates be returned for whitefish and sheefish rather than for Chinook, chum, and sockeye salmon?
+
 #' @export
 
-estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE, stratify_interviews) {
+estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE, stratify_interviews, nonsalmon = FALSE) {
 
   # extract the strata names
   strata_names = names(effort_info$effort_est_stratum)
@@ -34,7 +36,7 @@ estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE
 
     # apply the expand() function separately to each stratum, but don't stratify interview data
     ests_all = sapply(strata_names, function(s) {
-      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data_use, gear = gear, randomize = FALSE),
+      expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data_use, gear = gear, randomize = FALSE, nonsalmon = nonsalmon),
              effort = effort_info$effort_est_stratum[s]
       )
     })
@@ -45,7 +47,7 @@ estimate_harvest = function(interview_data, effort_info, gear, randomize = FALSE
     # apply the expand() function separately to each stratum and stratify interview data
     ests_all = sapply(strata_names, function(s) {
       expand(catch_per_trip = estimate_catch_per_trip(interview_data = interview_data[interview_data$stratum %in% unlist(use_strata[s]),],
-                                                      gear = gear, randomize = randomize),
+                                                      gear = gear, randomize = randomize, nonsalmon = nonsalmon),
              effort = effort_info$effort_est_stratum[s]
       )
     })

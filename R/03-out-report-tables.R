@@ -72,11 +72,12 @@ make_flight_data_table = function(flight_data) {
 #' Create a table to summarize information spatially
 #'
 #' @inheritParams estimate_harvest
+#' @param nonsalmon Logical; should the table display estimates for non-salmon instead of salmon species?
 #'
 #' @importFrom magrittr %>%
 #' @export
 
-make_strata_summary_table = function(interview_data, gear) {
+make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
 
   # create nice names for the strata
   strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
@@ -90,24 +91,39 @@ make_strata_summary_table = function(interview_data, gear) {
   }
 
   # calculate/format harvest by stratum
-  chinook = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
-  chum = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
-  sockeye = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
-  total = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
+  if (!nonsalmon) {
+    chinook = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
+    chum = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
+    sockeye = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
+    total = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
+  } else {
+    sheefish = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "sheefish", stratum = stratum, gear = gear)))
+    whitefish = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "whitefish", stratum = stratum, gear = gear)))
+    total = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
+  }
 
   # build the strata-specific information for the table
   tab = cbind(
-    # Stratum = kableExtra::linebreak(strata, align = "l"),
     Stratum = strata,
     Interviews = with(interview_data[interview_data$gear == gear,], table(factor(stratum, levels = strata_names$stratum))),
-    "Effort Est." = effort_info$effort_est_stratum,
-    Chinook = chinook, Chum = chum, Sockeye = sockeye, Total = total
+    "Effort Est." = effort_info$effort_est_stratum
   )
+
+  # add species-specific summaries
+  if (!nonsalmon) {
+    tab = cbind(tab, Chinook = chinook, Chum = chum, Sockeye = sockeye, Total = total)
+  } else {
+    tab = cbind(tab, Sheefish = sheefish, Whitefishes = whitefish, Total = total)
+  }
 
   # build the across-strata information for the table
   tot_int = sum(as.numeric(tab[,"Interviews"]))
   tot_eff = sum(as.numeric(tab[,"Effort Est."]))
-  tot_harv = sapply(c("chinook", "chum", "sockeye", "total"), function(spp) tinyCI(report(spp = spp, stratum = "total", gear = gear)))
+  if (!nonsalmon) {
+    tot_harv = sapply(c("chinook", "chum", "sockeye", "total"), function(spp) tinyCI(report(spp = spp, stratum = "total", gear = gear)))
+  } else {
+    tot_harv = sapply(c("sheefish", "whitefish", "total"), function(spp) tinyCI(report(spp = spp, stratum = "total", gear = gear)))
+  }
   tots = c(Stratum = "All", Interviews = tot_int, "Effort Est." = tot_eff, tot_harv)
 
   # combine
@@ -118,7 +134,7 @@ make_strata_summary_table = function(interview_data, gear) {
                align = "lcccccc",
                caption = paste0("Summary of relevant quantities by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position", "scale_down")) %>%
-    kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = 4), bold = T) %>%
+    kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = ifelse(!nonsalmon, 4, 3)), bold = TRUE) %>%
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
     kableExtra::column_spec(ncol(tab), bold = TRUE) %>%
@@ -202,13 +218,20 @@ make_johnson_summary_table = function() {
 #'   * `"sockeye_rate"`
 #'   * `"sockeye"`
 #'   * `"chum+sockeye_rate"`
-#'   * `"chinook"`
+#'   * `"chum+sockeye"`
+#'   * `"sheefish_rate"`
+#'   * `"sheefish"`
+#'   * `"whitefish_rate"`
+#'   * `"whitefish"`
+#'   * `"sheefish+whitefish_rate"`
+#'   * `"sheefish+whitefish"`
 #'   * `"soak_duration"`
 #'   * `"trip_start"`
 #'   * `"trip_end"`
 #'   * `"trip_duration"`
 #'   * `"net_length"`
 #'   * `"p_chinook"`
+#'
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -219,10 +242,14 @@ make_appendix_table = function(interview_data, gear, variable) {
   accepted_variables = c(
     "chinook_rate",
     "chinook",
-    "chum+sockeye",
     "chum+sockeye_rate",
-    "chum", "sockeye",
+    "chum+sockeye",
     "chum_rate", "sockeye_rate",
+    "chum", "sockeye",
+    "sheefish+whitefish_rate",
+    "sheefish+whitefish",
+    "sheefish_rate", "whitefish_rate",
+    "sheefish", "whitefish",
     "soak_duration",
     "trip_start", "trip_end", "trip_duration",
     "net_length",
@@ -292,7 +319,52 @@ make_appendix_table = function(interview_data, gear, variable) {
   if (variable == "sockeye_rate") {
     x_data = x_data[x_data$suit_cr_reliable,]
     x = (x_data$sockeye)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of chum salmon by fishing area (salmon per 150 feet of net per hour).")
+    cap = paste0("Summary of ", gear, " net catch rate of sockeye salmon by fishing area (salmon per 150 feet of net per hour).")
+    digits = 1
+  }
+
+  # prepare information: sheefish catch per trip
+  if (variable == "sheefish") {
+    x = x_data$sheefish
+    cap = paste0("Summary of ", gear, " net catch per trip of sheefish by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: sheefish catch rate per trip
+  if (variable == "sheefish_rate") {
+    x_data = x_data[x_data$suit_cr_reliable,]
+    x = (x_data$sheefish)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = paste0("Summary of ", gear, " net catch rate of sheefish by fishing area (fish per 150 feet of net per hour).")
+    digits = 1
+  }
+
+  # prepare information: whitefish catch per trip
+  if (variable == "whitefish") {
+    x = x_data$whitefish
+    cap = paste0("Summary of ", gear, " net catch per trip of whitefishes by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: whitefish catch rate per trip
+  if (variable == "whitefish_rate") {
+    x_data = x_data[x_data$suit_cr_reliable,]
+    x = (x_data$whitefish)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = paste0("Summary of ", gear, " net catch rate of whitefishes by fishing area (fish per 150 feet of net per hour).")
+    digits = 1
+  }
+
+  # prepare information: sheefish+whitefish catch per trip
+  if (variable == "sheefish+whitefish") {
+    x = x_data$sheefish + x_data$whitefish
+    cap = paste0("Summary of ", gear, " net catch per trip of sheefish+whitefishes by fishing area.")
+    digits = 0
+  }
+
+  # prepare information: sheefish+whitefish catch rate per trip
+  if (variable == "sheefish+whitefish_rate") {
+    x_data = x_data[x_data$suit_cr_reliable,]
+    x = (x_data$sheefish + x_data$whitefish)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = paste0("Summary of ", gear, " net catch rate of sheefish+whitefishes by fishing area (fish per 150 feet of net per hour).")
     digits = 1
   }
 

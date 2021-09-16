@@ -75,6 +75,7 @@ build_yaml = function(doc_type, draft) {
 #' @param include_goal_table Logical; should the output of [make_goals_summary_table()] be included?
 #' @param include_appendix Logical; should the many tables each produced by [make_appendix_table()] be included?
 #' @param split_chum_sockeye Logical; should histograms and appendix tables show summaries of chum+sockeye, or summaries for these species separately?
+#' @param include_nonsalmon Logical; should an appendix showing results of estimating non-salmon harvest be included?
 #' @param save_bootstrap Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?
 #'
 #' @details This function selects from the many Rmarkdown source scripts found in `inst/rstudio/templates/project/resources/`
@@ -82,7 +83,7 @@ build_yaml = function(doc_type, draft) {
 #'   This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
 #'   the features of the new case the code needed to be applied to.
 
-build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, split_chum_sockeye = FALSE, save_bootstrap = TRUE) {
+build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, split_chum_sockeye = FALSE, include_nonsalmon = FALSE, save_bootstrap = TRUE) {
 
   # read in the meta data file
   meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
@@ -119,7 +120,6 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   # 2: select the right file to produce effort estimate summaries
   if (!meta$set_only) {
     if (do_setnets) {
-      paste0("02a-effort_driftset_", n_flights, "flight.Rmd")
       effort_file = resource_path(file.path("02-estimate-report", paste0("02a-effort_driftset_", n_flights, "flight.Rmd")))
     } else {
       effort_file = resource_path(file.path("02-estimate-report", paste0("02b-effort_driftset_noset_", n_flights, "flight.Rmd")))
@@ -178,11 +178,26 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
     appendix_file = blank_file
   }
 
+  # 9: select the right file to use for the appendix
+  if (include_nonsalmon) {
+    if (!meta$set_only) {
+      if (do_setnets) {
+        nonsalmon_file = resource_path(file.path("02-estimate-report", "09a-nonsalmon_driftset.Rmd"))
+      } else {
+        nonsalmon_file = resource_path(file.path("02-estimate-report", "09b-nonsalmon_driftset_noset.Rmd"))
+      }
+    } else {
+      nonsalmon_file = resource_path(file.path("02-estimate-report", "09c-nonsalmon_setonly.Rmd"))
+    }
+  } else {
+    nonsalmon_file = blank_file
+  }
+
   # build the YAML header
   yaml_contents = build_yaml("estimate_report", draft)
 
   # combine the names of the Rmd source files to use
-  body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, save_boot_file, appendix_file)
+  body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, save_boot_file, appendix_file, nonsalmon_file)
 
   # read in each file and combine into a vector
   body_contents = unlist(lapply(body_files, readLines))
@@ -195,6 +210,10 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 
   # replace the split_chum_sockeye placeholder text with the logical indicator supplied
   Rmd_contents = stringr::str_replace(Rmd_contents, "SPLIT_CHUM_SOCKEYE_REPLACE", as.character(split_chum_sockeye))
+
+  # replace the nonsalmon_appendix_replace placeholder text with the correct appendix letter ID
+  nonsalmon_letter = ifelse(include_appendix, "B", "A")
+  Rmd_contents = stringr::str_replace_all(Rmd_contents, "NONSALMON_APPENDIX_REPLACE", nonsalmon_letter)
 
   # build the file name
   Rmd_file = paste0("KuskoHarvEst_", file_date(meta$start_date), ".Rmd")
