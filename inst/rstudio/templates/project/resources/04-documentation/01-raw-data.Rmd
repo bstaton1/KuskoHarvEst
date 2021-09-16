@@ -203,11 +203,11 @@ The mesh size of the gillnet used by the fisher on their trip. Measured in inche
 
 #### `sheefish`
 
-The reported number of sheefish harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column. _This variable is not currently used by any aspect of 'KuskoHarvest'_.
+The reported number of sheefish harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column.
 
 #### `whitefish`
 
-The reported number of miscellaneous whitefishes harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column. _This variable is not currently used by any aspect of 'KuskoHarvest'_.
+The reported number of miscellaneous whitefishes harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column.
 
 #### `type`
 
