@@ -5,7 +5,7 @@
 \renewcommand\thefigure{A\arabic{figure}}
 \renewcommand\thetable{A\arabic{table}}
 
-# Appendix: Detailed Interview Summaries {-}
+# Appendix A: Detailed Interview Summaries {-}
 
 **Column Meanings**
 
