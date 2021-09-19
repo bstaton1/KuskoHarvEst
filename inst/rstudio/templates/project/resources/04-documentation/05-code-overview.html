@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Package Version: 1.0.1" />
+<meta name="author" content="Package Version: 1.0.2.9990" />
 
 
 <title>Code Overview</title>
@@ -239,8 +239,8 @@ div.tocify {
 
 <h1 class="title toc-ignore"><strong>Code Overview</strong></h1>
 <h3 class="subtitle"><em>KuskoHarvEst Documentation</em></h3>
-<h4 class="author">Package Version: 1.0.1</h4>
-<h4 class="date">Last Updated: 6/27/2021</h4>
+<h4 class="author">Package Version: 1.0.2.9990</h4>
+<h4 class="date">Last Updated: 9/19/2021</h4>
 
 </div>
 
@@ -257,7 +257,7 @@ div.tocify {
 <p>Each of these tasks is supported by many functions that have been written for custom use. This document contains a <a href="#catalog">catalog of all functions</a> that briefly describes its purpose and functionality as well as a <a href="#tutorial">brief tutorial</a> for how to produce an estimate without using the interactive functionality and using only R code.</p>
 <div id="tutorial" class="section level1">
 <h1>Tutorial for Non-Interactive Estimation</h1>
-<p>At some point someone might wish to create a harvest estimate without using the interactive workflow. An example would be to reanalyze the data from many previous fishing opportunities. Writing code could save a lot of time relative to manually producing each estimate with the interactive workflow. This section provides an example for how to produce an estimate with only code.</p>
+<p>At some point, someone might wish to create a harvest estimate without using the interactive workflow. An example would be to reanalyze the data from many previous fishing opportunities. Writing code could save a lot of time relative to manually producing each estimate with the interactive workflow. This section provides an example for how to produce an estimate with only code.</p>
 <p>Before beginning, ensure the package is loaded:</p>
 <pre class="r"><code>library(KuskoHarvEst)</code></pre>
 <div id="step-0-prepare-the-data-files" class="section level2">
@@ -312,7 +312,7 @@ interview_files = data_files[!stringr::str_detect(data_files, &quot;Flight_count
 ## 5 interview(s) had soak duration reported longer than trip duration.
 ## For these records, the soak duration has been set to the trip duration,
 ## and a note has been included in the output.</code></pre>
-<p>Oftentimes some warnings will result from this step. These warnings notify you that some aspects of the data file(s) may not be ideal how the program has treated them. See <a href="./03-interview-flight-data-tool.html" target="_blank">this document</a> for how to interpret the messages that may be returned by this function.</p>
+<p>Oftentimes some warnings will result from this step. These warnings notify you that some aspects of the data file(s) may not be ideal and how the program has treated them. See <a href="./03-interview-flight-data-tool.html" target="_blank">this document</a> for how to interpret the messages that may be returned by this function.</p>
 <p>The output object stores interviews as rows and variables as columns just as in the raw data files, but again, it is now in a standardized and combined format. Here are the first 20 rows:</p>
 <pre><code>##    source stratum  gear net_length mesh_size          trip_start
 ## 1     BBH       C drift        150     6.000 2020-06-12 06:00:00
@@ -377,27 +377,27 @@ interview_files = data_files[!stringr::str_detect(data_files, &quot;Flight_count
 ## 18        TRUE         TRUE             TRUE          TRUE         TRUE
 ## 19        TRUE         TRUE             TRUE          TRUE         TRUE
 ## 20        TRUE         TRUE             TRUE          TRUE         TRUE
-##                                                            note
-## 1                                                          &lt;NA&gt;
-## 2                                                          &lt;NA&gt;
-## 3                                                          &lt;NA&gt;
-## 4                                                          &lt;NA&gt;
-## 5                                                          &lt;NA&gt;
-## 6                                                          &lt;NA&gt;
-## 7  Impossible soak duration (12H 0M 0S) edited to trip duration
-## 8                                                          &lt;NA&gt;
-## 9                                                          &lt;NA&gt;
-## 10                                                         &lt;NA&gt;
-## 11                                                         &lt;NA&gt;
-## 12                                                         &lt;NA&gt;
-## 13  Impossible soak duration (6H 0M 0S) edited to trip duration
-## 14                                                         &lt;NA&gt;
-## 15                                                         &lt;NA&gt;
-## 16                                                         &lt;NA&gt;
-## 17                                                         &lt;NA&gt;
-## 18                                                         &lt;NA&gt;
-## 19  Impossible soak duration (5H 0M 0S) edited to trip duration
-## 20                                                         &lt;NA&gt;</code></pre>
+##                                                                   note
+## 1                                                                 &lt;NA&gt;
+## 2                                                                 &lt;NA&gt;
+## 3                                                                 &lt;NA&gt;
+## 4                                                                 &lt;NA&gt;
+## 5                                                                 &lt;NA&gt;
+## 6                                                                 &lt;NA&gt;
+## 7  Long soak duration (12H 0M 0S) edited to trip duration (11H 18M 0S)
+## 8                                                                 &lt;NA&gt;
+## 9                                                                 &lt;NA&gt;
+## 10                                                                &lt;NA&gt;
+## 11                                                                &lt;NA&gt;
+## 12                                                                &lt;NA&gt;
+## 13   Long soak duration (6H 0M 0S) edited to trip duration (5H 46M 0S)
+## 14                                                                &lt;NA&gt;
+## 15                                                                &lt;NA&gt;
+## 16                                                                &lt;NA&gt;
+## 17                                                                &lt;NA&gt;
+## 18                                                                &lt;NA&gt;
+## 19   Long soak duration (5H 0M 0S) edited to trip duration (4H 31M 0S)
+## 20                                                                &lt;NA&gt;</code></pre>
 <p>The columns that start with <code>&quot;suit_&quot;</code> store a <code>TRUE</code> if that object is suitable for a purpose and <code>FALSE</code> if not and the <code>&quot;note&quot;</code> column stores some information about records that required special treatment.</p>
 </div>
 <div id="step-4-produce-effort-estimates" class="section level2">
@@ -415,14 +415,14 @@ set_effort_info = estimate_effort(interview_data, flight_data, gear = &quot;set&
 </ul>
 <p>The total effort estimate is stored here:</p>
 <pre class="r"><code>drift_effort_info$effort_est_total</code></pre>
-<pre><code>## [1] 403</code></pre>
+<pre><code>## [1] 405</code></pre>
 <p>and the effort estimate for each stratum is stored here:</p>
 <pre class="r"><code>drift_effort_info$effort_est_stratum</code></pre>
 <pre><code>##   A   B   C  D1 
-## 105  63 189  46</code></pre>
+## 106  64 189  46</code></pre>
 <p>For the drift estimate, other useful information is contained in this object:</p>
 <ul>
-<li><p><code>drift_effort_info$trip_counts</code>: contains how many interviews were from trips available to be counted on each flight (<code>f1</code> and <code>f2</code>), how many interviewed trips were available to be counted on any flight (<code>yes_counted</code>) or no flights (<code>not_counted</code>), and how many interviewed trips were available to be counted by multiple flights (<code>f1&amp;f2</code>):</p>
+<li><p><code>drift_effort_info$trip_counts</code>: contains how many interviews were from trips available to be counted on each flight (<code>f1</code> and <code>f2</code>), how many interviewed trips were available to be counted on any flight (<code>yes_counted</code>) or no flights (<code>not_counted</code>), and how many interviewed trips were available to be counted on consecutive flights (<code>f1&amp;f2</code>):</p>
 <pre><code>##          f1          f2 yes_counted not_counted       f1&amp;f2 
 ##         137         136         182          11          91</code></pre></li>
 <li><p><code>drift_effort_info$p_T1_given_T2</code>: contains the proportion of interviewed trips available to be counted on a subsequent flight that were also available to be counted on the previous flight:</p>
@@ -449,26 +449,26 @@ boot_out_set = bootstrap_harvest(interview_data, effort_info = set_effort_info,
                                  gear = &quot;set&quot;, n_boot = 100, stratify_interviews = FALSE)</code></pre>
 <p>The output of these objects looks like this (first 20 rows of <code>boot_out_drift</code>):</p>
 <pre><code>##    iter       date  gear stratum chinook chum sockeye total
-## 1     1 2020-06-12 drift       A    1185  251      27  1463
-## 2     1 2020-06-12 drift       B     384   59      19   462
+## 1     1 2020-06-12 drift       A    1196  254      27  1477
+## 2     1 2020-06-12 drift       B     391   60      20   471
 ## 3     1 2020-06-12 drift       C     859   41      39   939
 ## 4     1 2020-06-12 drift      D1     141   30       0   171
-## 5     1 2020-06-12 drift   total    2569  381      85  3035
-## 6     2 2020-06-12 drift       A    1389  266      18  1673
-## 7     2 2020-06-12 drift       B     451   45      29   525
+## 5     1 2020-06-12 drift   total    2587  385      86  3058
+## 6     2 2020-06-12 drift       A    1402  269      18  1689
+## 7     2 2020-06-12 drift       B     458   46      30   534
 ## 8     2 2020-06-12 drift       C     995   69      57  1121
 ## 9     2 2020-06-12 drift      D1     194   40       0   234
-## 10    2 2020-06-12 drift   total    3029  420     104  3553
-## 11    3 2020-06-12 drift       A    1560  389       9  1958
-## 12    3 2020-06-12 drift       B     268   43      18   329
+## 10    2 2020-06-12 drift   total    3049  424     105  3578
+## 11    3 2020-06-12 drift       A    1575  392       9  1976
+## 12    3 2020-06-12 drift       B     272   44      18   334
 ## 13    3 2020-06-12 drift       C     866   46      53   965
 ## 14    3 2020-06-12 drift      D1     179   52       0   231
-## 15    3 2020-06-12 drift   total    2873  530      80  3483
-## 16    4 2020-06-12 drift       A    1559  344      29  1932
-## 17    4 2020-06-12 drift       B     379   34      21   434
+## 15    3 2020-06-12 drift   total    2892  534      80  3506
+## 16    4 2020-06-12 drift       A    1574  348      30  1952
+## 17    4 2020-06-12 drift       B     385   34      21   440
 ## 18    4 2020-06-12 drift       C     967   64      53  1084
 ## 19    4 2020-06-12 drift      D1     147   39       0   186
-## 20    4 2020-06-12 drift   total    3052  481     103  3636</code></pre>
+## 20    4 2020-06-12 drift   total    3073  485     104  3662</code></pre>
 <p>Notice that it includes an identifier for bootstrap iteration (<code>iter</code>), the date the estimate applies to (<code>date</code>), the gear the estimate applies to (<code>gear</code>), the geographic stratum (<code>stratum</code>, including a “total” category), and estimates for each salmon species as well as the total across species. Estimates have been rounded to the nearest whole fish.</p>
 <p>These two objects must be combined into one object that stores all output as well as a total across gears:</p>
 <pre class="r"><code># sum up across gears
@@ -489,26 +489,26 @@ boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)</code></pre>
 <h2>Step 6: Summarize Output</h2>
 <p>The final step is to summarize the bootstrap output; this is the role of the <code>report()</code> function. Using it without any arguments will summarize <code>boot_out</code> for the total harvest (across strata, species, and gears):</p>
 <pre class="r"><code>report()</code></pre>
-<pre><code>## [1] &quot;3,610 (2,930 -- 4,460)&quot;</code></pre>
+<pre><code>## [1] &quot;3,630 (2,950 -- 4,490)&quot;</code></pre>
 <p>If numerical rather than character output is required, use the <code>return_numeric</code> argument</p>
 <pre class="r"><code>report(return_numeric = TRUE)</code></pre>
 <pre><code>##  mean  2.5% 97.5% 
-##  3610  2930  4460</code></pre>
+##  3630  2950  4490</code></pre>
 <p>If confidence intervals are not desired, use the <code>CI</code> argument</p>
 <pre class="r"><code>report(return_numeric = TRUE, CI = FALSE)</code></pre>
-<pre><code>## [1] 3610</code></pre>
+<pre><code>## [1] 3630</code></pre>
 <p>To get total harvest by all gears and strata for Chinook salmon:</p>
 <pre class="r"><code>report(spp = &quot;chinook&quot;)</code></pre>
-<pre><code>## [1] &quot;3,060 (2,520 -- 3,750)&quot;</code></pre>
+<pre><code>## [1] &quot;3,080 (2,530 -- 3,770)&quot;</code></pre>
 <p>To get Chinook salmon harvest by drift nets in stratum A:</p>
 <pre class="r"><code>report(spp = &quot;chinook&quot;, gear = &quot;drift&quot;, stratum = &quot;A&quot;)</code></pre>
-<pre><code>## [1] &quot;1,490 (990 -- 2,160)&quot;</code></pre>
+<pre><code>## [1] &quot;1,500 (1,000 -- 2,180)&quot;</code></pre>
 <p>To get chum salmon harvest by all gears in each stratum:</p>
 <pre class="r"><code>sapply(unique(boot_out$stratum), function(stratum) report(spp = &quot;chum&quot;, stratum = stratum))</code></pre>
 <pre><code>##                  A                  B                  C                 D1 
-## &quot;310 (160 -- 500)&quot;    &quot;50 (20 -- 70)&quot;   &quot;60 (30 -- 100)&quot;    &quot;40 (20 -- 60)&quot; 
+## &quot;310 (160 -- 500)&quot;    &quot;50 (30 -- 80)&quot;   &quot;60 (30 -- 100)&quot;    &quot;40 (20 -- 60)&quot; 
 ##              total 
-## &quot;460 (280 -- 660)&quot;</code></pre>
+## &quot;470 (280 -- 660)&quot;</code></pre>
 <p>By default, <code>report()</code> will use an object called <code>boot_out</code> to calculate these summaries. If you have another object to summarize that is not called <code>boot_out</code>, pass it to the <code>boot_out_use</code> argument.</p>
 </div>
 </div>
@@ -615,10 +615,9 @@ boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)</code></pre>
 <ul>
 <li><code>resource_path()</code> – returns the path to a file or directory in the user’s ‘KuskoHarvEst’ installed package within the path <code>.../library/KuskoHarvEst/rstudio/templates/project/resources/</code>. This location stores many important files that need to be easily accessed.</li>
 <li><code>KuskoHarvEst_skeleton()</code> – builds a blank project from a template that is suitable for ‘KuskoHarvEst’ usage</li>
-<li><code>unlist_df()</code> – combines data frames that are stored as list elements</li>
 <li><code>percentize()</code> – converts a number (e.g., <code>0.105</code>) to a percent suitable for printing in documents (e.g., <code>&quot;10.5%&quot;</code>)</li>
 <li><code>tinyCI()</code> – adds LaTeX code to the output of <code>report()</code> to format the confidence intervals smaller than the mean text</li>
-<li><code>capitalize()</code> – captializes the first letter of a character string</li>
+<li><code>capitalize()</code> – capitalizes the first letter of a character string</li>
 <li><code>combine_datetime()</code> – combines a date (stored as M/D/YYYY) and time (stored as H:MM) into a standardized date time object that can be used by any ‘lubridate’ function; provides standardized treatment of dates and times</li>
 <li><code>file_date()</code> – converts a datetime object into a format suitable to serve in a file name</li>
 <li><code>basic_date()</code> – converts a datetime object into a more human-readable format</li>
@@ -640,7 +639,7 @@ boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)</code></pre>
 ## FC       Bethel Area Fish Camps (ONC)
 ## CBM      Other Villages (BSFA/KRITFC)
 ## LE   Law Enforcement Officers (USFWS)</code></pre></li>
-<li><p>An object names <code>strata_names</code> that includes information about what each of the stratum codes mean. <strong>If new boundaries of the strata are defined, or if new strata are to be included, this object needs to be updated.</strong></p>
+<li><p>An object named <code>strata_names</code> that includes information about what each of the stratum codes mean. <strong>If new boundaries of the strata are defined, or if new strata are to be included, this object needs to be updated.</strong></p>
 <pre class="r"><code>KuskoHarvEst:::strata_names</code></pre>
 <pre><code>##   stratum stratum_start stratum_end
 ## 1       A   Tuntutuliak  Johnson R.
