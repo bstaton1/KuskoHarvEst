@@ -532,6 +532,7 @@ make_goals_summary_table = function(interview_data) {
 
   # format the counts as percentages
   counts$Freq = counts$Freq/n_goal_interviews
+  counts$Freq = smart_round(counts$Freq, digits = 2)
   counts$Freq = percentize(counts$Freq, escape = TRUE)
 
   # format the table
