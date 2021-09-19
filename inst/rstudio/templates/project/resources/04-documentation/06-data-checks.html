@@ -240,14 +240,14 @@ div.tocify {
 <h1 class="title toc-ignore"><strong>Automated Interview Data Checks</strong></h1>
 <h3 class="subtitle"><em>KuskoHarvEst Documentation</em></h3>
 <h4 class="author">Package Version: 1.0.2.9990</h4>
-<h4 class="date">Last Updated: 9/5/2021</h4>
+<h4 class="date">Last Updated: 9/19/2021</h4>
 
 </div>
 
 
 <hr />
 <p><em>This document provides an overview of the automated checks performed by ‘KuskoHarvEst’ prior to using interview data records in the estimates.</em></p>
-<p><strong>Most users will not need to review this document</strong>. It is intended for completeness and transparency, especially since the code that implements these checks is not the most straight-forward. However, it should be useful for users who are curious about why the software deems some interviews unsuitable for a purpose.</p>
+<p><strong>Most users will not need to review this document</strong>. It is intended for completeness and transparency, especially since the code that implements these checks is not the most straight-forward. However, it should be useful for users who may be curious about why the software has deemed some interviews unsuitable for a purpose.</p>
 <p>Prior to the development of ‘KuskoHarvEst’, the analyst needed to make subjective choices regarding whether an interview looked questionable and decide whether to include or exclude it. However, the rules used by analysts may vary and the same analyst may not always use the same rules, meaning that the estimates were not guaranteed to be reproducible. A major feature of the ‘KuskoHarvEst’ workflow is the implementation of a set of automated, objective, and agreed upon rules for deciding which interviews are suitable to be used for a given purpose in the estimation and reporting workflow.</p>
 <div id="suitability-categories" class="section level1">
 <h1>Suitability Categories</h1>
@@ -313,7 +313,7 @@ div.tocify {
 </div>
 <div id="description-of-decision-rule-1" class="section level4">
 <h4>Description of Decision Rule</h4>
-<p>An interview will be deemed unsuitable for calculating the catch rate if any of the following occur:</p>
+<p>An interview will be deemed to be lacking the suitable information for calculating the catch rate if any of the following occur:</p>
 <ol style="list-style-type: lower-alpha">
 <li>if the soak time is missing</li>
 <li>if the net length is missing</li>
@@ -416,12 +416,23 @@ div.tocify {
 <h1>Other Checks</h1>
 <div id="failure-causing" class="section level4">
 <h4>Failure Causing</h4>
-<p>If there is more than one unique start date among the trips included, the software will crash – this is intentional. The sofware is intended to estimate harvest for one day of fishing at a time, so if the data contain more than one date it will crash.</p>
-<p>Should this occur, users will see an error message and must find the conflicting dates and either correct the typo or exclude the data from the dates that should not be included.</p>
+<p>Two checks are conducted that will cause the software to crash intentionally. These checks are intended to catch an error early with an informative error message, before the erroneous data are used in later steps where a less informative error message would be returned.</p>
+<ol style="list-style-type: decimal">
+<li>If there is more than one unique start date among the trips included, the software will crash. The software is intended to estimate harvest for one day of fishing at a time, so if the data contain more than one date it will crash. Should this occur, users will see an error message and must find the conflicting dates and either correct the typo or exclude the data from the dates that should not be included.</li>
+<li>If the data source name indicated by the interview file name is unrecognized, the software will crash. Some of the output responds to the data source name, so only recognized sources are allowed. This means interview data file names must be one of:</li>
+</ol>
+<ul>
+<li><code>ADFG_YYYY_MM_DD.csv</code></li>
+<li><code>BBH_YYYY_MM_DD.csv</code></li>
+<li><code>CBM_YYYY_MM_DD.csv</code></li>
+<li><code>FC_YYYY_MM_DD.csv</code></li>
+<li><code>LE_YYYY_MM_DD.csv</code></li>
+</ul>
+<p>If a new data source has been added, please contact the software developer.</p>
 </div>
 <div id="data-modifying" class="section level4">
 <h4>Data Modifying</h4>
-<p>Two cases require automated editing the data:</p>
+<p>Two cases require automated editing of the data:</p>
 <ol style="list-style-type: decimal">
 <li><strong>Impossible trip times</strong> – if the trip end time is recorded have occurred before the trip start time, the times are clearly impossible. The program will automatically convert the trip start and end times to <code>NA</code> (i.e., missing) for impossible trips and a warning will be returned to the user. Users are advised determine if a data entry error caused this to occur and fix it in the raw data if this is the case.</li>
 <li><strong>Impossible soak times</strong> – if the soak time is recorded to have been longer than the total trip time, this is clearly impossible. The program will automatically convert the soak duration to be equal to the trip duration and a warning will be returned to the user.</li>

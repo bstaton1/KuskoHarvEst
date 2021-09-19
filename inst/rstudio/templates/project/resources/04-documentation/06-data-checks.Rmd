@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 _This document provides an overview of the automated checks performed by 'KuskoHarvEst' prior to using interview data records in the estimates._
 
-**Most users will not need to review this document**. It is intended for completeness and transparency, especially since the code that implements these checks is not the most straight-forward. However, it should be useful for users who are curious about why the software deems some interviews unsuitable for a purpose.
+**Most users will not need to review this document**. It is intended for completeness and transparency, especially since the code that implements these checks is not the most straight-forward. However, it should be useful for users who may be curious about why the software has deemed some interviews unsuitable for a purpose.
 
 Prior to the development of 'KuskoHarvEst', the analyst needed to make subjective choices regarding whether an interview looked questionable and decide whether to include or exclude it.
 However, the rules used by analysts may vary and the same analyst may not always use the same rules, meaning that the estimates were not guaranteed to be reproducible.
@@ -95,7 +95,7 @@ This check indicates which records lack the necessary information for this calcu
 
 #### Description of Decision Rule
 
-An interview will be deemed unsuitable for calculating the catch rate if any of the following occur:
+An interview will be deemed to be lacking the suitable information for calculating the catch rate if any of the following occur:
 
 (a) if the soak time is missing
 (b) if the net length is missing
@@ -182,13 +182,22 @@ The classification of a net length outlier can be controlled by `options("net_le
 
 #### Failure Causing
 
-If there is more than one unique start date among the trips included, the software will crash -- this is intentional. The sofware is intended to estimate harvest for one day of fishing at a time, so if the data contain more than one date it will crash.
+Two checks are conducted that will cause the software to crash intentionally. These checks are intended to catch an error early with an informative error message, before the erroneous data are used in later steps where a less informative error message would be returned.
 
-Should this occur, users will see an error message and must find the conflicting dates and either correct the typo or exclude the data from the dates that should not be included.
+1. If there is more than one unique start date among the trips included, the software will crash. The software is intended to estimate harvest for one day of fishing at a time, so if the data contain more than one date it will crash. Should this occur, users will see an error message and must find the conflicting dates and either correct the typo or exclude the data from the dates that should not be included.
+2. If the data source name indicated by the interview file name is unrecognized, the software will crash. Some of the output responds to the data source name, so only recognized sources are allowed. This means interview data file names must be one of:
+
+* `ADFG_YYYY_MM_DD.csv`
+* `BBH_YYYY_MM_DD.csv`
+* `CBM_YYYY_MM_DD.csv`
+* `FC_YYYY_MM_DD.csv`
+* `LE_YYYY_MM_DD.csv`
+
+If a new data source has been added, please contact the software developer.
 
 #### Data Modifying
 
-Two cases require automated editing the data:
+Two cases require automated editing of the data:
 
 1. **Impossible trip times** -- if the trip end time is recorded have occurred before the trip start time, the times are clearly impossible. The program will automatically convert the trip start and end times to `NA` (i.e., missing) for impossible trips and a warning will be returned to the user. Users are advised determine if a data entry error caused this to occur and fix it in the raw data if this is the case.
 2. **Impossible soak times** -- if the soak time is recorded to have been longer than the total trip time, this is clearly impossible. The program will automatically convert the soak duration to be equal to the trip duration and a warning will be returned to the user.

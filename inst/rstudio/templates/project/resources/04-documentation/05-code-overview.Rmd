@@ -30,7 +30,7 @@ Each of these tasks is supported by many functions that have been written for cu
 
 # Tutorial for Non-Interactive Estimation {#tutorial}
 
-At some point someone might wish to create a harvest estimate without using the interactive workflow. An example would be to reanalyze the data from many previous fishing opportunities. Writing code could save a lot of time relative to manually producing each estimate with the interactive workflow. This section provides an example for how to produce an estimate with only code.
+At some point, someone might wish to create a harvest estimate without using the interactive workflow. An example would be to reanalyze the data from many previous fishing opportunities. Writing code could save a lot of time relative to manually producing each estimate with the interactive workflow. This section provides an example for how to produce an estimate with only code.
 
 Before beginning, ensure the package is loaded:
 
@@ -99,7 +99,7 @@ Again, assuming the data files are formatted properly, preparing the interview d
 interview_data = prepare_interviews(interview_files)
 ```
 
-Oftentimes some warnings will result from this step. These warnings notify you that some aspects of the data file(s) may not be ideal how the program has treated them. See `r KuskoHarvEst:::link_to_doc("03-interview-flight-data-tool.html", "this document")` for how to interpret the messages that may be returned by this function.
+Oftentimes some warnings will result from this step. These warnings notify you that some aspects of the data file(s) may not be ideal and how the program has treated them. See `r KuskoHarvEst:::link_to_doc("03-interview-flight-data-tool.html", "this document")` for how to interpret the messages that may be returned by this function.
 
 The output object stores interviews as rows and variables as columns just as in the raw data files, but again, it is now in a standardized and combined format. Here are the first 20 rows:
 
@@ -140,7 +140,7 @@ drift_effort_info$effort_est_stratum
 
 For the drift estimate, other useful information is contained in this object:
 
-* `drift_effort_info$trip_counts`: contains how many interviews were from trips available to be counted on each flight (`f1` and `f2`), how many interviewed trips were available to be counted on any flight (`yes_counted`) or no flights (`not_counted`), and how many interviewed trips were available to be counted by multiple flights (`f1&f2`): 
+* `drift_effort_info$trip_counts`: contains how many interviews were from trips available to be counted on each flight (`f1` and `f2`), how many interviewed trips were available to be counted on any flight (`yes_counted`) or no flights (`not_counted`), and how many interviewed trips were available to be counted on consecutive flights (`f1&f2`): 
 
     ```{r, echo = FALSE}
     drift_effort_info$trip_counts
