@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-_This document describes how to use the interview/flight data preparation tool, which allows you to explore the output of the automated quality assurance checks and look at other aspects of the raw data._
+_This document describes how to use the interview/flight data preparation tool, where you will load and process the data, explore the output of the automated quality assurance checks, examine at other aspects of the raw data, and save standardized files that the program will use in later steps._
 
 **Steps to Complete Before Using this Tool**:
 
@@ -185,7 +185,7 @@ When you are done with the interview data steps, navigate to the flight data tab
   <img src="screenshots/03-interview-flight-data-tool/navbar-flights.png" width="700"/>
 </p>
 
-where you will see this content:
+where you will see this page:
 
 <p align="center">
   <img src="screenshots/03-interview-flight-data-tool/whole-tool-flights.png" width="700"/>
