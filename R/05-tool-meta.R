@@ -67,7 +67,7 @@ meta_tool = function() {
 
     # button to export the information to a .rds file
     miniUI::miniButtonBlock(
-      shiny::actionButton(inputId = "save_meta", label = "Save", icon = shiny::icon("save"), class = "btn-primary")
+      shiny::actionButton(inputId = "save_meta", label = "Save and Close", icon = shiny::icon("save"), class = "btn-primary")
     )
   )
 
@@ -105,11 +105,14 @@ meta_tool = function() {
 
       # export this list to an rds file to be used later
       saveRDS(meta, file.path(output_data_dir, paste0(file_date(meta$start_date), "_meta.rds")))
+
+      # close the app
+      shiny::stopApp()
     })
 
     # Handle the Done button being pressed
     shiny::observeEvent(input$done, {
-      stopApp()
+      shiny::stopApp()
     })
   }
 
