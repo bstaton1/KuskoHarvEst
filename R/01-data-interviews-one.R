@@ -29,7 +29,7 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
   colnames(dat_in) = vars
 
   ### STEP 1: handle the source name
-  src_name = toupper(stringr::str_extract(basename(input_file), "^[A-Z]+"))
+  src_name = toupper(stringr::str_extract(basename(input_file), "^[A-Z|a-z]+"))
 
   # if source name not recognized, return an error
   if (!(src_name %in% rownames(source_names))) {
