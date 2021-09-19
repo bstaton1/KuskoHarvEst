@@ -29,8 +29,14 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
   colnames(dat_in) = vars
 
   ### STEP 1: handle the source name
-  src_name = stringr::str_extract(basename(input_file), "^[A-Z]+")
-  dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
+  src_name = toupper(stringr::str_extract(basename(input_file), "^[A-Z]+"))
+
+  # if source name not recognized, return an error
+  if (!(src_name %in% rownames(source_names))) {
+    stop("The data source name (", src_name, ") was not recognized.\nAccepted values are: ", paste(rownames(source_names), collapse = ", "), ".\nPlease change the data file name to match one of these data sources,\nor notify the software developer if a new data source has been added.")
+  } else {
+    dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
+  }
 
   ### STEP 2: handle the stratum name
   dat_out$stratum = stringr::str_remove(toupper(dat_in$stratum), " ")
