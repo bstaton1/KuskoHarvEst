@@ -10,110 +10,56 @@ build_yaml = function(doc_type, draft) {
   # read in the meta data file
   meta = readRDS(list.files(pattern = "meta", full.names = TRUE, recursive = TRUE))
 
-  # make the output type setting
-  output = "output: KuskoHarvEst:::pdf_report"
-
-  # make the document title setting
-  if (doc_type == "estimate_report") {
-    title = 'title: "Kuskokwim River In-season Harvest and Effort Estimates"'
-  } else {
-    title = 'title: "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"'
+  # a small function to handle processing of logicals
+  logical_handler = function(x) {
+    result = ifelse(x, "true", "false")
+    class(result) = "verbatim"
+    return(result)
   }
 
-  # make the opener-label setting
-  opener_label = paste0('opener-label: "', basic_date(meta$start_date), ' Subsistence Harvest Opportunity (', ifelse(meta$set_only, 'Set Nets Only)"', 'Drift & Set Nets)"'))
+  # create the R code to point to the graphics directory
+  graphics_path = '`r KuskoHarvEst:::resource_path("06-logos")`'
+  class(graphics_path) = "verbatim"
 
-  # make the footer-label setting
-  rfooter = stringr::str_replace(opener_label, "^opener-label", "rfooter")
-  rfooter = stringr::str_remove(rfooter, "Subsistence Harvest ")
-
-  # make the opener-start setting
-  include_date = ifelse(lubridate::date(meta$start_date) == lubridate::date(meta$start_date), FALSE, TRUE)
-  opener_start = paste0('opener-start: "', short_datetime(meta$start_date, include_date = include_date), '"')
-
-  # make the opener-end setting
-  opener_end = paste0('opener-end: "', short_datetime(meta$end_date, include_date = include_date), '"')
-
-  # make the opener duration setting
-  hours_open = round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1)
-  opener_duration = paste0('opener-duration: "', paste0(hours_open, ' Hours'), '"')
-
-  # make the downstream and upstream boundaries settings
-  ds_bound = paste0('ds-bound: "', meta$ds_bound, '"')
-  us_bound = paste0('us-bound: "', meta$us_bound, '"')
-
-  # make the contact person(s) setting
-  if (!is.na(meta$contact_persons)) {
-    contact = paste0('contact: "', meta$contact_persons, '"')
-  } else {
-    contact = NULL
-  }
-
-  # make the special action name setting
-  if (!is.na(meta$spact_url)) {
-    special_action = paste0('special-action: "', meta$spact_name, '"')
-  } else {
-    special_action = NULL
-  }
-
-  # make the special action URL setting
-  if (!is.na(meta$spact_url)) {
-    special_action_url = paste0('special-action-url: "', meta$spact_url, '"')
-  } else {
-    special_action_url = NULL
-  }
-
-  # make the special action URL setting
-  if (!is.na(meta$spact_news_url)) {
-    news_release_url = paste0('news-release-url: "', meta$spact_news_url, '"')
-  } else {
-    news_release_url = NULL
-  }
-
-  # make the doc label setting
-  if (doc_type == 'estimate_report') {
-    lfooter = 'lfooter: "In-season Harvest and Effort Estimates"'
-  } else {
-    lfooter = 'lfooter: "Sensitivity Analyses"'
-  }
-
-  # make the draft watermark setting
-  draft_watermark = paste0('draft-watermark: ', tolower(as.character(draft)))
-
-  # build the call to create the location of logo files
-  graphics_path = paste0('graphics-path: ', '"`r KuskoHarvEst:::resource_path(\'06-logos\')`"')
-
-  # make the editor options setting
-  editor_options = "editor_options:\n  chunk_output_type: console"
-
-  # combine all settings into a vector with YAML fences at start and end
-  yaml_contents = c(
-    "---",
-    output,
-    title,
-    opener_label,
-    opener_start,
-    opener_end,
-    opener_duration,
-    ds_bound,
-    us_bound,
-    contact,
-    special_action,
-    special_action_url,
-    news_release_url,
-    lfooter,
-    rfooter,
-    draft_watermark,
-    graphics_path,
-    editor_options,
-    "---\n"
+  # create a list with yaml key mappings (i.e., settings for Rmarkdown and the LaTeX template)
+  yaml_in = list(
+    output = "KuskoHarvEst:::pdf_report",
+    editor_options = list(chunk_output_type = "console"),
+    title = ifelse(doc_type == "estimate_report", "Kuskokwim River In-season Harvest and Effort Estimates", "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"),
+    "opener-label" = paste0(basic_date(meta$start_date), " Subsistence Harvest Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
+    rfooter = paste0(basic_date(meta$start_date), " Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
+    "opener-start" = short_datetime(meta$start_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-end" = short_datetime(meta$end_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-duration" = paste0(round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1), " Hours"),
+    "ds-bound" = meta$ds_bound,
+    "us-bound" = meta$us_bound,
+    lfooter = ifelse(doc_type == "estimate_report", "In-season Harvest and Effort Estimates", "Sensitivity Analyses"),
+    "draft-watermark" = draft,
+    "graphics-path" = graphics_path
   )
+  # class(yaml_in$title) = class(yaml_in$`opener-label`) = class(yaml_in$rfooter) = class(yaml_in$`opener-start`) = class(yaml_in$`opener-end`) = "verbatim"
 
-  # build a single string that contains everything
-  out = paste(yaml_contents, collapse = "\n")
+  # append the contact person(s) setting if found in meta
+  if (!is.na(meta$contact_persons)) yaml_in = append(yaml_in, list(contact = meta$contact_persons))
 
-  # return the output
-  return(out)
+  # append the annoucement number (ID) setting if found in meta
+  if (!is.na(meta$announce_name)) yaml_in = append(yaml_in, list(announcement = meta$announce_name))
+
+  # append the announcement URL setting if found in meta
+  if (!is.na(meta$announce_url)) yaml_in = append(yaml_in, list("announcement-url" = meta$announce_url))
+
+  # append the news release URL setting if found in meta
+  if (!is.na(meta$announce_news_url)) yaml_in = append(yaml_in, list("news-release-url" = meta$announce_news_url))
+
+  # convert the list into yaml
+  yaml_out = yaml::as.yaml(yaml_in, indent.mapping.sequence = TRUE, handlers = list(logical = logical_handler))
+
+  # add yaml fences
+  yaml_out = paste("---\n", yaml_out, "---\n", sep = "")
+
+  # return the converted yaml header
+  return(yaml_out)
+
 }
 
 #' Automate creation of a Rmd source file for in-season reports
@@ -128,6 +74,8 @@ build_yaml = function(doc_type, draft) {
 #' @param include_johnson_table Logical; should the output of [make_johnson_summary_table()] be included?
 #' @param include_goal_table Logical; should the output of [make_goals_summary_table()] be included?
 #' @param include_appendix Logical; should the many tables each produced by [make_appendix_table()] be included?
+#' @param split_chum_sockeye Logical; should histograms and appendix tables show summaries of chum+sockeye, or summaries for these species separately?
+#' @param include_nonsalmon Logical; should an appendix showing results of estimating non-salmon harvest be included?
 #' @param save_bootstrap Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?
 #'
 #' @details This function selects from the many Rmarkdown source scripts found in `inst/rstudio/templates/project/resources/`
@@ -135,7 +83,7 @@ build_yaml = function(doc_type, draft) {
 #'   This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
 #'   the features of the new case the code needed to be applied to.
 
-build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, save_bootstrap = TRUE) {
+build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, split_chum_sockeye = FALSE, include_nonsalmon = FALSE, save_bootstrap = TRUE) {
 
   # read in the meta data file
   meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
@@ -172,7 +120,6 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   # 2: select the right file to produce effort estimate summaries
   if (!meta$set_only) {
     if (do_setnets) {
-      paste0("02a-effort_driftset_", n_flights, "flight.Rmd")
       effort_file = resource_path(file.path("02-estimate-report", paste0("02a-effort_driftset_", n_flights, "flight.Rmd")))
     } else {
       effort_file = resource_path(file.path("02-estimate-report", paste0("02b-effort_driftset_noset_", n_flights, "flight.Rmd")))
@@ -231,11 +178,26 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
     appendix_file = blank_file
   }
 
+  # 9: select the right file to use for the appendix
+  if (include_nonsalmon) {
+    if (!meta$set_only) {
+      if (do_setnets) {
+        nonsalmon_file = resource_path(file.path("02-estimate-report", "09a-nonsalmon_driftset.Rmd"))
+      } else {
+        nonsalmon_file = resource_path(file.path("02-estimate-report", "09b-nonsalmon_driftset_noset.Rmd"))
+      }
+    } else {
+      nonsalmon_file = resource_path(file.path("02-estimate-report", "09c-nonsalmon_setonly.Rmd"))
+    }
+  } else {
+    nonsalmon_file = blank_file
+  }
+
   # build the YAML header
   yaml_contents = build_yaml("estimate_report", draft)
 
   # combine the names of the Rmd source files to use
-  body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, save_boot_file, appendix_file)
+  body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, save_boot_file, appendix_file, nonsalmon_file)
 
   # read in each file and combine into a vector
   body_contents = unlist(lapply(body_files, readLines))
@@ -245,6 +207,13 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 
   # replace the n_boot placeholder text with the number supplied
   Rmd_contents = stringr::str_replace(Rmd_contents, "N_BOOT_REPLACE", as.character(n_boot))
+
+  # replace the split_chum_sockeye placeholder text with the logical indicator supplied
+  Rmd_contents = stringr::str_replace(Rmd_contents, "SPLIT_CHUM_SOCKEYE_REPLACE", as.character(split_chum_sockeye))
+
+  # replace the nonsalmon_appendix_replace placeholder text with the correct appendix letter ID
+  nonsalmon_letter = ifelse(include_appendix, "B", "A")
+  Rmd_contents = stringr::str_replace_all(Rmd_contents, "NONSALMON_APPENDIX_REPLACE", nonsalmon_letter)
 
   # build the file name
   Rmd_file = paste0("KuskoHarvEst_", file_date(meta$start_date), ".Rmd")

@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-_This document describes how to use the interview/flight data preparation tool, which allows you to explore the output of the automated quality assurance checks and look at other aspects of the raw data._
+_This document describes how to use the interview/flight data preparation tool, where you will load and process the data, explore the output of the automated quality assurance checks, examine at other aspects of the raw data, and save standardized files that the program will use in later steps._
 
 **Steps to Complete Before Using this Tool**:
 
@@ -135,6 +135,12 @@ Additionally, there may be several warnings that pop up in the background behind
     cat("Warning: X interview(s) had missing gear type information.\nThese records have been discarded since they\ncannot be used for anything.")
     ```
 
+* **Invalid stratum values**: The stratum columns must contain one of these values: `A`, `B`, `C`, `D1`, or `NA`. If another stratum value is found in the data, the corresponding records will be discarded and this warning will be returned:
+
+    ```{r, comment = NA}
+    cat("Warning: There were X records with invalid stratum values: [invalid values here]\nThey have been discarded.")
+    ```
+
 * **Highly influential records**: if a record has a large influence on the average catch per trip (i.e., excluding it results in a meaningful change in the average), its catch rate data will not be used when calculating averages and this warning will be returned:
 
     ```{r, comment = NA}
@@ -156,6 +162,14 @@ cat("Error: More than one unique start date was found in the interview data:\n[t
 ```
 
 The error message is intended to be informative: it says that trips that started on multiple days are contained in the same data file. 'KuskoHarvEst' prohibits this, so you must go to the raw interview files and find the dates that are not the same and either delete the bad records or fix them if it is the result of a typo.
+
+Another error that will cause the tool to close automatically is this:
+
+```{r, comment = NA}
+cat("Error: The data source name was not recognized.\nAccepted values are: ADFG, BBH, FC, CBM, LE.\nPlease change the data file name to match one of these data sources, or notify the software developer if a new data source has been added.")
+```
+
+This error indicates a problem with the name of an interview data file. 
 
 ### Output Tab
 
@@ -185,7 +199,7 @@ When you are done with the interview data steps, navigate to the flight data tab
   <img src="screenshots/03-interview-flight-data-tool/navbar-flights.png" width="700"/>
 </p>
 
-where you will see this content:
+where you will see this page:
 
 <p align="center">
   <img src="screenshots/03-interview-flight-data-tool/whole-tool-flights.png" width="700"/>

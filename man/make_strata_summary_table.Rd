@@ -4,7 +4,7 @@
 \alias{make_strata_summary_table}
 \title{Create a table to summarize information spatially}
 \usage{
-make_strata_summary_table(interview_data, gear)
+make_strata_summary_table(interview_data, gear, nonsalmon = FALSE)
 }
 \arguments{
 \item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
@@ -14,6 +14,8 @@ make_strata_summary_table(interview_data, gear)
 \item \code{gear = "drift"} for drift nets
 \item \code{gear = "set"} for set nets
 }}
+
+\item{nonsalmon}{Logical; should the table display estimates for non-salmon instead of salmon species?}
 }
 \description{
 Create a table to summarize information spatially

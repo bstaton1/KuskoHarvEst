@@ -5,7 +5,7 @@
 \renewcommand\thefigure{A\arabic{figure}}
 \renewcommand\thetable{A\arabic{table}}
 
-# Appendix: Detailed Interview Summaries {-}
+# Appendix A: Detailed Interview Summaries {-}
 
 **Column Meanings**
 
@@ -19,20 +19,36 @@
 
 _Information is for set net trips only._
 
-```{r chinook-rate-appendix-table}
-make_appendix_table(interview_data, "set", "chinook_rate")
-```
-
 ```{r chinook-appendix-table}
 make_appendix_table(interview_data, "set", "chinook")
 ```
 
-```{r chum-sockeye-rate-appendix-table}
-make_appendix_table(interview_data, "set", "chum+sockeye_rate")
+```{r chinook-rate-appendix-table}
+make_appendix_table(interview_data, "set", "chinook_rate")
 ```
 
-```{r chum-sockeye-appendix-table}
+```{r chum-appendix-table, eval = split_chum_sockeye}
+make_appendix_table(interview_data, "set", "chum")
+```
+
+```{r chum-rate-appendix-table, eval = split_chum_sockeye}
+make_appendix_table(interview_data, "set", "chum_rate")
+```
+
+```{r sockeye-appendix-table, eval = split_chum_sockeye}
+make_appendix_table(interview_data, "set", "sockeye")
+```
+
+```{r sockeye-rate-appendix-table, eval = split_chum_sockeye}
+make_appendix_table(interview_data, "set", "sockeye_rate")
+```
+
+```{r chum-sockeye-appendix-table, eval = !split_chum_sockeye}
 make_appendix_table(interview_data, "set", "chum+sockeye")
+```
+
+```{r chum-sockeye-rate-appendix-table, eval = !split_chum_sockeye}
+make_appendix_table(interview_data, "set", "chum+sockeye_rate")
 ```
 
 ```{r p-chinook-appendix-table}
@@ -45,12 +61,4 @@ make_appendix_table(interview_data, "set", "soak_duration")
 
 ```{r trip-duration-appendix-table}
 make_appendix_table(interview_data, "set", "trip_duration")
-```
-
-```{r trip-start-appendix-table}
-make_appendix_table(interview_data, "set", "trip_start")
-```
-
-```{r trip-end-appendix-table}
-make_appendix_table(interview_data, "set", "trip_end")
 ```

@@ -8,7 +8,8 @@ estimate_catch_per_trip(
   interview_data,
   gear,
   randomize = FALSE,
-  central_fn = getOption("central_fn")
+  central_fn = getOption("central_fn"),
+  nonsalmon = FALSE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ estimate_catch_per_trip(
 \item{randomize}{Logical; should interview data be randomized prior to performing the estimate?}
 
 \item{central_fn}{Function; used to calculate central tendency}
+
+\item{nonsalmon}{Logical; should estimates be returned for whitefish and sheefish rather than for Chinook, chum, and sockeye salmon?}
 }
 \description{
 Calculates the expected salmon catch by species for the average trip

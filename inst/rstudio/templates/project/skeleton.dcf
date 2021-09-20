@@ -2,3 +2,8 @@ Title: Harvest Estimate Project using KuskoHarvEst
 Caption: Name your project 'KuskoHarvEst_YYYY_MM_DD'
 Binding: KuskoHarvEst_skeleton
 Icon: KuskoHarvEst-logo.png
+Parameter: is_for_final_report
+Widget: CheckboxInput
+Label: Check this box if season is complete and you need to produce final report content
+Default: Off
+Position: left

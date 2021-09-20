@@ -109,12 +109,18 @@ is_soak_outlier = function(interview_data, soak_sd_cut = getOption("soak_sd_cut"
       # extract the soak hours for all relevant interviews except this one
       soak_hrs_without = soak_hrs[-i][interview_data$gear[-i] == interview_data$gear[i] & is_complete[-i]]
 
-      # calculate the mean and SD of remaining soak times
-      sd_without = sd(soak_hrs_without, na.rm = T)
-      mn_without = mean(soak_hrs_without, na.rm = T)
+      # if there no other soak times for this gear, can't be an outlier
+      # otherwise, base choice on SD of remaining soak times
+      if (length(soak_hrs_without) == 0) {
+        out[i] = FALSE
+      } else {
+        # calculate the mean and SD of remaining soak times
+        sd_without = sd(soak_hrs_without, na.rm = T)
+        mn_without = mean(soak_hrs_without, na.rm = T)
 
-      # perform the test
-      out[i] = soak_hrs[i] > (mn_without + (soak_sd_cut * sd_without))
+        # perform the test
+        out[i] = soak_hrs[i] > (mn_without + (soak_sd_cut * sd_without))
+      }
     } else {
       next()
     }

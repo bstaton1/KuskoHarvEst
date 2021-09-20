@@ -20,7 +20,7 @@ estimate_effort(interview_data, flight_data, gear, method = "dbl_exp")
 \item{method}{Character; which effort estimator should be applied? Only two options are accepted:
 \itemize{
 \item \code{method = "dbl_exp"} to perform corrections for trips counted on consecutive flights and trips not counted at all - generally used for drift nets
-\item \code{method = "max_per_stratum"} to perform a simple calculation of the maximum number of trips counted in a given stratum - generally used for set nets
+\item \code{method = "max_per_stratum"} to perform a simple calculation of the maximum number of trips counted in a given stratum - generally used for set nets. If this method is used, a further constraint is added to force the total effort estimate to be at least as large as the total number of interviews for that gear type.
 }}
 }
 \description{

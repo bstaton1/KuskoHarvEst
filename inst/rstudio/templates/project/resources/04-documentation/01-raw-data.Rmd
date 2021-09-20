@@ -14,10 +14,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-_This document describes formatting required of the raw data files. **Pay particularly close care to how the raw data are entered and formatted, as inconsistency in the input is the main thing that will cause steps later in the workflow to fail.**_
+_This document describes formatting required of the files that store interview and flight data. **Pay particularly close care to how these data are entered and formatted, as inconsistency in the input may cause steps later in the workflow to fail.**_
 
 Harvest estimation relies on completed trip fisher interviews and aerial counts of the number of trips active at a given time.
-By design, entering, formatting, and checking these data will be the most difficult part of your job.
+By design, entering, formatting, and checking these data will be the most difficult part of your job in producing an estimate.
 
 The length of this document may make this seem complicated -- and it may be at first -- but this document is meant to be comprehensive (that is, explains _everything_).
 
@@ -35,27 +35,29 @@ The exact formatting of different data values and column headers is essential. T
 
 ### Dates
 
+**The month, day, year, minute, and hour must be entered in a specific format**. Below, MM/DD means that two digits for the month and two digits for the day are required. M/D means that only one digit may be used. For example June 5 in MM/DD format must be `06/05`, whereas in M/D format it must be in `6/5` (June 12 would be `6/12` for M/D). This concept extends to times expressed as hours:minutes (H:MM).
+
 **Dates entered into data cells must be in M/D/YYYY format**. For example, June 24, 2020 should be entered `6/24/2020`.
 
-**Dates in file names should be in YYYY_MM_DD format**. For example, June 24, 2020 should be entered `2020_06_24`. Note the two M's and D's in this syntax -- this indicates a leading zero should be used if the month or day has only one digit. This enables easy sorting of many files when in a common folder.
+**Dates in file names should be in YYYY_MM_DD format**. For example, June 24, 2020 should be entered `2020_06_24`.
 
 ### Times
 
-**Times (as in time of day) entered into data cells must be in H:MM format and military time**. For example, 8:00 AM is `8:00`, 11:45 AM is `11:45`, 1:30 PM is `13:30`.
+**Times (as in time of day) entered into data cells must be in H:MM format and on the 24 hour clock (i.e., military time)**. For example, 8:00 AM is `8:00`, 11:45 AM is `11:45`, 1:30 PM is `13:30`.
 
 ### Missing Data
 
-Each row in the interview data files will be an individual interview. **If an interview has some data available, but some are missing, the missing cells should have `NA` entered into them.** Do not leave missing cells totally empty.
+Each row in the interview data files will be an individual interview. **If an interview has some data available, but some are missing, the missing cells should have `NA` entered into them. Do not leave missing cells totally empty.**
 
 ### One Date Per File
 
-**The raw data files must have data from one calendar day only.** The exception is if a trip started on one day and ended on the next -- see the section on dates in interview files, below for details.
+**The raw data files must have data from one calendar day only.** The exception is if a trip started on one day and ended on the next -- see the section on dates in interview files below for details.
 
 ### CSV File Format
 
 **All raw data files must be in CSV file format.** This is basically a spreadsheet that contains only data (no formulas). You will edit data files using Excel or a similar spreadsheet software. 
 
-If you have been provided data files in XLSX file format, you can go to File > Save As > File Type > Comma Separated Values (CSV). 
+If you have been provided data files in XLSX file format, open the file in Excel and go to File > Save As > File Type > Comma Separated Values (CSV). 
 
 # Flight Data File {.tabset .tabset-pills}
 
@@ -66,6 +68,8 @@ Click each of the sections below to get information about how file names and var
 The file storing raw flight data **must** be named `Flight_counts_YYYY_MM_DD.csv`.
 
 ## Required File Contents
+
+The flight data file **must** contain these columns.
 
 #### `date`
 
@@ -81,11 +85,11 @@ The type of gear corresponding to the counts. Must be one of `drift` or `set`.
 
 #### `start`
 
-The time the observer started searching for nets -- generally several minutes after take off. Must be entered in military time as `H:MM`.
+The time the observer started searching for nets -- generally several minutes after take off. Must be entered in military time with H:MM format.
 
 #### `end`
 
-The time the observer stopped searching for nets. Must be entered in military time as `H:MM`.
+The time the observer stopped searching for nets. Must be entered in military time with H:MM format.
 
 #### `A`
 
@@ -147,7 +151,7 @@ The date(s) the trip occurred on, entered as M/D/YYYY format. There are two opti
 
 Using option (1) will cause the program to return a warning later on:
 
-```{r, comment = NA}
+```{r, echo = FALSE, comment = NA}
 cat("Warning: Only the 'date' column was found in the raw data, not 'date_start' and 'date_end'.\nIt is thus assumed that all trips started and ended on the same date.")
 ```
 
@@ -181,7 +185,7 @@ The fisher's best approximation of how long their net was actively fishing for. 
 
 * A column called `soak.min` with the number of minutes of soak time, for example, a trip that fished actively for 1.25 hours would be entered `75`.
 * A column called `soak.hrs` with the number of hours of soak time, for example, a trip that fished actively for 1.25 hours would be entered `1.25`.
-* A column called `soak.hrs` with the soak time elapsed entered as `H:MM`, for example, a trip that fished actively for 1.25 hours would be entered `1:15`.
+* A column called `soak.hrs` with the soak time elapsed entered as H:MM, for example, a trip that fished actively for 1.25 hours would be entered `1:15`.
 
 #### `chinook`
 
@@ -197,17 +201,18 @@ The reported number of sockeye salmon harvested during the fishing trip. Treat z
 
 ## Optional File Contents
 
+These are columns that are not required in the interview data to produce the primary estimates, but some optional features of 'KuskoHarvEst' rely on some of them. 
 #### `mesh`
 
 The mesh size of the gillnet used by the fisher on their trip. Measured in inches of stretched mesh. Must be formatted as a number (possibly with decimals). **Fractions (e.g., `5 7/8`) are not accepted and will cause the software to crash and should instead be formatted as decimals.** _This variable is not currently used by any aspect of 'KuskoHarvest'_.
 
 #### `sheefish`
 
-The reported number of sheefish harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column. _This variable is not currently used by any aspect of 'KuskoHarvest'_.
+The reported number of sheefish harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column.
 
 #### `whitefish`
 
-The reported number of miscellaneous whitefishes harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column. _This variable is not currently used by any aspect of 'KuskoHarvest'_.
+The reported number of miscellaneous whitefishes harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column.
 
 #### `type`
 

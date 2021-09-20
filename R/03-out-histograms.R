@@ -9,6 +9,8 @@
 #'   * `"chum"`
 #'   * `"sockeye"`
 #'   * `"chum+sockeye"`
+#'   * `"trip_start"`
+#'   * `"trip_end"`
 #'   * `"soak_duration"`
 #'   * `"trip_duration"`
 #'   * `"p_chinook"`
@@ -18,7 +20,7 @@
 make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 
   # set the variables that are accepted, and perform error check
-  accepted_variables = c("total_salmon", "chinook", "chum", "sockeye", "chum+sockeye", "soak_duration", "trip_duration", "p_chinook")
+  accepted_variables = c("total_salmon", "chinook", "chum", "sockeye", "chum+sockeye", "trip_start", "trip_end", "soak_duration", "trip_duration", "p_chinook")
   if (!(variable %in% accepted_variables)) {
     stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:\n", paste0("  '", accepted_variables, "'\n"))
   }
@@ -59,6 +61,18 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
     main = "Chum+Sockeye Salmon Catch/Trip"
   }
 
+  # prepare the information: trip_start
+  if (variable == "trip_start") {
+    x = lubridate::hour(x_data$trip_start)
+    main = "Trip Start Time"
+  }
+
+  # prepare the information: trip_end
+  if (variable == "tri_end") {
+    x = lubridate::hour(x_data$trip_start)
+    main = "Trip End Time"
+  }
+
   # prepare the information: soak duration
   if (variable == "soak_duration") {
     x = as.numeric(lubridate::as.duration(x_data$soak_duration), "hours")
@@ -81,18 +95,43 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
   # determine the break points
   breaks = seq(min(x, na.rm = TRUE), max(x, na.rm = TRUE), length = n_bins)
 
+  dec_hour_to_time = function(dec_time) {
+    hr = floor(dec_time)
+    min = stringr::str_pad(round((dec_time - hr) * 60), 2, "left", "0")
+    paste0(hr, ":", min)
+  }
+
   # calculate the mean by data source
   means = tapply(x, x_data$source, mean, na.rm = TRUE)
-  means = round(c(All = mean(x, na.rm = TRUE), means), 1)
-  means_text = paste0(names(means), " Mean = ", unname(means))
+  means = c(All = mean(x, na.rm = TRUE), means)
+
+  # format means differently if a time-of-day variable
+  if (variable %in% c("trip_start", "trip_end")) {
+    nms = names(means)
+    means = dec_hour_to_time(means)
+    names(means) = nms
+  } else {
+    means = round(means, 1)
+  }
+  means_text = paste0(names(means), " Mean: ", unname(means))
 
   # make the plot
   par(mgp = c(2,0.35,0), tcl = -0.15, xaxs = "i", yaxs = "i")
   bin_counts = hist(x, breaks = breaks, plot = FALSE)$counts
   hist(x, breaks = breaks, ylim = c(0, max(bin_counts)) * 1.4, main = main, xlab = "Value", ylab = "Frequency",
        col = "grey70", border = "white", xaxt = "n", yaxt = "n")
-  axis(side = 1); axis(side = 2, las = 2)
-  legend("topleft", x.intersp = -0.5, ncol = 2, legend = means_text, bty = "n", cex = 1.15)
+
+  # handle the x-axis. use special formatting if plotting a time-of-day variable
+  if (variable %in% c("trip_start", "trip_end")) {
+    at_x = axisTicks(par("usr")[1:2], log = FALSE, nint = 3)
+    lab_x = dec_hour_to_time(at_x)
+    axis(side = 1, at = at_x, labels = lab_x)
+  } else {
+    axis(side = 1)
+  }
+
+  axis(side = 2, las = 2)
+  legend("top", x.intersp = -0.5, ncol = 2, legend = means_text, bty = "n", cex = 1.15)
   usr = par("usr")
   segments(usr[1], usr[3], usr[2], usr[3], xpd = T)
 }
@@ -103,21 +142,19 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 #'   summaries of several variables.
 #'
 #' @inheritParams estimate_harvest
-#' @param variables Character; vector with length less than 6 indicating which
+#' @param variables Character; vector indicating which
 #'   variables to draw histograms for. See [make_histogram()] for accepted options
+#' @param mfrow Numeric; vector of length 2 specifying how to organize the histogram panels in `c(rows,colums)`.
+#'   Supplied to [graphics::par()] and defaults to `c(2,3)`.
 #' @param n_bins Numeric; the number of bars to draw for the histogram
+#' @note If 6 or fewer variables are supplied, the panels will be organized as
 #'
 #' @export
 
-make_histograms = function(interview_data, gear, variables, n_bins = 10) {
-
-  # error check to make sure not more than 6 variables were supplied
-  if (length(variables) > 6) {
-    stop ("A maximum of 6 variables can be plotted.")
-  }
+make_histograms = function(interview_data, gear, variables, mfrow = c(2,3), n_bins = 10) {
 
   # graphics device settings
-  par(mfrow = c(2,3), mar = c(1.5,1,2,1), oma = c(0,2,0,0))
+  par(mfrow = mfrow, mar = c(1.5,1,2,1), oma = c(0,2,0,0))
 
   # loop through variables creating the histogram for each
   junk = sapply(variables, function(v) make_histogram(interview_data, gear, v, n_bins))

@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-_This document describes how to use the report builder tool, which allows you to select which content to display in the output reports and build them._
+_This document describes how to use the report builder tool, where you will select which content to display in the output reports and build them._
 
 This tool helps you build two documents:
 
@@ -76,7 +76,7 @@ The first item you can change is how many bootstrap samples to run.
   <img src="screenshots/04-report-builder-tool/nboot.png" width="300"/>
 </p>
 
-The bootstrap procedure is used to estimate uncertainty in harvest estimates, and the more samples you run, the longer the calculations take. Thus, for early versions of the document, you may want to reduce this number to make sure everything is working properly. For final estimates, be sure to set this to 1,000.
+The bootstrap procedure is used to estimate uncertainty in harvest estimates, and the more samples you run, the longer the calculations take. Thus, for early drafts of the document, you may want to reduce this number to make sure everything is working properly. For final estimates, be sure to set this to 1,000.
 
 Next, you will need to check or uncheck these boxes to control what content you want to include in the output document:
 
@@ -102,13 +102,17 @@ Here is what each item controls:
   <img src="screenshots/04-report-builder-tool/goal-table.png" width="600"/>
 </p>
 
-* **Include Detailed Appendix**: If checked, a set of tables summarizing interview quantities across different geographic strata will be displayed at the end of the document. Uncheck this box if you do not wish to display this content.
+* **Include Detailed Appendix**: If checked, a set of tables (like those shown below) summarizing interview quantities across different geographic strata will be displayed at the end of the document. Uncheck this box if you do not wish to display this content.
 
 <p align="center">
   <img src="screenshots/04-report-builder-tool/appendix-tables.png" width="600"/>
 </p>
 
-When you are done selecting these options, click the "Save Rmarkdown Source File" button and then the "Build PDF Report" button (note that you cannot click the second without clicking the first button). After you click "Build PDF Report", you will see some text appear in the R console behind the tool indicating that calculations are happening. When these are complete, a PDF file will automatically be opened showing you the results. **If you wish to make changes to the PDF file after it has already been created, close the PDF file if it is still open, reselect the correct settings, then click both buttons again.**
+* **Present Some Summaries for Chum and Sockeye Separately**: If checked, the histograms and appendix tables will show summaries for chum and sockeye salmon separately. The default (unchecked) will show summaries for these species summed together as "chum+sockeye".
+
+* **Include Appendix with Non-Salmon Harvest Estimates**: If checked, an appendix will be added to the output that displays estimated harvest of non-salmon species.
+
+When you are done selecting these options, click the "Save Rmarkdown Source File" button and then the "Build PDF Report" button (note that you cannot click the second button without clicking the first button). After you click "Build PDF Report", you will see some text appear in the R console behind the tool indicating that calculations are happening. When these are complete, a PDF file will automatically be opened showing you the results. **If you wish to make changes to the PDF file after it has already been created, close the PDF file if it is still open, reselect the correct settings, then click both buttons again.**
 
 <p align="center">
   <img src="screenshots/04-report-builder-tool/buttons.png" width="700"/>
@@ -120,7 +124,7 @@ You can find several new files in your project folder now:
 
 * `output/KuskoHarvEst_YYYY_MM_DD.pdf`: This is the PDF output file.
 
-* `output/KuskoHarvEst_bootstrap_YYYY_MM_DD.csv`: This file contains the individual bootstrap values of harvest estimates. This file may be useful in building the season-end report or may be requested from you by the person who creates the in-season assessment documents.
+* `output/KuskoHarvEst_bootstrap_YYYY_MM_DD.csv`: This file contains the individual bootstrap values of harvest estimates. This file may be requested from you by the person who creates the in-season assessment documents.
 
 ## Sensitivity Analysis Report Builder Tab
 
@@ -136,7 +140,7 @@ where you will find this page:
   <img src="screenshots/04-report-builder-tool/whole-tool-sen.png" width="700"/>
 </p>
 
-This part of the tool works very similarly to the previous tab, so consult that section of this document for details on exactly how to use it. The calculations behind sensitivity analyses take quite a bit longer than for the main document, so be prepared to wait several minutes if using the full 1,000 bootstrap samples.
+This part of the tool works very similarly to the previous tab, so consult that section of this document for details on exactly how to use it. The calculations behind sensitivity analyses take quite a bit longer than for the main document, so be prepared to wait several minutes if using the full 1,000 bootstrap samples (which is advised for final output).
 
 There is one additional setting for sensitivity analyses:
 

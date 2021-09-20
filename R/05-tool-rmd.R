@@ -67,7 +67,9 @@ rmd_tool = function() {
           shiny::checkboxInput(inputId = "est_do_setnets", label = "Make Set Net Harvest Estimate", value = TRUE),
           shiny::checkboxInput(inputId = "est_include_johnson_table", label = "Include Johnson River Proximity Table", value = ifelse(meta$set_only, FALSE, TRUE)),
           shiny::checkboxInput(inputId = "est_include_goal_table", label = "Include Harvest Goal Attainment Table", value = FALSE),
-          shiny::checkboxInput(inputId = "est_include_appendix", label = "Include Detailed Appendix", value = TRUE)
+          shiny::checkboxInput(inputId = "est_include_appendix", label = "Include Detailed Appendix", value = TRUE),
+          shiny::checkboxInput(inputId = "est_split_chum_sockeye", label = "Present Some Summaries for Chum and Sockeye Separately", value = FALSE),
+          shiny::checkboxInput(inputId = "est_include_nonsalmon", label = "Include Appendix with Non-Salmon Harvest Estimates", value = FALSE)
         ),
 
         # buttons for estimate report
@@ -139,6 +141,8 @@ rmd_tool = function() {
         include_johnson_table = input$est_include_johnson_table,
         include_goal_table = input$est_include_goal_table,
         include_appendix = input$est_include_appendix,
+        split_chum_sockeye = input$est_split_chum_sockeye,
+        include_nonsalmon = input$est_include_nonsalmon,
         save_bootstrap = TRUE
       )
     })

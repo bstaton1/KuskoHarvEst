@@ -8,6 +8,7 @@ report(
   spp = "total",
   gear = "total",
   stratum = "total",
+  date = NULL,
   CI = TRUE,
   conf_level = 0.95,
   digits = -1,
@@ -27,6 +28,10 @@ Defaults to \code{"total"}.}
 \item{stratum}{Character; the geographic stratum to summarize.
 Accepted options are \code{"A"}, \code{"B"}, \code{"C"}, \code{"D1"}, or \code{"total"}.
 Defaults to \code{"total"}.}
+
+\item{date}{Character; the date to summarize.
+Should be supplied in YYYY-MM-DD format if not \code{NULL}.
+Defaults to \code{NULL}, in which case the date is ignored when summarizing.}
 
 \item{CI}{Logical; should the confidence intervals be returned?}
 

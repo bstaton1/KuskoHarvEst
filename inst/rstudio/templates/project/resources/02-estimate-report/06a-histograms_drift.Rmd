@@ -1,4 +1,11 @@
 
 ```{r histograms, fig.width = 7.5, fig.height = 4, fig.cap = KuskoHarvEst:::make_histogram_caption(interview_data, "drift")}
-make_histograms(interview_data, gear = "drift", variables = c("total_salmon", "chinook", "chum+sockeye", "trip_duration", "soak_duration", "p_chinook"), n_bins = 10)
+# set which variables to display depending on whether splitting or aggregating chum/sockeye summaries
+if (!split_chum_sockeye) {
+  hist_variables = c("total_salmon", "chinook", "chum+sockeye", "trip_duration", "soak_duration", "p_chinook")
+} else {
+  hist_variables = c("chinook", "chum", "sockeye", "trip_duration", "soak_duration", "p_chinook")
+}
+
+make_histograms(interview_data, gear = "drift", variables = hist_variables, n_bins = 10)
 ```

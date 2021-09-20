@@ -5,12 +5,16 @@
 #'
 #' @inheritParams estimate_harvest
 #' @param central_fn Function; used to calculate central tendency
-#'
+#' @param nonsalmon Logical; should estimates be returned for whitefish and sheefish rather than for Chinook, chum, and sockeye salmon?
 
-estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn")) {
+estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn"), nonsalmon = FALSE) {
 
   # set the species to keep
-  keep_spp = c("chinook", "chum", "sockeye")
+  if (!nonsalmon) {
+    keep_spp = c("chinook", "chum", "sockeye")
+  } else {
+    keep_spp = c("sheefish", "whitefish")
+  }
 
   # subset only the data for this gear
   interview_data = interview_data[interview_data$gear == gear,]
@@ -44,6 +48,12 @@ estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, cent
   } else {
     # calculate the catch rate for all records (doesn't matter if suitable or not yet)
     catch_rates = apply(catches, 2, function(catch) catch/(net_length * soak_hrs))
+
+    # if there is only one catch rate record, make a 1 row matrix so the apply calls below work
+    if (is.vector(catch_rates)) {
+      catch_rates = matrix(catch_rates, nrow = 1, ncol = length(catch_rates))
+      colnames(catch_rates) = colnames(catches)
+    }
 
     # calculate the average catch per trip for the requested gear and only the suitable records
     if (sum(suitable_catch_rate) == 1) {

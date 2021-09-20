@@ -6,12 +6,13 @@
 #' @param input_file Character; the name of one file that contains interview data from a single source and fishing day
 #' @param include_village Logical; should the village of the fisher be included in the output?
 #' @param include_goals Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?
+#' @param include_nonsalmon Logical; should the catches of non-salmon species (whitefish and sheefish) be returned?
 #'
 
-prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE) {
+prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE, include_nonsalmon = FALSE) {
 
   ### STEP 0: load the input data file & format column names
-  dat_in = read.csv(input_file, stringsAsFactors = FALSE)
+  dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))
 
   # determine and delete the rows that have all NA values: Excel/CSV quirk sometimes includes these
   all_NA = sapply(1:nrow(dat_in), function(i) all(is.na(dat_in[i,]) | dat_in[i,] == ""))
@@ -28,19 +29,33 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
   colnames(dat_in) = vars
 
   ### STEP 1: handle the source name
-  src_name = stringr::str_extract(basename(input_file), "^[A-Z]+")
-  dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
+  src_name = toupper(stringr::str_extract(basename(input_file), "^[A-Z|a-z]+"))
+
+  # if source name not recognized, return an error
+  if (!(src_name %in% rownames(source_names))) {
+    stop("The data source name (", src_name, ") was not recognized.\nAccepted values are: ", paste(rownames(source_names), collapse = ", "), ".\nPlease change the data file name to match one of these data sources,\nor notify the software developer if a new data source has been added.")
+  } else {
+    dat_out = data.frame(source = rep(src_name, nrow(dat_in)))
+  }
 
   ### STEP 2: handle the stratum name
-  dat_out$stratum = dat_in$stratum
+  dat_out$stratum = stringr::str_remove(toupper(dat_in$stratum), " ")
+
+  # determine if any records have an unknown stratum (e.g., O). If so, remove them and return warning
+  unknown_stratum = !(dat_out$stratum %in% c(strata_names$stratum, NA))
+  if (any(unknown_stratum)) {
+    warning("There were ", sum(unknown_stratum), " records with invalid stratum values: ", paste(unique(dat_out$stratum[unknown_stratum]), collapse = ", "), "\n  They have been discarded.")
+    dat_in = dat_in[!unknown_stratum,]
+    dat_out = dat_out[!unknown_stratum,]
+  }
 
   ### STEP 3: handle the gear (net) type
-  gear_entered = dat_in$gear
+  gear_entered = stringr::str_remove(dat_in$gear, " ")
   gear_standard = tolower(gear_entered) # make lowercase
   gear_standard = stringr::str_remove(gear_standard, "net")
   dat_out$gear = gear_standard
 
-  ### STEX 4: handle net dimensions
+  ### STEP 4: handle net dimensions
   has_mesh = "mesh" %in% vars
   dat_out$net_length = dat_in$length
   if (has_mesh) {
@@ -96,9 +111,27 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
     dat_out$soak_duration = suppressWarnings(lubridate::as.period(round(lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes")))))
   }
 
-  ### STEP 7: handle which species to keep
-  keep_spp = c("chinook", "chum", "sockeye")
-  dat_out = cbind(dat_out, dat_in[,keep_spp])
+  ### STEP 7: handle which catches by species
+
+  # Pacific salmon species. these columns are always present
+  dat_out = cbind(dat_out, dat_in[,c("chinook", "chum", "sockeye")])
+
+  # include nonsalmon species if requested
+  if (include_nonsalmon) {
+    # "whitefish" - non-salmon. this column is not always present, create empty column if missing
+    if ("whitefish" %in% vars) {
+      dat_out = cbind(dat_out, whitefish = dat_in[,"whitefish"])
+    } else {
+      dat_out$whitefish = NA
+    }
+
+    # sheefish - non-salmon. this column is not always present, create empty column if missing
+    if ("sheefish" %in% vars) {
+      dat_out = cbind(dat_out, sheefish = dat_in[,"sheefish"])
+    } else {
+      dat_out$sheefish = NA
+    }
+  }
 
   ### STEP 8: add village information if requested
   if (include_village) {
