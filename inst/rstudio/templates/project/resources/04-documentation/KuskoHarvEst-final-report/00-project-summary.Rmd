@@ -1,0 +1,31 @@
+
+\vspace{-20pt}
+
+\begin{large}
+\noindent
+\textbf{\textsc{Benjamin A. Staton}}
+\end{large}
+
+\vspace{-8pt}
+\noindent
+\textit{Quantitative Ecological Services LLC, Portland, OR}
+
+# Project Summary {-} 
+
+Methods to produce in-season estimates of subsistence salmon harvest and effort for the lower Kuskokwim River have existed since 2016 [@staton-coggins-2016].
+However, generating the estimates and reporting documents from the raw data has, until the 2021 season, required specialized knowledge of writing and editing computer code. 
+The previous workflow required much experience with the code to implement it successfully, and in some cases the analyst was required to make subjective decisions about which data should be considered unreliable.
+Further, installing all necessary software was cumbersome and code and data files needed to be organized in highly specific (and often non-intuitive) ways.
+These undesirable features of the workflow existed because the same student/employee served as developer and analyst -- producing the estimates in-season did not leave time for such optimization.
+After 5 years of implementation, however, it has become clear that some features of the workflow can be automated and better-organized, and that an overall more intuitive implementation is possible.
+
+\noindent
+The primary objective of this project was to enable someone to produce estimates and reporting documents using the same analytical methods as in the past, but without needing to write or edit code.
+Other objectives included (_i_) automation of previously subjective choices about data quality using agreed-upon rules, (_ii_) simplification of the software installation process, and (_iii_) improvements to the software documentation resources.
+These objectives were attained through the development of a new software package called 'KuskoHarvEst' [@r-KuskoHarvEst] for program R [@r-cite], which is the code environment where all calculations take place.
+The 'KuskoHarvEst' package performs all of the fundamental calculations that previously existed, but vastly streamlines their implementation for the user by providing a set of graphical user interfaces (i.e., menu-driven, point-and-click, text-entry boxes, etc.) that remove the need to edit any code by hand.
+These features increase the ease and speed of producing estimates, as well as improves their reproducibility among multiple analysts faced with the same data set. 
+
+\noindent
+'KuskoHarvEst' was used successfully in 2021 by staff from the Kuskokwim River Inter-Tribal Fish Commission and the Orutsararmiut Native Council to produce harvest and effort estimates and distribute summaries in the form of report documents with minimal oversight from the software developer.
+Feedback gathered from the 2021 season was used post-season to fix minor issues and add features that have lead to a finalized version (\textit{v}1.1.0) that can be used in future years, assuming the monitoring program and fishery conditions remain relatively consistent.

@@ -1,0 +1,30 @@
+# Project Deliverables {-}
+
+This project produced several tangible deliverables (e.g., software, documents, presentation slides) as well as some that are less tangible (e.g., training, oversight, and data checking).
+
+1. The 'KuskoHarvEst' R package, available indefinitely at <https://www.github.com/bstaton/KuskoHarvEst> and also delivered in zip file format. The package contains all source code to complete calculations and produce reports via graphical user interfaces. Full instructions to install all needed resources are available at the link. 
+
+2. Comprehensive documentation to train new users (and refresh experienced users) in how to successfully use the software. This content is technically built into 'KuskoHarvEst', but given the extent of it, it is listed here as a separate deliverable.
+
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/00-general.html}{\faExternalLink} \textbf{General instructions} for the different parts of the workflow.
+    
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/01-raw-data.html}{\faExternalLink} \textbf{Description of raw data} file formatting required by the software. 
+    
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/02-meta-data-tool.html}{\faExternalLink} \textbf{Instructions for the meta-data tool} where users enter features of the fishing day like allowed time, area, and gear information.
+    
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/03-interview-flight-data-tool.html}{\faExternalLink} \textbf{Instructions for the interview/flight data preparation tool} where users load the raw data files and automatically screen the data for potential problems.
+    
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/04-report-builder-tool.html}{\faExternalLink} \textbf{Instructions for the report builder tool} where users select which content to include in the report and click one button to to perform all calculations and generate a standardized PDF report document that contains the results and data summaries based on the input data.
+    
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/07-final-report-content.html}{\faExternalLink} \textbf{Instructions to generate content for the season-wide final report} including figures and tables that follow the formatting of this content from previous years' reports \citep{staton-coggins-2016,staton-coggins-2017,staton-2018,decossas-2019,decossas-2020}.
+    
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/06-data-checks.html}{\faExternalLink} \textbf{A description of all quality assurance checks} performed automatically by the software that decide which interview records are suitable for use in each of the tasks in the estimation workflow.
+    
+    \href{https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/05-code-overview.html}{\faExternalLink} \textbf{A description of the coding framework} used by the software, including (\textit{i}) a demonstration of how to produce estimates without the interactive tools, (\textit{ii}) a description of the role of each custom R function, and (\textit{iii}) an overview of how the output of calculations are automatically inserted into PDF report documents.
+  
+3. Slides from a presentation describing the statistical foundations and assumptions of the harvest and effort estimators (presented on May 18, 2021).
+
+4. Training and in-season oversight for the analysts using the software to produce estimates, which helped to quickly identify data entry issues and give the analysts confidence that they used the software properly.
+The necessity of oversight generally declined as the season progressed.
+
+5. Assistance with the final report [@russell-etal-2021] that documents the data availability for the 2021 season, raw data summaries, and summaries of compiled harvest and effort estimates.

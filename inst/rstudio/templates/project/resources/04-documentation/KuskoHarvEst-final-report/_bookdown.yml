@@ -1,0 +1,6 @@
+book_filename: "KuskoHarvEst-final-report"
+delete_merged_file: true
+language:
+  ui:
+    chapter_name: ""
+output_dir: "3-submit"

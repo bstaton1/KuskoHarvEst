@@ -1,0 +1,44 @@
+
+```{r make-bib-section, eval = is_latex_output()}
+# NOTE: THE REASON THIS IS REQUIRED IS TO FORCE CREATION OF BIB 
+#   AT THE END OF THE TEXT BUT BEFORE FIGURES (LATEX ONLY)
+#   THE DEFAULT TEMPLATE ALWAYS PLACES THE BIB AT THE VERY END OF THE DOCUMENT
+
+# USERS SHOULD NOT NEED TO EDIT THIS CODE!! #
+
+# extract the names of the bib files supplied to "index.Rmd" YAML
+yaml = rmarkdown::yaml_front_matter("index.Rmd")
+bib_files = paste(yaml$bibliography, collapse = ",")
+
+bib_lineno = ifelse(yaml$`lineno-bib`, "\\linenumbers", "\\nolinenumbers")
+
+# create a block of latex code that will format and generate the bib section as desired.
+make_bib_section = c(
+  # force new page for bibliography
+  "\\clearpage",
+  
+  # reset pargraph spacing rules
+  "\\setlength{\\parskip}{3pt plus 1pt minus 1pt}",
+  
+  # force single spacing: applies to tables and figures as well
+  "\\singlespacing",
+  
+  # insert appropriate line number code
+  bib_lineno,
+  
+  # place bibliography in a small text environment
+  "\\begin{small}",
+  paste("  \\bibliography{", bib_files, "}"),
+  "\\end{small}",
+  
+  "\\nolinenumbers"
+  
+  # force a new page after bibliography
+  # "\\clearpage"
+  
+)
+```
+
+`r if (is_latex_output()) paste(make_bib_section, collapse = "\n")`
+
+`r if (rmarkdown::yaml_front_matter("index.Rmd")[["lineno-figs-tabs"]]) "\\linenumbers"`

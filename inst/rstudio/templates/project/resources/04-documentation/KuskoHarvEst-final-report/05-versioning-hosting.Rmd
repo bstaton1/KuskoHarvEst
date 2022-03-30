@@ -1,0 +1,15 @@
+# Versioning and Hosting Platform {-}
+
+The development of 'KuskoHarvEst' was undertaken by tracking its history as a Git repository which was hosted as a remote repository on GitHub.
+The advantages to using Git/GitHub for software development are too numerous to name here, but in short, it is an approach for tracking changes to a code base.
+Each small change is accompanied by a complete snapshot of the software that can be returned to at any time, or copied to try out new features.
+Changes can be merged into the main version if they are deemed desirable or discarded entirely without ever affecting the main version.
+At many points in the development process, developers can comment and document why changes were necessary and what exactly was changed.
+One method is the [issue tracker](https://github.com/bstaton1/KuskoHarvEst/issues?q=is%3Aissue+is%3Aclosed), where items that need addressing are posted.
+Another method is in the [pull request tracker](https://github.com/bstaton1/KuskoHarvEst/pulls?q=is%3Apr+is%3Aclosed), where changes can be described to document their purpose and how they were implemented.
+When done properly, use of this overall strategy can lead to better software development.
+Although the 'KuskoHarvEst' developer is not an expert in this topic, he believes this project was one of his most well-organized and well-documented to-date.
+Over the development period from start (January 30, 2021) to finish (September 19, 2021), a total of 96 issues were created and addressed, 74 pull requests (groups of small changes) were opened and merged, and 457 commits (small changes) were made -- together these items document the logic and implementation of development decisions.
+
+\noindent
+Hosting 'KuskoHarvEst' on GitHub comes with the added benefit of a centralized official version that can be easily installed from any computer with internet access.

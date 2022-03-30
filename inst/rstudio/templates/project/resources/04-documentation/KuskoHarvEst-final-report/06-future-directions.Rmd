@@ -1,0 +1,13 @@
+# Future Directions {-}
+
+The current version of 'KuskoHarvEst' (\textit{v}1.1.0) is usable indefinitely into the future without updates under two conditions.
+First, and most importantly, the fishery conditions and monitoring program remain should relatively consistent for its continued use.
+The estimators used by the software assume the data are a random sample of the fishery.
+This is reasonable to assume during short duration fishing opportunities with near-complete temporal coverage and decent spatial coverage of interviewers, but would become substantially more difficult in years where longer fishing opportunities are allowed [see discussion section of recent end-of-season reports for details, e.g., @russell-etal-2021].
+Second, 'KuskoHarvEst' depends on program R and several R packages in order to work properly.
+If the developers of the base R language or these additional packages fundamentally change components of their software, it could break 'KuskoHarvEst' and updates may be necessary.
+Given the wide usage and age of the packages that 'KuskoHarvEst' depends on, these kinds of breaking changes are unlikely.
+
+\noindent
+The development of 'KuskoHarvEst' will facilitate another project (AYK-SSI project #AC-2106) that seeks to compile the historical in-season harvest monitoring data and build predictive relationships.
+As part of this project, all historical harvest estimates will be reproduced to ensure consistency among estimates -- the standardization of previously subjective decisions and automation of many tasks in the workflow provided by 'KuskoHarvEst' will facilitate this process and make it reproducible from the raw data sources.

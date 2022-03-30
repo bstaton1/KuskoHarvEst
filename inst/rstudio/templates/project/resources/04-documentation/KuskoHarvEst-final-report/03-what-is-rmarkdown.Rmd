@@ -1,0 +1,8 @@
+# What is Rmarkdown? {-}
+
+Given its central role in enabling the automated generation of report documents, some additional details on Rmarkdown are warranted.
+Rmarkdown is a framework that enables generating output documents that report analytical results based on inputs where the analysis is embedded within the report itself.
+That is, the code that creates the document also contains the analysis, so that if the inputs change, the in-text numbers, tables, and figures in the output document change accordingly and automatically.
+This prevents the user from needing to edit the document by hand, they need only ever edit the inputs (i.e., data files).
+Example output pages from the June 19, 2021 estimate are shown in Figures \@ref(fig:est1) -- \@ref(fig:est4); note how many numbers there are on each page, and envision how long it would take the analyst to update all of this content by hand if the analysis was not integrated within the document.
+Rmarkdown is itself an R package ['rmarkdown', @r-rmarkdown] supported and extended by many other R packages, e.g., 'knitr' [@r-knitr] and 'kableExtra' [@r-kableExtra].
