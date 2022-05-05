@@ -297,6 +297,9 @@ build_sensitivity_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot
   # replace the n_boot placeholder text with the number supplied
   Rmd_contents = stringr::str_replace(Rmd_contents, "N_BOOT_REPLACE", as.character(n_boot))
 
+  # replace the split_chum_sockeye placeholder text with the logical indicator supplied
+  Rmd_contents = stringr::str_replace(Rmd_contents, "SPLIT_CHUM_SOCKEYE_REPLACE", "FALSE")
+
   # build the file name
   Rmd_file = paste0("sensitivity_", file_date(meta$start_date), ".Rmd")
 
