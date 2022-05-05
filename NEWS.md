@@ -1,5 +1,15 @@
 # *NEWS*
 
+# KuskoHarvEst 1.1.1 (2022-05-04)
+
+## Bug Fixes
+
+* Fixed issue causing sensitivity document to fail ([#174](https://github.com/bstaton1/KuskoHarvEst/pull/174))
+
+## New Features
+
+* Added the Staton (2021) 'KuskoHarvEst' project summary report to the package, and included a link in the help tool for easy access ([#173](https://github.com/bstaton1/KuskoHarvEst/pull/173))
+
 # KuskoHarvEst 1.1.0 (2021-09-19)
 
 Although the core functionality was completed by the end of May 2021, much feedback was gathered during its use in the 2021 season and many changes were introduced following the conclusion of the season. These are grouped into "user-facing" (i.e., something a user may notice relative to earlier versions) and "non user-facing" (i.e., something the user would not likely notice), and further into "major" and "minor" changes. The hyperlink next to each change references the GitHub pull request or issue that contains more detailed information on what was changed and why.
