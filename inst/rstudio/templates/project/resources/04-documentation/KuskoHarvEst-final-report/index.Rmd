@@ -1,0 +1,64 @@
+---
+title: Improving the Kuskokwim In-Season Salmon Harvest Estimation Workflow
+subtitle: Project Summary Report
+bibliography: cites.bib
+bib-style: "`r msdown::msdown_resources('0-templates/myapalike.bst')`"
+cite-author-year-sep: ""
+csl: "`r msdown::msdown_resources('0-templates/citation-style.csl')`"
+link-citations: false
+body-on-new-page: false
+watermark: false
+fontsize: 12pt
+fontfamily: mathpazo
+geometry: margin=1in
+singlespace: true
+lineno-title-page: false
+lineno-main-text: false
+lineno-bib: false
+lineno-figs-tabs: false
+ragged: false
+theprefix: ""
+caption-by-figure: true
+caption-by-table: true
+listoffigures: false
+listoftables: false
+citecolor: black
+linkcolor: black
+urlcolor: cyan
+site: bookdown::bookdown_site
+header-includes:
+  - \usepackage{fontawesome}
+  - \captionsetup[figure]{font=small}
+---
+
+```{r, include = F}
+# load in packages
+library(knitr)
+library(kableExtra)
+library(magrittr)
+library(msdown)
+
+# clear the workspace
+rm(list = ls())
+
+# read in figure/table captions
+source("1-tab/tab-cap.R")
+source("2-fig/fig-cap.R")
+
+# set global RMarkdown chunk options: never print code, output, or warnings/messages
+if (is_latex_output()) {
+  knitr::opts_chunk$set(echo = F, message = F, warning = F, fig.align = "center")
+} else {
+  knitr::opts_chunk$set(echo = F, message = F, warning = F)
+}
+```
+
+```{r word-authors, eval = !is_latex_output()}
+yaml = rmarkdown::yaml_front_matter("index.Rmd")
+author_list = yaml$author
+authors = unlist(lapply(author_list, function(a) a$name))
+```
+
+`r if (!is_latex_output()) paste(authors, collapse = ", ")`
+
+`r if (!is_latex_output()) "**NOTE**^[The source code for our manuscript is rendered here as a word document. As a result, some of the formatting is not nearly as clean as the PDF output. Please disregard the formatting in this copy; it was provided so you can use 'track-changes' when providing feedback (_please do so, as this will allow me to easily find your changes and incorporate them in the next draft_). If you have concerns about the formatting, please consult the PDF output to see how it will look when sent to the journal - or request it from me if I didn't send it along with this copy.]"`

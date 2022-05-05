@@ -80,12 +80,22 @@ help_tool = function() {
       # horizontal rule to separate sections
       shiny::hr(),
 
-      # header for report
+      # header for Staton (2018) report
       shiny::h4(shiny::strong("2018 Technical Report")),
       shiny::p("The Staton (2018) report documents some of the motivators for in-season harvest estimates, data collection methods, analytical methods, and results from the 2018 season. It is recommended reading for users wishing to become familiar with these topics."),
 
       # clickable link to open the Staton (2018) report
-      shiny::actionLink("open_2018_report", label = "View Staton (2018)", icon = shiny::icon("file-pdf"))
+      shiny::actionLink("open_2018_report", label = "View Staton (2018)", icon = shiny::icon("file-pdf")),
+
+      # horizontal rule to separate sections
+      shiny::hr(),
+
+      # header for Staton (2021) report
+      shiny::h4(shiny::strong("2021 Project Summary Report")),
+      shiny::p("The Staton (2021) report summarizes the development of the KuskoHarvEst R package. It is very much optional reading but is included here for completeness."),
+
+      # clickable link to open the Staton (2021) report
+      shiny::actionLink("open_2021_report", label = "View Staton (2021)", icon = shiny::icon("file-pdf"))
 
     )
   )
@@ -112,6 +122,11 @@ help_tool = function() {
     # open the 2018 report when requested
     shiny::observeEvent(input$open_2018_report, {
       file.show(resource_path("04-documentation/Staton - 2018 - In-season harvest and effort estimates.pdf"))
+    })
+
+    # open the 2021 report when requested
+    shiny::observeEvent(input$open_2021_report, {
+      file.show(resource_path("04-documentation/KuskoHarvEst-final-report/3-submit/KuskoHarvEst-final-report.pdf"))
     })
 
     # Handle the Done button being pressed

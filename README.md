@@ -105,6 +105,13 @@ Users new to in-season Kuskokwim River subsistence harvest monitoring and estima
 <p align="center">
   <img src="man/figures/readme-screenshots/help-report.png" width="600"/>
 </p>
+
+Finally, users can find some information about the 'KuskoHarvEst' development project in the project summary report:
+
+<p align="center">
+  <img src="man/figures/readme-screenshots/summary-report.png" width="600"/>
+</p>
+
 ## Contact
 
 If users are uncertain with how to properly use an aspect of the tool and cannot find the answer in the documentation, they are encouraged to contact the developer of the software: Ben Staton (<bstaton.qes@gmail.com>).

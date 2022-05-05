@@ -1,0 +1,12 @@
+# Acknowledgements {-}
+
+Several people provided valuable feedback on the functionality included in this package, in alphabetical order they are: B. Bechtol, G. Decossas, J. Esquible, D. Lowrey, J. Spaeder, K. Russell, and K. Whitworth; the vast majority of feedback was provided by B. Bechtol, K. Russell, and K. Whitworth.
+L. Coggins co-developed the statistical foundations of the harvest/effort estimators with B. Staton starting in 2016, with earlier work done in 2015.
+
+\noindent
+'KuskoHarvEst' is completely reliant on [RStudio Desktop](https://www.rstudio.com/products/rstudio/), [Rmarkdown](https://rmarkdown.rstudio.com/), and [Shiny](https://shiny.rstudio.com/) to do its job, and its development was facilitated by the '[devtools](https://devtools.r-lib.org/)' [@r-devtools] R package.
+The developers of these free software products are owed gratitude for making the construction of intuitive workflows like those contained in 'KuskoHarvEst' possible. 
+
+\noindent
+Funding for the development of 'KuskoHarvEst' was provided by the Kuskokwim River Inter-Tribal Fish Commission, administered initially by the Bering Sea Fisherman's Association through grant #AC-2101 to Quantitative Ecological Services, LLC and extended by Kuskokwim River Inter-Tribal Fish Commission grant #AC-2105 to cover some development items that took longer than originally anticipated and some additional items not covered by #AC-2101, like contributing to the final season-wide monitoring report.
+The initial development of the statistical and reporting framework, off of which 'KuskoHarvEst' is based, was funded by the U.S. Fish and Wildlife Service through a Pathways Position during the summers of 2016 -- 2018.

@@ -1,0 +1,8 @@
+msdown::pdf_manuscript:
+  toc: false
+  
+msdown::word_manuscript:
+  toc: false
+  
+bookdown::word_document2:
+  toc: false
