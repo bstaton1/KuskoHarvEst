@@ -17,7 +17,7 @@ make_interview_data_table = function(interview_data) {
 
   # append the percent of all interviews by source
   p = smart_round(tab[,1]/tab["Total",1], digits = 2)
-  tab = cbind(tab, Percent = percentize(p))
+  tab = cbind(tab, Percent = KuskoHarvUtils::percentize(p))
 
   # formatting
   tab = cbind("Data Source" = rownames(tab), tab); rownames(tab) = NULL
@@ -177,7 +177,7 @@ make_johnson_summary_table = function() {
       summs = round(summs)
       out = paste0(summs[1], " (", summs[2], " -- ", summs[3], ")")
     } else {
-      out = paste0(percentize(summs[1], escape = T), " (", percentize(summs[2], escape = T), " -- ", percentize(summs[3], escape = T), ")")
+      out = paste0(KuskoHarvUtils::percentize(summs[1], escape = T), " (", KuskoHarvUtils::percentize(summs[2], escape = T), " -- ", KuskoHarvUtils::percentize(summs[3], escape = T), ")")
     }
     out
   }
@@ -436,17 +436,17 @@ make_appendix_table = function(interview_data, gear, variable) {
 
   # calculate and format summaries: percent chinook
   if (is.na(digits) & variable == "p_chinook") {
-    Min = percentize(tapply(x, x_data$stratum, function(z) min(z, na.rm = TRUE)), escape = TRUE)
-    q25 = percentize(tapply(x, x_data$stratum, function(z) quantile(z, 0.25, na.rm = TRUE)), escape = TRUE)
-    Mean = percentize(tapply(x, x_data$stratum, function(z) mean(z, na.rm = TRUE)), escape = TRUE)
-    q75 = percentize(tapply(x, x_data$stratum, function(z) quantile(z, 0.75, na.rm = TRUE)), escape = TRUE)
-    Max = percentize(tapply(x, x_data$stratum, function(z) max(z, na.rm = T)), escape = TRUE)
+    Min = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) min(z, na.rm = TRUE)), escape = TRUE)
+    q25 = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) quantile(z, 0.25, na.rm = TRUE)), escape = TRUE)
+    Mean = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) mean(z, na.rm = TRUE)), escape = TRUE)
+    q75 = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) quantile(z, 0.75, na.rm = TRUE)), escape = TRUE)
+    Max = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) max(z, na.rm = T)), escape = TRUE)
 
-    all_min = percentize(min(x, na.rm = TRUE), escape = TRUE)
-    all_q25 = percentize(quantile(x, 0.25, na.rm = TRUE), escape = TRUE)
-    all_mean = percentize(mean(x, na.rm = TRUE), escape = TRUE)
-    all_q75 = percentize(quantile(x, 0.75, na.rm = TRUE), escape = TRUE)
-    all_max = percentize(max(x, na.rm = TRUE), escape = TRUE)
+    all_min = KuskoHarvUtils::percentize(min(x, na.rm = TRUE), escape = TRUE)
+    all_q25 = KuskoHarvUtils::percentize(quantile(x, 0.25, na.rm = TRUE), escape = TRUE)
+    all_mean = KuskoHarvUtils::percentize(mean(x, na.rm = TRUE), escape = TRUE)
+    all_q75 = KuskoHarvUtils::percentize(quantile(x, 0.75, na.rm = TRUE), escape = TRUE)
+    all_max = KuskoHarvUtils::percentize(max(x, na.rm = TRUE), escape = TRUE)
   }
 
   # calculate and format summaries: trip times
@@ -533,7 +533,7 @@ make_goals_summary_table = function(interview_data) {
   # format the counts as percentages
   counts$Freq = counts$Freq/n_goal_interviews
   counts$Freq = smart_round(counts$Freq, digits = 2)
-  counts$Freq = percentize(counts$Freq, escape = TRUE)
+  counts$Freq = KuskoHarvUtils::percentize(counts$Freq, escape = TRUE)
 
   # format the table
   tab = reshape2::dcast(counts, Var1 ~ Var2, value.var = "Freq")

@@ -107,7 +107,7 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
   # extract primary effort estimation information from each effort estimate
   combo_total_ests = unlist(lapply(effort_scenarios, function(x) x$effort_est_total))
   combo_names = sapply(1:nrow(combos), function(i) paste(names(combos)[which(unlist(combos[i,]))], collapse = ", "))
-  combo_p_change = percentize((combo_total_ests - combo_total_ests[1])/combo_total_ests[1], escape = TRUE)
+  combo_p_change = KuskoHarvUtils::percentize((combo_total_ests - combo_total_ests[1])/combo_total_ests[1], escape = TRUE)
   combo_effort_per_interview = unlist(lapply(effort_scenarios, function(x) x$effort_per_interview))
   combo_effort_not_counted = unlist(lapply(effort_scenarios, function(x) x$effort_not_count))
 
@@ -120,9 +120,9 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
     combo_conditionals = lapply(effort_scenarios, function(x) {
       x = unname(x$p_T1_given_T2)
       if (length(x) < length(cond_names)) {
-        x = percentize(c(x, rep(NA, length(cond_names) - length(x))), escape = TRUE)
+        x = KuskoHarvUtils::percentize(c(x, rep(NA, length(cond_names) - length(x))), escape = TRUE)
       } else {
-        x = percentize(x, escape = TRUE)
+        x = KuskoHarvUtils::percentize(x, escape = TRUE)
       }
       x[x == "NA\\%"] = "--"
       x = as.data.frame(as.list(x))
@@ -209,34 +209,34 @@ make_harvest_sensitivity_table = function(harvest_scenarios, combos) {
   }))
 
   # calculate the % change in mean estimate
-  chinook_p_diff = percentize((mean_chinook_ests - mean_chinook_ests[1])/mean_chinook_ests[1], escape = TRUE)
-  chum_p_diff = percentize((mean_chum_ests - mean_chum_ests[1])/mean_chum_ests[1], escape = TRUE)
-  sockeye_p_diff = percentize((mean_sockeye_ests - mean_sockeye_ests[1])/mean_sockeye_ests[1], escape = TRUE)
-  total_p_diff = percentize((mean_total_ests - mean_total_ests[1])/mean_total_ests[1], escape = TRUE)
+  chinook_p_diff = KuskoHarvUtils::percentize((mean_chinook_ests - mean_chinook_ests[1])/mean_chinook_ests[1], escape = TRUE)
+  chum_p_diff = KuskoHarvUtils::percentize((mean_chum_ests - mean_chum_ests[1])/mean_chum_ests[1], escape = TRUE)
+  sockeye_p_diff = KuskoHarvUtils::percentize((mean_sockeye_ests - mean_sockeye_ests[1])/mean_sockeye_ests[1], escape = TRUE)
+  total_p_diff = KuskoHarvUtils::percentize((mean_total_ests - mean_total_ests[1])/mean_total_ests[1], escape = TRUE)
 
   # calculate the CV for each species group
   cv_chinook = unlist(lapply(harvest_scenarios, function(x) {
     mn = report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
     sd = sd(subset(x, gear == "total" & stratum == "total")$chinook, na.rm = TRUE)
-    percentize(sd/mn, escape = TRUE)
+    KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
   }))
 
   cv_chum = unlist(lapply(harvest_scenarios, function(x) {
     mn = report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
     sd = sd(subset(x, gear == "total" & stratum == "total")$chum, na.rm = TRUE)
-    percentize(sd/mn, escape = TRUE)
+    KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
   }))
 
   cv_sockeye = unlist(lapply(harvest_scenarios, function(x) {
     mn = report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
     sd = sd(subset(x, gear == "total" & stratum == "total")$sockeye, na.rm = TRUE)
-    percentize(sd/mn, escape = TRUE)
+    KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
   }))
 
   cv_total = unlist(lapply(harvest_scenarios, function(x) {
     mn = report(spp = "total", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
     sd = sd(subset(x, gear == "total" & stratum == "total")$total, na.rm = TRUE)
-    percentize(sd/mn, escape = TRUE)
+    KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
   }))
 
   # build the data frame to print

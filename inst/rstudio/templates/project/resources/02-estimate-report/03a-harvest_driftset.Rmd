@@ -32,7 +32,7 @@ if (set_harvest["total"] == 0) {
 } else {
   set_spp = KuskoHarvEst:::smart_round(set_harvest[c("chinook", "chum", "sockeye")]/set_harvest["total"], 2)
 }
-set_spp = KuskoHarvEst:::percentize(set_spp)
+set_spp = KuskoHarvUtils::percentize(set_spp)
 ```
 
 * An estimated total of **`r report()`** salmon were harvested.
