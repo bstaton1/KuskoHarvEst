@@ -19,7 +19,7 @@ if (!dir.exists(out_dir)) dir.create(out_dir)
 flight_df = readRDS(file.path(in_dir, "all_flight_data.rds"))
 
 # format dates/times
-flight_df$date = KuskoHarvEst:::basic_date(flight_df$start_time)
+flight_df$date = KuskoHarvUtils::basic_date(flight_df$start_time)
 flight_df$start_time = paste0(stringr::str_pad(lubridate::hour(flight_df$start_time), 2, "left", "0"),
                               ":", stringr::str_pad(lubridate::minute(flight_df$start_time), 2, "left", "0"))
 flight_df$end_time = paste0(stringr::str_pad(lubridate::hour(flight_df$end_time), 2, "left", "0"),
@@ -41,7 +41,7 @@ write.csv(flight_df, file.path(out_dir, "all-driftnet-counts.csv"), row.names = 
 flight_df = readRDS(file.path(in_dir, "all_flight_data.rds"))
 
 # format dates/times
-flight_df$date = KuskoHarvEst:::basic_date(flight_df$start_time)
+flight_df$date = KuskoHarvUtils::basic_date(flight_df$start_time)
 flight_df$start_time = paste0(stringr::str_pad(lubridate::hour(flight_df$start_time), 2, "left", "0"),
                               ":", stringr::str_pad(lubridate::minute(flight_df$start_time), 2, "left", "0"))
 flight_df$end_time = paste0(stringr::str_pad(lubridate::hour(flight_df$end_time), 2, "left", "0"),
@@ -66,7 +66,7 @@ effort_df = readRDS(file.path(in_dir, "all_drift_effort_estimates.rds"))
 effort_df = reshape2::dcast(effort_df, date ~ stratum, value.var = "estimate")
 
 # reformat the date variable
-effort_df$date = KuskoHarvEst:::basic_date(effort_df$date)
+effort_df$date = KuskoHarvUtils::basic_date(effort_df$date)
 
 # export the output file
 write.csv(effort_df, file.path(out_dir, "all-driftnet-effort-estimates.csv"), row.names = FALSE)
@@ -80,7 +80,7 @@ effort_df = readRDS(file.path(in_dir, "all_set_effort_estimates.rds"))
 effort_df = reshape2::dcast(effort_df, date ~ stratum, value.var = "estimate")
 
 # reformat the date variable
-effort_df$date = KuskoHarvEst:::basic_date(effort_df$date)
+effort_df$date = KuskoHarvUtils::basic_date(effort_df$date)
 
 # export the output file
 write.csv(effort_df, file.path(out_dir, "all-setnet-effort-estimates.csv"), row.names = FALSE)
@@ -133,7 +133,7 @@ out_character[out_character$estimate == "NaN (NA -- NA)","estimate"] = NA
 out_character[out_character$date %in% no_flight_openers,"estimate"] = NA
 
 # reformat the date
-out_character$date[out_character$date != "total"] = KuskoHarvEst:::basic_date(out_character$date[out_character$date != "total"])
+out_character$date[out_character$date != "total"] = KuskoHarvUtils::basic_date(out_character$date[out_character$date != "total"])
 out_character$date = factor(out_character$date, levels = c(unique(flight_df$date), "total"))
 
 # reformat the lwr -- upr separator

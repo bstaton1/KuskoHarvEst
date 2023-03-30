@@ -1,7 +1,7 @@
 ---
 title: "**General Instructions**"
 subtitle: "_KuskoHarvEst Documentation_"
-date: '`r paste0("Last Updated: ", KuskoHarvEst:::basic_date(lubridate::today()))`'
+date: '`r paste0("Last Updated: ", KuskoHarvUtils::basic_date(lubridate::today()))`'
 author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d[3])`"
 output: 
   html_document:

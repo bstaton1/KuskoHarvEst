@@ -4,7 +4,7 @@
 boot_out_save = boot_out
 
 # reformat the date column
-boot_out_save$date = KuskoHarvEst:::basic_date(unique(boot_out_save$date))
+boot_out_save$date = KuskoHarvUtils::basic_date(unique(boot_out_save$date))
 
 # create the file name for output file
 boot_out_filename = paste0("KuskoHarvEst_bootstrap_", KuskoHarvEst:::file_date(meta$start_date), ".csv")
