@@ -36,3 +36,5 @@ Imports:
     tinytex,
     latex2exp,
     yaml
+remotes:
+    bstaton1/KuskoHarvUtils
