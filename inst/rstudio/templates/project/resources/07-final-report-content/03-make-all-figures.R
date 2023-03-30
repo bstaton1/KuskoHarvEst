@@ -207,7 +207,7 @@ hist_function = function(plot_date) {
 
   gear = ifelse(as.character(plot_date) %in% set_only_openers, "set", "drift")
 
-  file_date = KuskoHarvEst:::file_date(plot_date)
+  file_date = KuskoHarvUtils::file_date(plot_date)
   file_name = file.path(out_dir, paste0("histograms_", gear, "_", file_date, ".png"))
 
   png(file_name, h = 8 * ppi, w = 5 * ppi, res = ppi)

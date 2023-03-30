@@ -140,9 +140,9 @@ out_character$date = factor(out_character$date, levels = c(unique(flight_df$date
 out_character$estimate = stringr::str_replace(out_character$estimate, " -- ", "-")
 
 # capitalize columns
-out_character$date = KuskoHarvEst:::capitalize(out_character$date)
-out_character$species = KuskoHarvEst:::capitalize(out_character$species)
-out_character$stratum = KuskoHarvEst:::capitalize(out_character$stratum)
+out_character$date = KuskoHarvUtils::capitalize(out_character$date)
+out_character$species = KuskoHarvUtils::capitalize(out_character$species)
+out_character$stratum = KuskoHarvUtils::capitalize(out_character$stratum)
 
 # subset out each gear and reshape
 total_table = reshape2::dcast(subset(out_character, gear == "total"), date + species ~ stratum, value.var = "estimate")

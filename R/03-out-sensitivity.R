@@ -150,7 +150,7 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
     kableExtra::kable_styling(full_width = FALSE, latex_options = c("scale_down", "HOLD_position")) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }
 
 #' Make a table to report results from harvest sensitivity analyses
@@ -176,19 +176,19 @@ make_harvest_sensitivity_table = function(harvest_scenarios, combos) {
 
   # create a nice column showing the estimate by species group
   pretty_chinook_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvEst:::tinyCI(report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x))
+    KuskoHarvUtils::tinyCI(report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x))
   }))
 
   pretty_chum_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvEst:::tinyCI(report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x))
+    KuskoHarvUtils::tinyCI(report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x))
   }))
 
   pretty_sockeye_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvEst:::tinyCI(report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x))
+    KuskoHarvUtils::tinyCI(report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x))
   }))
 
   pretty_total_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvEst:::tinyCI(report(spp = "total", gear = "total", stratum = "total", boot_out_use = x))
+    KuskoHarvUtils::tinyCI(report(spp = "total", gear = "total", stratum = "total", boot_out_use = x))
   }))
 
   # extract just the means: for calculating %change
@@ -258,5 +258,5 @@ make_harvest_sensitivity_table = function(harvest_scenarios, combos) {
     kableExtra::row_spec(0, bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }

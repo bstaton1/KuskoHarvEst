@@ -28,8 +28,8 @@ build_yaml = function(doc_type, draft) {
     title = ifelse(doc_type == "estimate_report", "Kuskokwim River In-season Harvest and Effort Estimates", "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"),
     "opener-label" = paste0(KuskoHarvUtils::basic_date(meta$start_date), " Subsistence Harvest Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
     rfooter = paste0(KuskoHarvUtils::basic_date(meta$start_date), " Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
-    "opener-start" = short_datetime(meta$start_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
-    "opener-end" = short_datetime(meta$end_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-start" = KuskoHarvUtils::short_datetime(meta$start_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-end" = KuskoHarvUtils::short_datetime(meta$end_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
     "opener-duration" = paste0(round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1), " Hours"),
     "ds-bound" = meta$ds_bound,
     "us-bound" = meta$us_bound,
@@ -216,7 +216,7 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   Rmd_contents = stringr::str_replace_all(Rmd_contents, "NONSALMON_APPENDIX_REPLACE", nonsalmon_letter)
 
   # build the file name
-  Rmd_file = paste0("KuskoHarvEst_", file_date(meta$start_date), ".Rmd")
+  Rmd_file = paste0("KuskoHarvEst_", KuskoHarvUtils::file_date(meta$start_date), ".Rmd")
 
   # write the Rmd source file that is ready to be knitted
   writeLines(Rmd_contents, Rmd_file)
@@ -301,7 +301,7 @@ build_sensitivity_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot
   Rmd_contents = stringr::str_replace(Rmd_contents, "SPLIT_CHUM_SOCKEYE_REPLACE", "FALSE")
 
   # build the file name
-  Rmd_file = paste0("sensitivity_", file_date(meta$start_date), ".Rmd")
+  Rmd_file = paste0("sensitivity_", KuskoHarvUtils::file_date(meta$start_date), ".Rmd")
 
   # write the Rmd source file that is ready to be knitted
   writeLines(Rmd_contents, Rmd_file)

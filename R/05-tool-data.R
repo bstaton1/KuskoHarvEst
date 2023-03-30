@@ -163,7 +163,7 @@ data_tool = function() {
                           pooling_threshold = input$pooling_threshold
       )
 
-      saveRDS(vals$options, file.path(output_data_dir, paste0(file_date(meta$start_date), "_options.rds")))
+      saveRDS(vals$options, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_options.rds")))
       vals$loadable = TRUE
     })
 
@@ -183,7 +183,7 @@ data_tool = function() {
 
     # save the formatted interview data when told
     shiny::observeEvent(input$save_interview_data, {
-      saveRDS(vals$interview_data, file.path(output_data_dir, paste0(file_date(meta$start_date), "_interview_data.rds")))
+      saveRDS(vals$interview_data, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_interview_data.rds")))
     })
 
     # create the label for the gear/stratum summary table
@@ -199,7 +199,7 @@ data_tool = function() {
     output$stratum_gear_summary_table = shiny::renderTable({
       if (!is.null(vals$interview_data)) {
         counts = table(vals$interview_data$stratum, vals$interview_data$gear)
-        colnames(counts) = capitalize(colnames(counts))
+        colnames(counts) = KuskoHarvUtils::capitalize(colnames(counts))
         x = strata_names[strata_names$stratum %in% rownames(counts),]
         rownames(counts) = paste0(x$stratum_start, " - ", x$stratum_end, " (", rownames(counts), ")")
         counts = rbind(counts, Total = colSums(counts))
@@ -265,8 +265,8 @@ data_tool = function() {
 
         df_print = df_print[,-which(stringr::str_detect(colnames(df_print), "suit"))]
         df_print = df_print[,-which(stringr::str_detect(colnames(df_print), "goal"))]
-        df_print$trip_start = short_datetime(df_print$trip_start, include_date = FALSE)
-        df_print$trip_end = short_datetime(df_print$trip_end, include_date = FALSE)
+        df_print$trip_start = KuskoHarvUtils::short_datetime(df_print$trip_start, include_date = FALSE)
+        df_print$trip_end = KuskoHarvUtils::short_datetime(df_print$trip_end, include_date = FALSE)
         df_print$trip_duration = as.character(df_print$trip_duration)
         df_print$soak_duration = as.character(df_print$soak_duration)
 
@@ -289,7 +289,7 @@ data_tool = function() {
 
     # save the flight data when instructed
     shiny::observeEvent(input$save_flight_data, {
-      saveRDS(vals$flight_data, file.path(output_data_dir, paste0(file_date(meta$start_date), "_flight_data.rds")))
+      saveRDS(vals$flight_data, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_flight_data.rds")))
     })
 
     # create the text that describes the flight data summary
@@ -306,8 +306,8 @@ data_tool = function() {
     output$flight_summary_table = shiny::renderTable({
       if (!is.null(vals$flight_data)) {
         print_flights = vals$flight_data
-        print_flights$start_time = short_datetime(print_flights$start_time)
-        print_flights$end_time = short_datetime(print_flights$end_time)
+        print_flights$start_time = KuskoHarvUtils::short_datetime(print_flights$start_time)
+        print_flights$end_time = KuskoHarvUtils::short_datetime(print_flights$end_time)
         print_flights[,-1]
       } else {
         NULL

@@ -16,7 +16,7 @@ make_interview_data_table = function(interview_data) {
   tab = rbind(tab, Total = sum(tab))
 
   # append the percent of all interviews by source
-  p = smart_round(tab[,1]/tab["Total",1], digits = 2)
+  p = KuskoHarvUtils::smart_round(tab[,1]/tab["Total",1], digits = 2)
   tab = cbind(tab, Percent = KuskoHarvUtils::percentize(p))
 
   # formatting
@@ -30,7 +30,7 @@ make_interview_data_table = function(interview_data) {
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
     kableExtra::row_spec(nrow(tab), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }
 
 #' Create a table to report the flights and the counts that were made on each
@@ -46,8 +46,8 @@ make_flight_data_table = function(flight_data) {
   multi_day = ifelse(length(unique(lubridate::date(flight_data$start_time))) > 1 | length(unique(lubridate::date(flight_data$end_time))) > 1, T, F)
 
   # format the start and end times of each flight
-  start_time = short_datetime(flight_data$start_time, include_date = multi_day)
-  end_time = short_datetime(flight_data$end_time, include_date = multi_day)
+  start_time = KuskoHarvUtils::short_datetime(flight_data$start_time, include_date = multi_day)
+  end_time = KuskoHarvUtils::short_datetime(flight_data$end_time, include_date = multi_day)
 
   # calculate the number of hours each flight took
   duration = lubridate::interval(flight_data$start_time, flight_data$end_time)
@@ -66,7 +66,7 @@ make_flight_data_table = function(flight_data) {
     kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c("Time Information" = 3, "Nets Counted" = 2), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }
 
 #' Create a table to summarize information spatially
@@ -92,14 +92,14 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
 
   # calculate/format harvest by stratum
   if (!nonsalmon) {
-    chinook = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
-    chum = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
-    sockeye = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
-    total = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
+    chinook = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
+    chum = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
+    sockeye = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
+    total = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
   } else {
-    sheefish = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "sheefish", stratum = stratum, gear = gear)))
-    whitefish = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "whitefish", stratum = stratum, gear = gear)))
-    total = sapply(strata_names$stratum, function(stratum) tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
+    sheefish = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "sheefish", stratum = stratum, gear = gear)))
+    whitefish = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "whitefish", stratum = stratum, gear = gear)))
+    total = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
   }
 
   # build the strata-specific information for the table
@@ -139,7 +139,7 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
     kableExtra::column_spec(ncol(tab), bold = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }
 
 #' Create a table to summarize catch rates and species composition relative to Johnson River
@@ -204,7 +204,7 @@ make_johnson_summary_table = function() {
     kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c(" " = 1, "Proximity to Johnson R. Mouth" = 2), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }
 
 #' Create a table to go in the report appendix
@@ -451,17 +451,17 @@ make_appendix_table = function(interview_data, gear, variable) {
 
   # calculate and format summaries: trip times
   if (is.na(digits) & variable != "p_chinook"){
-    Min = short_datetime(aggregate(x ~ x_data$stratum, FUN = min, na.rm = T)$x); names(Min) = unique(x_data$stratum)
-    q25 = short_datetime(aggregate(x ~ x_data$stratum, FUN = quantile, prob = 0.25, na.rm = T)$x); names(q25) = unique(x_data$stratum)
-    Mean = short_datetime(aggregate(x ~ x_data$stratum, FUN = mean, na.rm = T)$x); names(Mean) = unique(x_data$stratum)
-    q75 = short_datetime(aggregate(x ~ x_data$stratum, FUN = quantile, prob = 0.75, na.rm = T)$x); names(q75) = unique(x_data$stratum)
-    Max = short_datetime(aggregate(x ~ x_data$stratum, FUN = max, na.rm = T)$x); names(Max) = unique(x_data$stratum)
+    Min = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = min, na.rm = T)$x); names(Min) = unique(x_data$stratum)
+    q25 = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = quantile, prob = 0.25, na.rm = T)$x); names(q25) = unique(x_data$stratum)
+    Mean = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = mean, na.rm = T)$x); names(Mean) = unique(x_data$stratum)
+    q75 = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = quantile, prob = 0.75, na.rm = T)$x); names(q75) = unique(x_data$stratum)
+    Max = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = max, na.rm = T)$x); names(Max) = unique(x_data$stratum)
 
-    all_min = short_datetime(min(x, na.rm = TRUE))
-    all_q25 = short_datetime(quantile(x, 0.25, na.rm = TRUE))
-    all_mean = short_datetime(mean(x, na.rm = TRUE))
-    all_q75 = short_datetime(quantile(x, 0.75, na.rm = TRUE))
-    all_max = short_datetime(max(x, na.rm = TRUE))
+    all_min = KuskoHarvUtils::short_datetime(min(x, na.rm = TRUE))
+    all_q25 = KuskoHarvUtils::short_datetime(quantile(x, 0.25, na.rm = TRUE))
+    all_mean = KuskoHarvUtils::short_datetime(mean(x, na.rm = TRUE))
+    all_q75 = KuskoHarvUtils::short_datetime(quantile(x, 0.75, na.rm = TRUE))
+    all_max = KuskoHarvUtils::short_datetime(max(x, na.rm = TRUE))
   }
 
   # build the table
@@ -483,7 +483,7 @@ make_appendix_table = function(interview_data, gear, variable) {
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }
 
 #' Create a table displaying reported harvest goal attainment
@@ -532,13 +532,13 @@ make_goals_summary_table = function(interview_data) {
 
   # format the counts as percentages
   counts$Freq = counts$Freq/n_goal_interviews
-  counts$Freq = smart_round(counts$Freq, digits = 2)
+  counts$Freq = KuskoHarvUtils::smart_round(counts$Freq, digits = 2)
   counts$Freq = KuskoHarvUtils::percentize(counts$Freq, escape = TRUE)
 
   # format the table
   tab = reshape2::dcast(counts, Var1 ~ Var2, value.var = "Freq")
   colnames(tab)[1] = "Species"
-  tab$Species = KuskoHarvEst:::capitalize(as.character(tab$Species))
+  tab$Species = KuskoHarvUtils::capitalize(as.character(tab$Species))
 
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lcccc", escape = FALSE,
@@ -547,5 +547,5 @@ make_goals_summary_table = function(interview_data) {
     kableExtra::add_header_above(c(" " = 1, "Category of Harvest Goals Attained" = 4), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    add_vspace
+    KuskoHarvUtils::add_vspace
 }
