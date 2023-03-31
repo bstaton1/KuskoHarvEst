@@ -104,7 +104,7 @@ meta_tool = function() {
       )
 
       # export this list to an rds file to be used later
-      saveRDS(meta, file.path(output_data_dir, paste0(file_date(meta$start_date), "_meta.rds")))
+      saveRDS(meta, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_meta.rds")))
 
       # close the app
       shiny::stopApp()

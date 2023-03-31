@@ -83,12 +83,12 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
 
   # build the trip start and end datetime objects
   if (has_starttime) {
-    dat_out$trip_start = combine_datetime(dat_in[,startdate_use], dat_in$trip_start)
+    dat_out$trip_start = KuskoHarvUtils::combine_datetime(dat_in[,startdate_use], dat_in$trip_start)
   } else {
     dat_out$trip_start = NA
   }
   if (has_endtime) {
-    dat_out$trip_end = combine_datetime(dat_in[,enddate_use], dat_in$trip_end)
+    dat_out$trip_end = KuskoHarvUtils::combine_datetime(dat_in[,enddate_use], dat_in$trip_end)
   } else {
     dat_out$trip_end = NA
   }

@@ -25,7 +25,7 @@ ests = readRDS(file.path(in_dir, "all_drift_effort_estimates.rds"))
 ests = reshape2::dcast(ests, date ~ stratum, value.var = "estimate")
 
 # reformat the date variable
-ests$date = KuskoHarvEst:::basic_date(ests$date)
+ests$date = KuskoHarvUtils::basic_date(ests$date)
 dates = ests$date
 dates = substr(dates, 1, nchar(dates) - 5)
 
@@ -83,7 +83,7 @@ ests = readRDS(file.path(in_dir, "all_set_effort_estimates.rds"))
 ests = reshape2::dcast(ests, date ~ stratum, value.var = "estimate")
 
 # reformat the date variable
-ests$date = KuskoHarvEst:::basic_date(ests$date)
+ests$date = KuskoHarvUtils::basic_date(ests$date)
 dates = ests$date
 dates = substr(dates, 1, nchar(dates) - 5)
 
@@ -144,7 +144,7 @@ ests = cbind(by_source, total)
 ests = as.data.frame(ests)
 
 # extract/format date
-dates = KuskoHarvEst:::basic_date(rownames(ests))
+dates = KuskoHarvUtils::basic_date(rownames(ests))
 dates = substr(dates, 1, nchar(dates) - 5)
 rownames(ests) = NULL
 
@@ -207,7 +207,7 @@ hist_function = function(plot_date) {
 
   gear = ifelse(as.character(plot_date) %in% set_only_openers, "set", "drift")
 
-  file_date = KuskoHarvEst:::file_date(plot_date)
+  file_date = KuskoHarvUtils::file_date(plot_date)
   file_name = file.path(out_dir, paste0("histograms_", gear, "_", file_date, ".png"))
 
   png(file_name, h = 8 * ppi, w = 5 * ppi, res = ppi)
@@ -227,7 +227,7 @@ ests = read.csv(file.path(in_dir, "all-harvest-summaries.csv"))
 ests = subset(ests, stratum == "total" & gear == "total" & date != "total" & species != "total")
 
 # format the dates
-dates = unique(KuskoHarvEst:::basic_date(ests$date))
+dates = unique(KuskoHarvUtils::basic_date(ests$date))
 dates = substr(dates, 1, nchar(dates) - 5)
 
 # extract the mean, lwr, and upr estimates by species and stratum, formatted for barplotting

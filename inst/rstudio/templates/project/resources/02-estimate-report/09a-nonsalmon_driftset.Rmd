@@ -34,9 +34,9 @@ set_harvest = sapply(c("sheefish", "whitefish", "total"), function(sp) report(sp
 if (set_harvest["total"] == 0) {
   set_spp = c(sheefish = 0, whitefish = 0)
 } else {
-  set_spp = KuskoHarvEst:::smart_round(set_harvest[c("sheefish", "whitefish")]/set_harvest["total"], 2)
+  set_spp = KuskoHarvUtils::smart_round(set_harvest[c("sheefish", "whitefish")]/set_harvest["total"], 2)
 }
-set_spp = KuskoHarvEst:::percentize(set_spp)
+set_spp = KuskoHarvUtils::percentize(set_spp)
 ```
 
 * An estimated total of **`r report()`** non-salmon (sheefish and whitefishes) were harvested.

@@ -87,7 +87,7 @@ make_effort_plot = function(flight_data, effort_info, trips_only = FALSE) {
     } else {
       marginal_subscrpts = 1:n_flights
     }
-    marginal_TeX = paste0("$Pr(F_{", marginal_subscrpts, "}):\\,", percentize(marginal_p))
+    marginal_TeX = paste0("$Pr(F_{", marginal_subscrpts, "}):\\,", KuskoHarvUtils::percentize(marginal_p))
 
     # create nice TeX #3: conditional probabilities
     if (n_flights > 1) {
@@ -95,7 +95,7 @@ make_effort_plot = function(flight_data, effort_info, trips_only = FALSE) {
       conditional_labels = sapply(stringr::str_extract_all(names(conditional_p), "[:digit:]"), function(x) {
         paste0("$Pr(F_{", x[1], "}", "\\,|\\,F_{", x[2], "}):\\,")
       })
-      conditional_TeX = paste0(conditional_labels, percentize(conditional_p), "$")
+      conditional_TeX = paste0(conditional_labels, KuskoHarvUtils::percentize(conditional_p), "$")
     }
 
     # draw on the information using the legend() function

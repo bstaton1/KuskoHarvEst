@@ -53,7 +53,7 @@ for (i in 1:length(dirs)) {
   flight_raw = read.csv(flight_file)
   if (dates[i] %in% no_flight_openers) {
     flight_data = KuskoHarvEst::prepare_flights(flight_file)
-    flight_data$start_time = flight_data$end_time = KuskoHarvEst:::combine_datetime(flight_raw$date[1], "0:00")
+    flight_data$start_time = flight_data$end_time = KuskoHarvUtils::combine_datetime(flight_raw$date[1], "0:00")
   } else {
     flight_data = KuskoHarvEst::prepare_flights(flight_file)
   }
