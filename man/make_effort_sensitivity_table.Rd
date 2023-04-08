@@ -11,7 +11,7 @@ make_effort_sensitivity_table(effort_scenarios, flight_data, combos)
 repeatedly, once per combination of flights or interview data sources. Each list element is the output from a different
 data scenario.}
 
-\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
+\item{flight_data}{A \code{\link[base:data.frame]{data.frame}} storing the times and counts on each flight, constructed via \code{\link[=prepare_flights]{prepare_flights()}}}
 
 \item{combos}{The output of \code{\link[=make_flight_combos]{make_flight_combos()}} or \code{\link[=make_interview_combos]{make_interview_combos()}}}
 }
