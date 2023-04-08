@@ -19,7 +19,7 @@ stratify_effort = function(flight_data, gear, effort_est) {
   ave_p_stratum = unname(colMeans(p_stratum))
 
   # STEP 4: multiply this by the total effort estimate
-  stratified_effort_est = ceiling(effort_est * ave_p_stratum)
+  stratified_effort_est = KuskoHarvUtils::smart_round(effort_est * ave_p_stratum)
 
   # STEP 5: give the elements nice names for the stratum
   stratum_names = colnames(flight_counts)

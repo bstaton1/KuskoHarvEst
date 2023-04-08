@@ -2,20 +2,14 @@
 % Please edit documentation in R/02-est-effort.R
 \name{estimate_effort}
 \alias{estimate_effort}
-\title{Estimate effort}
+\title{Estimate Effort}
 \usage{
 estimate_effort(interview_data, flight_data, gear, method = "dbl_exp")
 }
 \arguments{
-\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+\item{interview_data}{A \code{\link[base:data.frame]{data.frame}} storing the data from each interview, constructed via \code{\link[=prepare_interviews]{prepare_interviews()}}}
 
-\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
-
-\item{gear}{Character; which gear type to use? Only two options are accepted:
-\itemize{
-\item \code{gear = "drift"} for drift nets
-\item \code{gear = "set"} for set nets
-}}
+\item{flight_data}{A \code{\link[base:data.frame]{data.frame}} storing the times and counts on each flight, constructed via \code{\link[=prepare_flights]{prepare_flights()}}}
 
 \item{method}{Character; which effort estimator should be applied? Only two options are accepted:
 \itemize{
@@ -26,4 +20,8 @@ estimate_effort(interview_data, flight_data, gear, method = "dbl_exp")
 \description{
 Estimates total effort (completed trips) that occurred in a day of fishing
 for a given gear type
+}
+\details{
+If \code{method = "dbl_exp"}, this function calls two other critical functions on the data: \code{\link[=tally_effort_data]{tally_effort_data()}} and \code{\link[=N_estimator]{N_estimator()}}.
+Please see these functions for more information.
 }

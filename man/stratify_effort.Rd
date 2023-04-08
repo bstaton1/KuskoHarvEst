@@ -7,13 +7,7 @@
 stratify_effort(flight_data, gear, effort_est)
 }
 \arguments{
-\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
-
-\item{gear}{Character; which gear type to use? Only two options are accepted:
-\itemize{
-\item \code{gear = "drift"} for drift nets
-\item \code{gear = "set"} for set nets
-}}
+\item{flight_data}{A \code{\link[base:data.frame]{data.frame}} storing the times and counts on each flight, constructed via \code{\link[=prepare_flights]{prepare_flights()}}}
 
 \item{effort_est}{Numeric; the total effort estimate}
 }
