@@ -1,4 +1,47 @@
 #' Estimate effort
+#' ID Trips that Overlapped Aerial Survey(s)
+#'
+#' Determines whether each trip was active (based on reported trip times)
+#' at the time of each flight, and therefore assumed to have been counted via aerial survey
+#'
+#' @param trip_times A [`data.frame`][base::data.frame] storing the start and end times of individual trips (one row per interviewed trip).
+#'   Must have columns `trip_start` and `trip_end`.
+#' @param flight_times A [`data.frame`][base::data.frame] storing the start and end times of each flight (one row per flight).
+#'   Must have columns `start_time` and `end_time`
+#' @note All records must be supplied in the `datetime` format, ready to be processed by, e.g.,
+#'   [lubridate::duration()], [lubridate::interval()], and [lubridate::int_overlaps()]
+#' @details 5 seconds are added to the start time and subtracted from the end time before any calculation.
+#'   This prevents mistakenly identifying trips that technically overlap (i.e., start/end immediately as the flight was taking off/landing), but almost certainly weren't counted.
+#' @return A [`data.frame`][base::data.frame] with columns labeled `"X1"`, `"X2"`, etc., where the number represents the flight number of the day.
+#'   Columns store logical (i.e., `TRUE` or `FALSE`) values that indicate whether each trip (individual rows) was active during each flight.
+
+was_counted = function(trip_times, flight_times) {
+
+  # number of flights
+  n_flights = nrow(flight_times)
+
+  # convert the flight times to intervals
+  fint = lubridate::interval(
+    flight_times$start_time + lubridate::duration(5, "seconds"),
+    flight_times$end_time - lubridate::duration(5, "seconds")
+  )
+
+  # convert the interview times to intervals
+  iint = lubridate::interval(trip_times$trip_start, trip_times$trip_end)
+
+  # for each flight, determine if each interview recorded a trip that overlapped it
+  was_counted = sapply(1:nrow(flight_times), function(f) lubridate::int_overlaps(iint, fint[f]))
+
+  # assign names to the flights
+  colnames(was_counted) = paste0("X", 1:nrow(flight_times))
+
+  # convert to data.frame -- this was the required input format, should be output as well
+  was_counted = as.data.frame(was_counted)
+
+  # return the output
+  return(was_counted)
+}
+
 #'
 #' Estimates total effort (completed trips) that occurred in a day of fishing
 #'   for a given gear type
