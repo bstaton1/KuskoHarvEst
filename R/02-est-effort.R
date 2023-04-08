@@ -1,4 +1,3 @@
-#' Estimate effort
 #' ID Trips that Overlapped Aerial Survey(s)
 #'
 #' Determines whether each trip was active (based on reported trip times)
@@ -189,133 +188,107 @@ N_estimator = function(effort_data) {
   return(out)
 }
 
+#' Estimate Effort
 #'
 #' Estimates total effort (completed trips) that occurred in a day of fishing
 #'   for a given gear type
 #'
-#' @inheritParams estimate_harvest
-#' @param flight_data Data frame storing flight data; created using [prepare_flights()]
+#' @inheritParams tally_effort_data
 #' @param method Character; which effort estimator should be applied? Only two options are accepted:
 #'   * `method = "dbl_exp"` to perform corrections for trips counted on consecutive flights and trips not counted at all - generally used for drift nets
 #'   * `method = "max_per_stratum"` to perform a simple calculation of the maximum number of trips counted in a given stratum - generally used for set nets. If this method is used, a further constraint is added to force the total effort estimate to be at least as large as the total number of interviews for that gear type.
-#'
+#' @details If `method = "dbl_exp"`, this function calls two other critical functions on the data: [tally_effort_data()] and [N_estimator()].
+#'   Please see these functions for more information.
 #' @export
 
+# FIXME: needs @return documentation
 estimate_effort = function(interview_data, flight_data, gear, method = "dbl_exp") {
 
+  # if using method that corrects for double counts and expands for uncounted trips
   if (method == "dbl_exp") {
-    # STEP 1: how many flights were performed, and give them names
+
+    # simplify data objects to be passed to analysis
+    trips = subset(interview_data, gear == gear & suit_effort)[,c("trip_start", "trip_end")]
+    time_cols = colnames(flight_data)[stringr::str_detect(colnames(flight_data), "_time")]
+    count_cols = colnames(flight_data)[stringr::str_which(colnames(flight_data), gear)]
+    flight_data = flight_data[,c(time_cols, count_cols)]
     n_flights = nrow(flight_data)
-    flight_names = paste0("f", 1:n_flights)
 
-    # STEP 2: count up total effort counted during each flight
-    flight_counts = rowSums(flight_data[,stringr::str_detect(colnames(flight_data), gear)])
-    names(flight_counts) = flight_names
+    # tally effort data and estimate effort
+    tallies = tally_effort_data(interview_data, flight_data)
+    est_out = N_estimator(tallies)
 
-    # STEP 3: discard interview records that do not have both start and end times
-    # the suppress messages is to prevent a message saying that lubridate was loaded.
-    # really not sure why this line triggers lubridate to be loaded
-    # but this message may confuse users and it is not helpful, so we suppress it
-    suppressMessages({
-      trips = interview_data[interview_data$suit_effort, ]
-    })
+    # nearly all of the rest of this is to return output in the legacy format
+    # so the rest of the package need not change at this time
+    # "legacy" = prior to formal derivation w/symbols, etc. Staton & Coggins (2016) & Staton (2018) didn't have the best explanations
+    # FIXME: this could be cleaned up to:
+    #   * use X/Y/pi/psi, naming throughout
+    #   * downstream uses of the output of this function would need updates
+    trips = cbind(trips, was_counted(trips, flight_data[,c("start_time", "end_time")]))
+    flight_names = colnames(trips)[stringr::str_which(colnames(trips), "^X")]
 
-    # STEP 4: discard opposite gear and keep only trip times
-    trips = trips[trips$gear == gear,c("trip_start", "trip_end")]
-
-    # STEP 5: convert start/end times to intervals
-    # the 5 seconds part is to prevent an interview from being counted
-    # solely because the start/end dates are the same
-    # this 5 second part forces the overlap to be more substantial than just having the same endpoints time
-    fint = lubridate::interval(flight_data$start_time + lubridate::duration(5, "seconds"),
-                               flight_data$end_time - lubridate::duration(5, "seconds"))
-    iint = lubridate::interval(trips$trip_start, trips$trip_end)
-
-    # STEP 6: which trips were available to be counted on each flight
-    trips_available = sapply(1:n_flights, function(f) lubridate::int_overlaps(iint, fint[f]))
-    colnames(trips_available) = flight_names
-    trips = cbind(trips, trips_available)
-
-    # STEP 7: calculate critical summary statistics
-    # account for effort that was likely double counted
+    # handle output if more than one flight
     if (n_flights > 1) {
+      trips$yes_counted = apply(trips[,flight_names], 1, any)
+      trips$not_counted = !trips$yes_counted
 
-      # add indicators for whether each trip was counted on any flight, or on no flights
-      trips = cbind(
-        trips,
-        yes_counted = apply(trips[,flight_names], 1, function(x) any(x)),
-        not_counted = apply(trips[,flight_names], 1, function(x) !any(x))
-      )
+      # names of joint combos
+      joint_names = names(tallies$XnY)[stringr::str_count(names(tallies$XnY), "\\&") == 2]
+      joint_names = stringr::str_remove(joint_names, "\\&Y$")
 
-      # create pairs of consecutive flights: only these need correcting
-      m = cbind(flight_names[(1:n_flights)[-n_flights]], flight_names[2:n_flights])
-      combos = apply(m, 1, function(x) paste(x, collapse = "&"))
-
-      # count how many interviews were available to be counted on each set of consecutive flights
-      joint_counts = sapply(combos, function(combo) {
-        joint_flight_names = unlist(stringr::str_split(combo, "&"))
-        apply(trips[,joint_flight_names], 1, function(counted) counted[1] & counted[2])
+      # get interview-level joint outcomes
+      joints = sapply(joint_names, function(x) {
+        f1 = stringr::str_extract(x, "^X[:digit:]")
+        f2 = stringr::str_extract(x, "X[:digit:]$")
+        out = matrix(trips[,f1] & trips[,f2], ncol = 1)
+        colnames(out) = x
+        out
       })
-      colnames(joint_counts) = combos
+      trips = cbind(trips, joints)
 
-      # add this to the rest of the trip info
-      trips = cbind(trips, joint_counts)
+      # get conditional probability (f1|f2) for all joint combos
+      p_T1_given_T2 = sapply(joint_names, function(x) {
+        f2 = stringr::str_extract(x, "X[:digit:]$")
+        sum(trips[,x])/sum(trips[,f2])
+      })
 
-      # add up the number of outcomes in each type
-      trip_counts = colSums(trips[,-c(1,2)])
+      # get the number of trips counted for the first time on each flight
+      unique_counts = c(tallies$X[1], round(tallies$X[2:n_flights] * (1 - p_T1_given_T2)))
 
-      # calculate the proportion of interviews available to be counted on flight T2
-      # that were also counted on flight T1
-      p_T1_given_T2 = trip_counts[combos]/trip_counts[flight_names[2:n_flights]]
-
-      # calculate the number of unique trips counted: removes trips that were double counted
-      new_trips = round(flight_counts[flight_names[2:n_flights]] * (1 - p_T1_given_T2))
-
-      # unique trips counted on each flight
-      unique_counts = c(flight_counts[1], new_trips)
+      # update flight count names to be f, not X
+      names(p_T1_given_T2) = stringr::str_replace_all(names(p_T1_given_T2), "X", "f")
     } else {
-      # if only one flight was conducted, skip most of this mess
-      trips = cbind(trips, yes_counted = trips$f1, not_counted = !trips$f1)
-      trip_counts = colSums(trips[,-c(1,2)])
+      trips$yes_counted = trips$X1
+      trips$not_counted = !trips$yes_counted
       p_T1_given_T2 = NULL
-      unique_counts = flight_counts
+      unique_counts = tallies$X["X1"]
     }
 
-    # STEP 8: apply expansion for trips occurring outside of flight times
-    # total trips counted in flights
+    # summarize/format output
+    effort_est_total = round(unname(est_out["N_hat"]))
     effort_count = sum(unique_counts)
+    effort_not_count = effort_est_total - effort_count
+    effort_per_interview = unname(1/est_out["psi_hat"])
 
-    # trips per interview
-    effort_per_interview = unname(effort_count/trip_counts["yes_counted"])
-
-    # effort unaccounted for by flights
-    effort_not_count = round(unname(effort_per_interview * trip_counts["not_counted"]))
-
-    # total effort estimate
-    effort_est_total = effort_count + effort_not_count
-
-    # STEP 9: stratify the total effort estiamte
-    effort_est_stratum = stratify_effort(flight_data, gear, effort_est_total)
-
-    # rewrite the total effort to make sure it is equal to the sum of the stratum-specific version
-    # (sometimes they are off by 1 unit, due to rounding)
-    effort_est_total = sum(effort_est_stratum)
+    # update flight count names to be f, not X
+    colnames(trips) = stringr::str_replace_all(colnames(trips), "X", "f")
 
     # build a list with the output
     output = list(
       method = method,
       gear = gear,
       trips = trips,
-      trip_counts = trip_counts,
+      trip_counts = colSums(trips[,-which(colnames(trips) %in% c("trip_start", "trip_end"))]),
       p_T1_given_T2 = p_T1_given_T2,
       effort_count = effort_count,
       effort_not_count = effort_not_count,
       effort_per_interview = effort_per_interview,
       effort_est_total = effort_est_total,
-      effort_est_stratum = effort_est_stratum
+      effort_est_stratum = stratify_effort(flight_data, gear, effort_est_total)
     )
   }
 
+  # if using method that selects the max count found in each stratum
   if (method == "max_per_stratum") {
     # STEP 1: count up total effort counted during each flight
     flight_counts = flight_data[,stringr::str_detect(colnames(flight_data), gear)]
