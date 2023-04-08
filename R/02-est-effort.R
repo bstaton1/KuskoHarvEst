@@ -42,6 +42,82 @@ was_counted = function(trip_times, flight_times) {
   return(was_counted)
 }
 
+#' Count Types of Interview/Flight Outcomes
+#'
+#' Tallies how many trips were counted on each flight and consecutive flights.
+#' @param interview_data A [`data.frame`][base::data.frame] storing the data from each interview, constructed via [prepare_interviews()]
+#' @param flight_data A [`data.frame`][base::data.frame] storing the times and counts on each flight, constructed via [prepare_flights()]
+#' @note Any interviews that (a) are `FALSE` for `suit_effort` or that (b) do not have `gear == "drift"` will be discarded prior to tallies.
+#' @return A [`list`][base::list] storing the tallies as elements:
+#'   * `$Y`: the number of trips interviewed
+#'   * `$X`: the number of trips counted on each flight (e.g., element `"X1"` stores the first flight total)
+#'   * `$XnY`: the number of interviewed trips active at various times. This includes elements storing totals for:
+#'       * Individual flights (e.g., element `"X1&Y"` is the number of trips that were interviewed and active during flight 1)
+#'       * Consecutive flights (e.g., element `"X1&X2&Y"`) is the number of trips that were interviewed and active during both flights 1 and 2)
+#'       * Not any flights (element `"!Xany&Y"`)
+#'       * All flights (element `"Xall&Y"`)
+
+tally_effort_data = function(interview_data, flight_data) {
+
+  # how many flights
+  n_flights = nrow(flight_data)
+
+  # subset only suitable interview records
+  interview_data = interview_data[interview_data$suit_effort,]
+
+  # subset only records using drift gear. another method used for set nets
+  interview_data = interview_data[interview_data$gear == "drift",]
+
+  # sum the number of trips counted on each flight (i.e., across strata)
+  X = rowSums(flight_data[order(flight_data$start_time),stringr::str_which(colnames(flight_data), "_drift")])
+  names(X) = paste0("X", 1:nrow(flight_data))
+
+  # assess whether each interviewed trip was active during the time of each flight
+  # assume that if so, it was counted by the flight
+  x = was_counted(
+    trip_times = interview_data[,c("trip_start", "trip_end")],
+    flight_times = flight_data[,c("start_time", "end_time")]
+  )
+
+  # if more than one flight, tally those counted on consecutive flights
+  if (n_flights > 1) {
+    consec_names = cbind(colnames(x)[1:(n_flights-1)], colnames(x)[2:n_flights])
+    if (n_flights == 2) {
+      consec = matrix(x$X1 & x$X2, ncol = 1)
+      consec_names = "X1&X2"
+    } else {
+      consec = apply(consec_names, 2, function(f) x[,f[1]] & x[,f[2]])
+      consec_names = apply(consec_names, 2, paste, collapse = "&")
+    }
+    colnames(consec) = consec_names
+    x = cbind(x, consec)
+
+    # add an indicator for interviews not counted on any flight
+    not_any = apply(x[,colnames(x) %in% names(X)], 1, function(i) !any(i))
+    x = cbind(x, "!Xany" = not_any)
+
+    # add an indicator for interviews counted on all flights
+    all = apply(x[, colnames(x) %in% names(X)], 1, function(i) all(i))
+    x = cbind(x, "Xall" = all)
+  }
+
+  # count the total number of interviews
+  Y = nrow(x)
+
+  # count the number of interviews that were counted by each flight
+  # or by two consecutive flights
+  # the "n" represents "intersection" -- these are joint counts of counted trips (X) and interviewed trips (Y)
+  XnY = colSums(x)
+  names(XnY) = paste0(names(XnY), "&Y")
+
+  # build the output
+  list(
+    Y = Y,
+    X = X,
+    XnY = XnY
+  )
+}
+
 #'
 #' Estimates total effort (completed trips) that occurred in a day of fishing
 #'   for a given gear type
