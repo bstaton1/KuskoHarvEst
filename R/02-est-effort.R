@@ -118,6 +118,77 @@ tally_effort_data = function(interview_data, flight_data) {
   )
 }
 
+#' Estimate the Number of Trips that Occurred in a Fishing Day
+#'
+#' Based on the number of interviewed trips that
+#' reported being active during each aerial survey
+#'
+#' @param effort_data A [`list`][base::list] storing the number of trips reported being active on individual, consecutive, and not any flights.
+#'   Constructed via [`tally_effort_data()`].
+#' @details Performs the calculations as specified by estimators derived in the appendix of an in-prep manuscript.
+#'   Suffice it to say that the estimator combines the interview data and flight data to estimate the fraction
+#'   of all trips that were interviewed and counted by aerial survey.
+#'   These form the basis for expanding the partial counts to the whole. In the case of multiple flights,
+#'   the estimator accounts for trips that would have been counted on more than one flight.
+#' @return A numeric vector with named elements for:
+#' *  `pi_hat` (or `piF_hat`, where `F` is a flight number) -- the estimated proportion (probability) of all trips counted on each flight
+#' *  `psi_hat` -- the estimated proportion (probability) of all trips that were interviewed
+#' *  `N_hat` -- the estimated total number of trips that occurred that day
+
+N_estimator = function(effort_data) {
+
+  out = with(effort_data, {
+
+    if (length(X) == 1) {
+      ### ONE FLIGHT ###
+      # estimate Pr(counted on flight)
+      pi1_hat = XnY["X1&Y"]/Y
+
+      # expand those counted by the probability of being counted
+      N_hat = X["X1"]/pi1_hat
+
+      # estimate Pr(interviewed)
+      psi_hat = Y/N_hat
+
+      # build output
+      out = c(pi1_hat, psi_hat, N_hat)
+      names(out) = c("pi1_hat", "psi_hat", "N_hat")
+      out
+    } else {
+      ### MORE THAN ONE FLIGHT ###
+      # extract the counts of interviews counted on two consecutive flights
+      consec_joint = XnY[stringr::str_count(names(XnY), "&") == 2]
+
+      # extract the counts of interviews counted on the second flight of each pair
+      second_marginal = XnY[stringr::str_detect(names(XnY), "^X[2-9]&Y$")]
+
+      # calculate the conditional probability
+      # of being counted on two consecutive flight counts (F) and (F+1)
+      # this represents the fraction of (F+1) that was also counted on (F)
+      # 1 - this is the fraction of (F+1) that were new trips
+      conditional = consec_joint/second_marginal
+      names(conditional) = stringr::str_replace(tolower(names(conditional)), "&", "|")
+      names(conditional) = paste0("[", names(conditional), "]")
+
+      # calculate the number of trips counted on all non-first flights that weren't double counted
+      new = X[stringr::str_detect(names(X), "^X[2-9]$")] * (1 - conditional)
+
+      # estimate abundance: sum all first-time counts and expand by probability of being counted at all
+      N_hat = sum(c(X["X1"], new))/(1 - XnY["!Xany&Y"]/Y)
+
+      # estimate Pr(counted on each flight)
+      pi_hat = X/unname(N_hat)
+
+      # build output
+      names(pi_hat) = paste0(stringr::str_replace(names(pi_hat), "X", "pi"), "_hat")
+      out = c(pi_hat, psi_hat = Y/unname(N_hat), N_hat = unname(N_hat))
+    }
+  })
+
+  # return the output
+  return(out)
+}
+
 #'
 #' Estimates total effort (completed trips) that occurred in a day of fishing
 #'   for a given gear type
