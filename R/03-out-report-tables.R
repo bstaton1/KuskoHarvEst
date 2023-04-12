@@ -30,7 +30,7 @@ make_interview_data_table = function(interview_data) {
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
     kableExtra::row_spec(nrow(tab), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    KuskoHarvUtils::add_vspace()
 }
 
 #' Create a table to report the flights and the counts that were made on each
@@ -66,7 +66,7 @@ make_flight_data_table = function(flight_data) {
     kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c("Time Information" = 3, "Nets Counted" = 2), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    KuskoHarvUtils::add_vspace()
 }
 
 #' Create a table to summarize information spatially
@@ -139,7 +139,7 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
     kableExtra::column_spec(ncol(tab), bold = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    KuskoHarvUtils::add_vspace()
 }
 
 #' Create a table to summarize catch rates and species composition relative to Johnson River
@@ -204,7 +204,7 @@ make_johnson_summary_table = function() {
     kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c(" " = 1, "Proximity to Johnson R. Mouth" = 2), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    KuskoHarvUtils::add_vspace()
 }
 
 #' Create a table to go in the report appendix
@@ -483,7 +483,7 @@ make_appendix_table = function(interview_data, gear, variable) {
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    KuskoHarvUtils::add_vspace()
 }
 
 #' Create a table displaying reported harvest goal attainment
@@ -547,5 +547,5 @@ make_goals_summary_table = function(interview_data) {
     kableExtra::add_header_above(c(" " = 1, "Category of Harvest Goals Attained" = 4), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    KuskoHarvUtils::add_vspace()
 }
