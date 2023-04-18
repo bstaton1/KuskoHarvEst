@@ -120,9 +120,9 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
   tot_int = sum(as.numeric(tab[,"Interviews"]))
   tot_eff = sum(as.numeric(tab[,"Effort Est."]))
   if (!nonsalmon) {
-    tot_harv = sapply(c("chinook", "chum", "sockeye", "total"), function(spp) tinyCI(report(spp = spp, stratum = "total", gear = gear)))
+    tot_harv = sapply(c("chinook", "chum", "sockeye", "total"), function(spp) KuskoHarvUtils::tinyCI(report(spp = spp, stratum = "total", gear = gear)))
   } else {
-    tot_harv = sapply(c("sheefish", "whitefish", "total"), function(spp) tinyCI(report(spp = spp, stratum = "total", gear = gear)))
+    tot_harv = sapply(c("sheefish", "whitefish", "total"), function(spp) KuskoHarvUtils::tinyCI(report(spp = spp, stratum = "total", gear = gear)))
   }
   tots = c(Stratum = "All", Interviews = tot_int, "Effort Est." = tot_eff, tot_harv)
 
@@ -187,8 +187,8 @@ make_johnson_summary_table = function() {
   pchinook_value = c(f(below_johnson_pchinook, T), f(above_johnson_pchinook, T))
 
   # add tiny CIs
-  cpt_value = sapply(cpt_value, tinyCI, linebreak = FALSE)
-  pchinook_value = sapply(pchinook_value, tinyCI, linebreak = FALSE)
+  cpt_value = sapply(cpt_value, KuskoHarvUtils::tinyCI, linebreak = FALSE)
+  pchinook_value = sapply(pchinook_value, KuskoHarvUtils::tinyCI, linebreak = FALSE)
 
   # build the table to pass to kable()
   tab = rbind(
