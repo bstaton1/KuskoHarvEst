@@ -16,7 +16,8 @@ stratify_effort = function(flight_data, gear, effort_est) {
   p_stratum = t(apply(flight_counts, 1, function(x) x/sum(x)))
 
   # STEP 3: calculate the average proportion in each stratum across flights
-  ave_p_stratum = unname(colMeans(p_stratum))
+  ave_p_stratum = unname(colMeans(p_stratum, na.rm = TRUE))
+  ave_p_stratum[ave_p_stratum == "NaN"] = 0
 
   # STEP 4: multiply this by the total effort estimate
   stratified_effort_est = KuskoHarvUtils::smart_round(effort_est * ave_p_stratum)
