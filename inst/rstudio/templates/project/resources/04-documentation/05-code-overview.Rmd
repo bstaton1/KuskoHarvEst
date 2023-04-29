@@ -194,22 +194,12 @@ head(boot_out_drift, 20)
 
 Notice that it includes an identifier for bootstrap iteration (`iter`), the date the estimate applies to (`date`), the gear the estimate applies to (`gear`), the geographic stratum (`stratum`, including a "total" category), and estimates for each salmon species as well as the total across species. Estimates have been rounded to the nearest whole fish.
 
-These two objects must be combined into one object that stores all output as well as a total across gears:
+These two objects must be combined into one object that stores all output as well as a total across gears.
+This is the role of the `combine_boot_out()` function:
 
 ```{r}
-# sum up across gears
-boot_out_total = data.frame(iter = boot_out_drift$iter, 
-                            date = boot_out_drift$date,
-                            gear = "total", 
-                            stratum = boot_out_drift$stratum,
-                            chinook = rowSums(cbind(boot_out_drift[,"chinook"], boot_out_set[,"chinook"]), na.rm = TRUE),
-                            chum = rowSums(cbind(boot_out_drift[,"chum"], boot_out_set[,"chum"]), na.rm = TRUE),
-                            sockeye = rowSums(cbind(boot_out_drift[,"sockeye"], boot_out_set[,"sockeye"]), na.rm = TRUE),
-                            total = rowSums(cbind(boot_out_drift[,"total"], boot_out_set[,"total"]), na.rm = TRUE)
-)
-
 # combine drift, set, and total into one data frame of bootstrap output
-boot_out = rbind(boot_out_total, boot_out_drift, boot_out_set)
+boot_out = combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)
 ```
 
 ## Step 6: Summarize Output
@@ -302,6 +292,7 @@ This catalog is intended for users wishing to gain a more complete understanding
 * `stratify_effort()` -- apportions the aggregate effort estimate into strata-specific estimates
 * `estimate_harvest()` -- estimates harvest by species and geographic stratum as `effort * catch_per_trip`
 * `bootstrap_harvest()` -- replicates resampling with replacement from interview data and calling `estimate_harvest()` on each resample to generate a distribution of plausible harvest estimates
+* `combine_boot_out()` -- combines bootstrap output from multiple gear types and adds totals across gears/species/strata
 * `estimate_catch_per_trip()` -- performs the calculations for estimating catch per fisher trip (by gear and stratum) using only those records that are suitable for each component in the calculation
 * `get_use_strata()` -- determines the pooling strategy to use for interview data when some strata are particularly data-poor
 

@@ -10,19 +10,8 @@ boot_out_drift = bootstrap_harvest(interview_data, drift_effort_info,
 boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
                                  gear = "set", n_boot = n_boot, stratify_interviews = FALSE)
 
-# sum up across gears
-boot_out_total = data.frame(iter = boot_out_drift$iter, 
-                            date = boot_out_drift$date,
-                            gear = "total", 
-                            stratum = boot_out_drift$stratum,
-                            chinook = rowSums(cbind(boot_out_drift[,"chinook"], boot_out_set[,"chinook"]), na.rm = TRUE),
-                            chum = rowSums(cbind(boot_out_drift[,"chum"], boot_out_set[,"chum"]), na.rm = TRUE),
-                            sockeye = rowSums(cbind(boot_out_drift[,"sockeye"], boot_out_set[,"sockeye"]), na.rm = TRUE),
-                            total = rowSums(cbind(boot_out_drift[,"total"], boot_out_set[,"total"]), na.rm = TRUE)
-)
-
 # combine drift, set, and total into one data frame of bootstrap output
-boot_out <<- rbind(boot_out_total, boot_out_drift, boot_out_set)
+boot_out <<- combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)
 ```
 
 ```{r set-summaries}
