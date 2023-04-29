@@ -6,21 +6,27 @@
 \usage{
 prepare_interviews_one(
   input_file,
-  include_village = FALSE,
-  include_goals = FALSE,
-  include_nonsalmon = FALSE
+  include_salmon,
+  include_nonsalmon,
+  include_village,
+  include_goals
 )
 }
 \arguments{
-\item{input_file}{Character; the name of one file that contains interview data from a single source and fishing day}
+\item{input_file}{Character; name of a single file that contains interview data}
+
+\item{include_salmon}{Character; accepted options are \code{"all"}, \code{"none"}, or any combination of acceptable salmon species names}
+
+\item{include_nonsalmon}{Character; accepted options are \code{"all"}, \code{"none"}, or any combination of acceptable nonsalmon species names}
 
 \item{include_village}{Logical; should the village of the fisher be included in the output?}
 
 \item{include_goals}{Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?}
-
-\item{include_nonsalmon}{Logical; should the catches of non-salmon species (whitefish and sheefish) be returned?}
 }
 \description{
 Reads in and formats one data file containing interview data
 into a standardized format to be used by other functions
+}
+\note{
+This function should always be called by calling the wrapper \code{\link[=prepare_interviews]{prepare_interviews()}}, not directly.
 }
