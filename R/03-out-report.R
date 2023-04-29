@@ -19,15 +19,16 @@
 #' @param conf_level Numeric; the confidence level of the confidence interval.
 #'   E.g., `0.95` corresponds to a 95% confidence interval (the default).
 #'   Ignored if `CI = FALSE`
-#' @param digits Numeric; the rounding rule (passed to [base::round()]); defaults to `-1`
+#' @param digits Numeric; the rounding rule (passed to [base::round()]); defaults to `0` (i.e., nearest whole fish)
 #' @param return_numeric; Logical; should summary be returned as numeric class rather than character?
 #' @param boot_out_use; Data frame; the output of [bootstrap_harvest()] to be summarized.
 #'   Defaults to `NULL`, in which case the function searches for an object in existence named `boot_out` which will be used.
+#' @note All zero values will be returned if all bootstrapped values to be summarized are `NA`.
 #'
 #' @export
 #'
 
-report = function(spp = "total", gear = "total", stratum = "total", date = NULL, CI = TRUE, conf_level = 0.95, digits = -1, return_numeric = FALSE, boot_out_use = NULL) {
+report = function(spp = "total", gear = "total", stratum = "total", date = NULL, CI = TRUE, conf_level = 0.95, digits = 0, return_numeric = FALSE, boot_out_use = NULL) {
 
   # error handle
   if (is.null(boot_out_use)) {
@@ -69,6 +70,15 @@ report = function(spp = "total", gear = "total", stratum = "total", date = NULL,
   chr_CI_out = paste0(prettyNum(mean_est, ",", scientific = FALSE), " (",
                       prettyNum(lwr_est, ",", scientific = FALSE), " -- ",
                       prettyNum(upr_est, ",", scientific = FALSE), ")")
+
+  # if requesting a gear with NaN estimates involved, return zeros
+  # if values are involved here, that means no estimates were produced, and they should be zero
+  if ("NaN" %in% num_out) {
+    num_out = 0
+    num_CI_out[] = 0
+    chr_out = "0"
+    chr_CI_out = "0 (0 -- 0)"
+  }
 
   # determine the right output to return
   # based on whether CIs are desired, and whether output is numeric or character
