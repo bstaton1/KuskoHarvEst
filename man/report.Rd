@@ -50,3 +50,6 @@ Defaults to \code{NULL}, in which case the function searches for an object in ex
 Summarizes bootstrapped harvest estimates into a point estimate
 and confidence limits, by species, gear, and geographic stratum
 }
+\note{
+All zero values will be returned if all bootstrapped values to be summarized are \code{NA}.
+}

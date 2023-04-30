@@ -4,16 +4,24 @@
 #'   and performs data quality checks
 #'
 #' @param input_files Character; vector of file names that contain interview data
-#' @param ... Optional arguments passed to [prepare_interviews_one()]
+#' @param include_salmon Character; accepted options are `"all"`, `"none"`, or any combination of acceptable salmon species names
+#' @param include_nonsalmon Character; accepted options are `"all"`, `"none"`, or any combination of acceptable nonsalmon species names
+#' @param include_goals Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?
+#' @param include_village Logical; should the village of the fisher be included in the output?
+#' @note For the list of acceptable species names, please see `KuskoHarvEst:::species_names`.
 #' @export
 
-prepare_interviews = function(input_files, ...) {
+prepare_interviews = function(input_files, include_salmon = "all", include_nonsalmon = "none", include_goals = FALSE, include_village = FALSE) {
 
   # check to make sure all global options are set
   check_options()
 
+  # get the value of all non-filename arguments in a list to pass to prepare_interviews_one()
+  args = as.list(environment())
+  args = args[-which(names(args) == "input_files")]
+
   # read in and format raw interview data
-  interview_data_list = lapply(input_files, function(file) prepare_interviews_one(file, ...))
+  interview_data_list = lapply(input_files, function(file) do.call(prepare_interviews_one, append(list(input_file = file), args)))
 
   # combine individual list elements into a data frame
   interview_data = do.call(rbind, interview_data_list)

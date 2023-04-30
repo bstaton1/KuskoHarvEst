@@ -8,5 +8,13 @@ strata_names = data.frame(stratum = c("A", "B", "C", "D1"),
                           stratum_start = c("Tuntutuliak", "Johnson R.", "Napaskiak", "Akiachak"),
                           stratum_end = c("Johnson R.", "Napaskiak", "Akiachak", "Akiak"))
 
+# make a table specifying which species the program should accept
+salmon_species = c("chinook", "chum", "sockeye")
+nonsalmon_species = c("whitefish", "sheefish")
+species = c(salmon_species, nonsalmon_species)
+is_salmon = species %in% salmon_species
+in_text = ifelse(species == "chinook", KuskoHarvUtils::capitalize(species), species)
+species_names = data.frame(species = species, is_salmon = is_salmon, in_text = in_text)
+
 # export them to proper structure and location
-usethis::use_data(source_names, strata_names, internal = TRUE)
+usethis::use_data(source_names, strata_names, species_names, internal = TRUE, overwrite = TRUE)
