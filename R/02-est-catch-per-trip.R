@@ -5,15 +5,17 @@
 #'
 #' @inheritParams estimate_harvest
 #' @param central_fn Function; used to calculate central tendency
-#' @param nonsalmon Logical; should estimates be returned for whitefish and sheefish rather than for Chinook, chum, and sockeye salmon?
+#' @param nonsalmon Logical; should estimates be returned non-salmon species rather than salmon species?
 
 estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn"), nonsalmon = FALSE) {
 
   # set the species to keep
   if (!nonsalmon) {
-    keep_spp = c("chinook", "chum", "sockeye")
+    keep_spp = species_names$species[species_names$is_salmon]
+    keep_spp = keep_spp[keep_spp %in% colnames(interview_data)]
   } else {
-    keep_spp = c("sheefish", "whitefish")
+    keep_spp = species_names$species[!species_names$is_salmon]
+    keep_spp = keep_spp[keep_spp %in% colnames(interview_data)]
   }
 
   # subset only the data for this gear
@@ -31,7 +33,8 @@ estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, cent
   net_length = as.numeric(interview_data$net_length)
 
   # extract the catches
-  catches = interview_data[,keep_spp]
+  catches = as.matrix(interview_data[,keep_spp])
+  colnames(catches) = keep_spp
 
   # determine which are suitable for calculating reliable catch rates
   suitable_catch_rate = interview_data[,"suit_cr_reliable"] & interview_data[,"suit_cr_info"]
@@ -59,9 +62,13 @@ estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, cent
     if (sum(suitable_catch_rate) == 1) {
       out = sapply(catch_rates[suitable_catch_rate,], central_fn, na.rm = TRUE) * central_fn(net_length[suitable_avg_net], na.rm = TRUE) * central_fn(soak_hrs[suitable_avg_soak], na.rm = TRUE)
     } else {
-      out = apply(catch_rates[suitable_catch_rate,], 2, central_fn, na.rm = TRUE) * central_fn(net_length[suitable_avg_net], na.rm = TRUE) * central_fn(soak_hrs[suitable_avg_soak], na.rm = TRUE)
+      out = apply(as.matrix(catch_rates[suitable_catch_rate,]), 2, central_fn, na.rm = TRUE) * central_fn(net_length[suitable_avg_net], na.rm = TRUE) * central_fn(soak_hrs[suitable_avg_soak], na.rm = TRUE)
     }
   }
+
+  # format final output
+  names(out) = keep_spp
+  out[out == "NaN"] = 0  # occurs if all records for a species were NA
 
   # return the output
   return(out)

@@ -11,6 +11,8 @@
 prepare_interviews_one = function(input_file, include_salmon, include_nonsalmon, include_village, include_goals) {
 
   ### ERROR CHECKS FOR SPECIES ###
+
+  # small function to ensure acceptable values supplied
   check_spp_args = function(include, accepted, label) {
     has_all = any(include == "all")
     has_none = any(include == "none")
@@ -24,16 +26,24 @@ prepare_interviews_one = function(input_file, include_salmon, include_nonsalmon,
       paste0("if ", label, " includes 'none', it cannot include other selections") |>
         stop()
     }
-    if (!has_all & !has_none & !any(include %in% accepted)) {
+    if (!all(include %in% c("none", "all", accepted))) {
       paste0(label, " must be one of 'all', 'none', or any combination of ", knitr::combine_words(accepted, and = " or ", before = "'")) |>
         stop()
     }
   }
 
+  # which species names are accepted for salmon/nonsalmon?
   accepted_salmon = species_names$species[species_names$is_salmon]
-  check_spp_args(include_salmon, accepted_salmon, "include_salmon")
   accepted_nonsalmon = species_names$species[!species_names$is_salmon]
+
+  # check the validity of supplied argument values
+  check_spp_args(include_salmon, accepted_salmon, "include_salmon")
   check_spp_args(include_nonsalmon, accepted_nonsalmon, "include_nonsalmon")
+
+  # if both salmon and nonsalmon are set to 'none', return error
+  if (all(include_salmon == "none") & all(include_nonsalmon == "none")) {
+    stop ("one of include_salmon or include_nonsalmon must not be 'none'")
+  }
 
   ### STEP 0: load the input data file & format column names
   dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))

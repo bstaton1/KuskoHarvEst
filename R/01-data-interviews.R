@@ -76,13 +76,16 @@ prepare_interviews = function(input_files, include_salmon = "all", include_nonsa
   }
 
   # perform checks for if the average catch per trip is an outlier
-  cpt_outliers = is_catch_per_trip_outlier(interview_data)
-  if (any(cpt_outliers)) {
-    outlier_cpt_notes[cpt_outliers] = "Catch per trip highly influential, catch rate rate, soak time, and net length deemed unsuitable for average"
-    interview_data$suit_cr_reliable[cpt_outliers] = FALSE
-    interview_data$suit_avg_soak[cpt_outliers] = FALSE
-    interview_data$suit_avg_net[cpt_outliers] = FALSE
-    warning("\n", sum(cpt_outliers), " interview(s) had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
+  # only perform for salmon
+  if (!("none" %in% include_salmon)) {
+    cpt_outliers = is_catch_per_trip_outlier(interview_data)
+    if (any(cpt_outliers)) {
+      outlier_cpt_notes[cpt_outliers] = "Catch per trip highly influential, catch rate rate, soak time, and net length deemed unsuitable for average"
+      interview_data$suit_cr_reliable[cpt_outliers] = FALSE
+      interview_data$suit_avg_soak[cpt_outliers] = FALSE
+      interview_data$suit_avg_net[cpt_outliers] = FALSE
+      warning("\n", sum(cpt_outliers), " interview(s) had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
+    }
   }
 
   # extract notes on suitability
