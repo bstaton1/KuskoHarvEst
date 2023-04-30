@@ -68,6 +68,8 @@ estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, cent
 
   # format final output
   names(out) = keep_spp
+  out[out == "NaN"] = 0  # occurs if all records for a species were NA
+
   # return the output
   return(out)
 }
