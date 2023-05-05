@@ -17,24 +17,12 @@ make_appendix_table(interview_data, gear, variable)
 
 \item{variable}{Character; accepted options are:
 \itemize{
-\item \code{"chinook_rate"}
-\item \code{"chinook"}
-\item \code{"chum_rate"}
-\item \code{"chum"}
-\item \code{"sockeye_rate"}
-\item \code{"sockeye"}
-\item \code{"chum+sockeye_rate"}
-\item \code{"chum+sockeye"}
-\item \code{"sheefish_rate"}
-\item \code{"sheefish"}
-\item \code{"whitefish_rate"}
-\item \code{"whitefish"}
-\item \code{"sheefish+whitefish_rate"}
-\item \code{"sheefish+whitefish"}
-\item \code{"soak_duration"}
+\item Any species contained in \code{KuskoHarvEst:::species_names$species}, additionally \code{"chum+sockeye"}
+\item The catch rate of any of these species, supplied as e.g., \code{"chinook_rate"}
 \item \code{"trip_start"}
 \item \code{"trip_end"}
 \item \code{"trip_duration"}
+\item \code{"soak_duration"}
 \item \code{"net_length"}
 \item \code{"p_chinook"}
 }}
