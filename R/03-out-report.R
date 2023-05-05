@@ -52,6 +52,11 @@ report = function(spp = "total", gear = "total", stratum = "total", date = NULL,
   # subset the output to match the input arguments
   long_boot_sub = long_boot[long_boot$gear == gear & long_boot$stratum == stratum & long_boot$species == spp,]
 
+  # return error if no estimates available
+  if (nrow(long_boot_sub) == 0) {
+    stop ("No bootstrap samples meeting the desired attributes (gear, species, or stratum)")
+  }
+
   # extract only the bootstrapped harvest numbers
   harv = long_boot_sub$harvest
 
