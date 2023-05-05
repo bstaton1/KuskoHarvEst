@@ -20,74 +20,90 @@
 make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 
   # set the variables that are accepted, and perform error check
-  accepted_variables = c("total_salmon", "chinook", "chum", "sockeye", "chum+sockeye", "trip_start", "trip_end", "soak_duration", "trip_duration", "p_chinook")
-  if (!(variable %in% accepted_variables)) {
-    stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:\n", paste0("  '", accepted_variables, "'\n"))
+  spp_accept = c(unlist(paste(species_names$species)), "chum+sockeye", "total_salmon")
+  duration_accept = c("trip_duration", "soak_duration")
+  time_accept = c("trip_start", "trip_end")
+  p_accept = c("p_chinook")
+  accepted_variables = c(spp_accept, rate_accept, duration_accept, time_accept, p_accept, net_accept)
+
+  # determine what kind of variable it is
+  is_catch = variable %in% spp_accept
+  is_duration = variable %in% duration_accept
+  is_time = variable %in% time_accept
+  is_p = variable %in% p_accept
+
+  # which species are found in the interview data
+  spp_found = unname(unlist(species_in_data(interview_data)))
+
+  # if more than one variable supplied, stop
+  if (length(variable) > 1) {
+    stop ("only one variable can be supplied at once")
   }
 
-  # keep only values for the specified gear and only completed trips
+  # if the supplied variable isn't in the list of those accepted, stop
+  if (!(variable %in% accepted_variables)) {
+    stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:", knitr::combine_words(accepted_variables, before = "  \n'", after = "'", and = " or "))
+  }
+
+  # add a total_salmon variable
+  if (any(species_names$species[species_names$is_salmon] %in% spp_found)) {
+    interview_data$total_salmon = rowSums(as.matrix(interview_data[,species_in_data(interview_data)$salmon]))
+  } else {
+    interview_data$total_salmon = 0
+  }
+
+  # if both chum and sockeye data are found in data, add a chum+sockeye variable
+  if (all(c("chum", "sockeye") %in% spp_found)) {
+    interview_data = cbind(interview_data, "chum+sockeye" = rowSums(interview_data[,c("chum", "sockeye")]))
+  }
+
+  # if it is a catch and the species name isn't in data, stop
+  if ((is_catch | is_p) & (!stringr::str_remove(variable, "_rate$|^p_") %in% c(spp_found, "total_salmon", "chum+sockeye"))) {
+    stop ("species '", stringr::str_remove(variable, "_rate$|^p_"), "' is not contained in interview_data")
+  }
+
+  # subset out only relevant data for the histogram: completed trips using this gear type
   x_data = interview_data[is_complete_trip(interview_data) & interview_data$gear == gear,]
 
   # drop any data collected by ADFG -- this hasn't been historically reported here
   x_data = x_data[x_data$source != "ADFG",]
 
-  # prepare the information: total_salmon
-  if (variable == "total_salmon") {
-    x = rowSums(x_data[,c("chinook", "chum", "sockeye")])
-    main = "Total Salmon Catch/Trip"
+  # prepare information: catch/trip
+  if (is_catch) {
+    x = x_data[,variable]
+    if (variable %in% species_names$species) {
+      main = paste0(stringr::str_to_title(species_names$in_text[species_names$species == variable]), " Catch/Trip")
+    } else {
+      if (variable == "total_salmon") main = "Total Salmon Catch/Trip"
+      if (variable == "chum+sockeye") main = "Chum+Sockeye Salmon Catch/Trip"
+    }
   }
 
-  # prepare the information: chinook
-  if (variable == "chinook") {
-    x = x_data[,"chinook"]
-    main = "Chinook Salmon Catch/Trip"
+  # prepare information: trip_start or trip_end
+  if (is_time) {
+    x = lubridate::hour(x_data[,variable])
+    main = variable |>
+      stringr::str_replace("_", " ") |>
+      stringr::str_to_title() |>
+      paste0(" Time")
   }
 
-  # prepare the information: chum
-  if (variable == "chum") {
-    x = x_data[,"chum"]
-    main = "Chum Salmon Catch/Trip"
+  # prepare information: soak_duration or trip_duration
+  if (is_duration) {
+    x = as.numeric(lubridate::as.duration(x_data[,variable]), "hours")
+    main = variable |>
+      stringr::str_remove("_.+$") |>
+      stringr::str_to_title() |>
+      paste0(" Duration (Hours)")
   }
 
-  # prepare the information: sockeye
-  if (variable == "sockeye") {
-    x = x_data[,"sockeye"]
-    main = "Sockeye Salmon Catch/Trip"
-  }
-
-  # prepare the information: chum + sockeye
-  if (variable == "chum+sockeye") {
-    x = rowSums(x_data[,c("chum", "sockeye")])
-    main = "Chum+Sockeye Salmon Catch/Trip"
-  }
-
-  # prepare the information: trip_start
-  if (variable == "trip_start") {
-    x = lubridate::hour(x_data$trip_start)
-    main = "Trip Start Time"
-  }
-
-  # prepare the information: trip_end
-  if (variable == "tri_end") {
-    x = lubridate::hour(x_data$trip_start)
-    main = "Trip End Time"
-  }
-
-  # prepare the information: soak duration
-  if (variable == "soak_duration") {
-    x = as.numeric(lubridate::as.duration(x_data$soak_duration), "hours")
-    main = "Soak Duration (Hours)"
-  }
-
-  # prepare the information: trip duration
-  if (variable == "trip_duration") {
-    x = as.numeric(lubridate::as.duration(x_data$trip_duration), "hours")
-    main = "Trip Duration (Hours)"
-  }
-
-  # prepare the information: % chinook
-  if (variable == "p_chinook") {
-    x = x_data$chinook/rowSums(x_data[,c("chinook", "chum", "sockeye")])
+  # prepare information: p_chinook
+  if (is_p) {
+    p_spp = stringr::str_remove(variable, "^p_")
+    salmon_spp = spp_found[spp_found %in% species_names$species[species_names$is_salmon]]
+    numerator = x_data[,p_spp]
+    denominator = rowSums(as.matrix(x_data[,salmon_spp]))
+    x = numerator/denominator
     x = x * 100
     main = "% Chinook Salmon"
   }
