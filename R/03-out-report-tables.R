@@ -79,10 +79,6 @@ make_flight_data_table = function(flight_data) {
 
 make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
 
-  # create nice names for the strata
-  strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
-  names(strata) = strata_names$stratum
-
   # determine the correct effort info to use depending on the gear
   if (gear == "drift") {
     effort_info = drift_effort_info
@@ -90,54 +86,63 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
     effort_info = set_effort_info
   }
 
-  # calculate/format harvest by stratum
-  if (!nonsalmon) {
-    chinook = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "chinook", stratum = stratum, gear = gear)))
-    chum = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "chum", stratum = stratum, gear = gear)))
-    sockeye = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "sockeye", stratum = stratum, gear = gear)))
-    total = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
-  } else {
-    sheefish = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "sheefish", stratum = stratum, gear = gear)))
-    whitefish = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "whitefish", stratum = stratum, gear = gear)))
-    total = sapply(strata_names$stratum, function(stratum) KuskoHarvUtils::tinyCI(report(spp = "total", stratum = stratum, gear = gear)))
-  }
+  # figure out species to show & return useful error if none are found
+  spp = species_in_data(interview_data)[[ifelse(nonsalmon, "nonsalmon", "salmon")]]
+  if (length(spp) == 0) stop (paste0("No species found matching nonsalmon = ", TRUE))
+  if (length(spp) > 1) spp = c(spp, "total")
 
-  # build the strata-specific information for the table
+  # summarize/format harvest: by species and stratum
+  spp_summs = lapply(spp, function(sp) {
+    st_summs = lapply(strata_names$stratum, function(stratum) {
+      KuskoHarvUtils::tinyCI(report(spp = sp, stratum = stratum, gear = gear))
+    })
+    names(st_summs) = strata_names$stratum
+    st_summs
+  })
+  names(spp_summs) = spp
+  harv_tab = do.call(cbind, spp_summs)
+
+  # summarize/format harvest: by species for all strata
+  spp_summs = lapply(spp, function(sp) {
+    KuskoHarvUtils::tinyCI(report(spp = sp, stratum = "total", gear = gear))
+  })
+  names(spp_summs) = spp
+  harv_tot_tab = do.call(cbind, spp_summs)
+  rownames(harv_tot_tab) = "total"
+
+  # combine harvest
+  harv_tab = rbind(harv_tab, harv_tot_tab)
+  colnames(harv_tab) = KuskoHarvUtils::capitalize(colnames(harv_tab))
+
+  # create nice names for the strata
+  strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
+  names(strata) = strata_names$stratum
+
+  # count the number of interviews per stratum
+  n_interviews = with(interview_data[interview_data$gear == gear,], table(factor(stratum, levels = strata_names$stratum)))
+  n_interviews = c(n_interviews, total = sum(n_interviews))
+
+  # extract the estimated effort per stratum
+  n_effort = effort_info$effort_est_stratum
+  n_effort = c(n_effort, total = sum(n_effort))
+
+  # combine information into table
   tab = cbind(
-    Stratum = strata,
-    Interviews = with(interview_data[interview_data$gear == gear,], table(factor(stratum, levels = strata_names$stratum))),
-    "Effort Est." = effort_info$effort_est_stratum
+    Strata = c(strata, total = "Total"),
+    Interviews = n_interviews,
+    "Effort Est." = n_effort,
+    harv_tab
   )
-
-  # add species-specific summaries
-  if (!nonsalmon) {
-    tab = cbind(tab, Chinook = chinook, Chum = chum, Sockeye = sockeye, Total = total)
-  } else {
-    tab = cbind(tab, Sheefish = sheefish, Whitefishes = whitefish, Total = total)
-  }
-
-  # build the across-strata information for the table
-  tot_int = sum(as.numeric(tab[,"Interviews"]))
-  tot_eff = sum(as.numeric(tab[,"Effort Est."]))
-  if (!nonsalmon) {
-    tot_harv = sapply(c("chinook", "chum", "sockeye", "total"), function(spp) KuskoHarvUtils::tinyCI(report(spp = spp, stratum = "total", gear = gear)))
-  } else {
-    tot_harv = sapply(c("sheefish", "whitefish", "total"), function(spp) KuskoHarvUtils::tinyCI(report(spp = spp, stratum = "total", gear = gear)))
-  }
-  tots = c(Stratum = "All", Interviews = tot_int, "Effort Est." = tot_eff, tot_harv)
-
-  # combine
-  tab = rbind(tab, tots)
 
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE, row.names = FALSE,
-               align = "lcccccc",
+               align = paste(c("l", rep("c", 2 + length(spp))), collapse = ""),
                caption = paste0("Summary of relevant quantities by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position", "scale_down")) %>%
-    kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = ifelse(!nonsalmon, 4, 3)), bold = TRUE) %>%
+    kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = length(spp)), bold = TRUE) %>%
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
-    kableExtra::column_spec(ncol(tab), bold = TRUE) %>%
+    kableExtra::column_spec(ncol(tab), bold = length(spp) > 1) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
     KuskoHarvUtils::add_vspace()
 }
