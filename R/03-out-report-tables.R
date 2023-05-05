@@ -230,208 +230,138 @@ make_johnson_summary_table = function() {
 #'
 #' @inheritParams estimate_harvest
 #' @param variable Character; accepted options are:
-#'   * `"chinook_rate"`
-#'   * `"chinook"`
-#'   * `"chum_rate"`
-#'   * `"chum"`
-#'   * `"sockeye_rate"`
-#'   * `"sockeye"`
-#'   * `"chum+sockeye_rate"`
-#'   * `"chum+sockeye"`
-#'   * `"sheefish_rate"`
-#'   * `"sheefish"`
-#'   * `"whitefish_rate"`
-#'   * `"whitefish"`
-#'   * `"sheefish+whitefish_rate"`
-#'   * `"sheefish+whitefish"`
-#'   * `"soak_duration"`
+#'   * Any species contained in `KuskoHarvEst:::species_names$species`, additionally `"chum+sockeye"`
+#'   *  The catch rate of any of these species, supplied as e.g., `"chinook_rate"`
 #'   * `"trip_start"`
 #'   * `"trip_end"`
 #'   * `"trip_duration"`
+#'   * `"soak_duration"`
 #'   * `"net_length"`
 #'   * `"p_chinook"`
 #'
-#'
 #' @importFrom magrittr %>%
 #' @export
+#'
 
 make_appendix_table = function(interview_data, gear, variable) {
 
   # set the variables that are accepted, and perform error check
-  accepted_variables = c(
-    "chinook_rate",
-    "chinook",
-    "chum+sockeye_rate",
-    "chum+sockeye",
-    "chum_rate", "sockeye_rate",
-    "chum", "sockeye",
-    "sheefish+whitefish_rate",
-    "sheefish+whitefish",
-    "sheefish_rate", "whitefish_rate",
-    "sheefish", "whitefish",
-    "soak_duration",
-    "trip_start", "trip_end", "trip_duration",
-    "net_length",
-    "p_chinook"
-  )
+  spp_accept = c(unlist(paste(species_names$species)), "chum+sockeye")
+  rate_accept = paste0(spp_accept, "_rate")
+  duration_accept = c("trip_duration", "soak_duration")
+  time_accept = c("trip_start", "trip_end")
+  p_accept = c("p_chinook")
+  net_accept = c("net_length")
+  accepted_variables = c(spp_accept, rate_accept, duration_accept, time_accept, p_accept, net_accept)
 
+  # determine what kind of variable it is
+  is_catch = variable %in% spp_accept
+  is_catch_rate = variable %in% rate_accept
+  is_duration = variable %in% duration_accept
+  is_time = variable %in% time_accept
+  is_p = variable %in% p_accept
+  is_net = variable %in% net_accept
+
+  # which species are found in the interview data
+  spp_found = unname(unlist(species_in_data(interview_data)))
+
+  # if more than one variable supplied, stop
+  if (length(variable) > 1) {
+    stop ("only one variable can be supplied at once")
+  }
+
+  # if the supplied variable isn't in the list of those accepted, stop
   if (!(variable %in% accepted_variables)) {
-    stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:\n", paste0("  '", accepted_variables, "'\n"))
+    stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:", knitr::combine_words(accepted_variables, before = "  \n'", after = "'", and = " or "))
+  }
+
+  # if both chum and sockeye data are found in data, add a chum+sockeye variable
+  if (all(c("chum", "sockeye") %in% spp_found)) {
+    interview_data = cbind(interview_data, "chum+sockeye" = rowSums(interview_data[,c("chum", "sockeye")]))
+    species_names = rbind(species_names, data.frame(species = "chum+sockeye", is_salmon = TRUE, in_text = "chum+sockeye salmon"))
+  }
+
+  # if it is a catch or a catch rate and the species name isn't in data, stop
+  if ((is_catch | is_catch_rate | is_p) & (!stringr::str_remove(variable, "_rate$|^p_") %in% spp_found)) {
+    stop ("species '", stringr::str_remove(variable, "_rate$|^p_"), "' is not contained in interview_data")
   }
 
   # subset out only data relevant for the table
   x_data = interview_data[is_complete_trip(interview_data) & !is.na(interview_data$stratum) & interview_data$gear == gear,]
 
-  # prepare information: chinook catch per trip
-  if (variable == "chinook") {
-    x = x_data$chinook
-    cap = paste0("Summary of ", gear, " net catch per trip of Chinook salmon by fishing area.")
+  # extract columns corresponding to catch data
+  spp_keep = spp_accept[spp_accept %in% colnames(x_data)]
+  catch_x_data = as.matrix(x_data[,spp_keep])
+  colnames(catch_x_data) = spp_keep
+
+  # calculate catch rates
+  rate_x_data = as.matrix(apply(catch_x_data, 2, function(catch) catch/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150))
+  colnames(rate_x_data) = paste0(spp_keep, "_rate")
+
+  # recombine
+  x_data = cbind(x_data[,c("stratum", "net_length", "trip_start", "trip_end", "trip_duration", "soak_duration", "suit_cr_reliable", "suit_avg_soak", "suit_avg_net")], catch_x_data, rate_x_data)
+
+  # prepare information: catch per trip variables
+  if (is_catch) {
+    x = x_data[,variable]
+    cap = "Summary of GEAR net catch per trip of SPECIES by fishing area." |>
+      stringr::str_replace("GEAR", gear) |>
+      stringr::str_replace("SPECIES", species_names$in_text[stringr::str_detect(species_names$species, variable)])
     digits = 0
   }
 
-  # prepare information: chinook catch rate per trip
-  if (variable == "chinook_rate") {
+  # prepare information: catch rate variables
+  if (is_catch_rate) {
     x_data = x_data[x_data$suit_cr_reliable,]
-    x = x_data$chinook/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of Chinook salmon by fishing area (salmon per 150 feet of net per hour).")
+    x = x_data[,stringr::str_remove(variable, "_rate$")]/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
+    cap = "Summary of GEAR net catch rate of SPECIES by fishing area (fish per 150 feet of net per hour)" |>
+      stringr::str_replace("GEAR", gear) |>
+      stringr::str_replace("SPECIES", species_names$in_text[stringr::str_detect(species_names$species, stringr::str_remove(variable, "_rate$"))])
     digits = 1
   }
 
-  # prepare information: chum+sockeye catch per trip
-  if (variable == "chum+sockeye") {
-    x = x_data$chum + x_data$sockeye
-    cap = paste0("Summary of ", gear, " net catch per trip of chum+sockeye salmon by fishing area.")
-    digits = 0
-  }
-
-  # prepare information: chum+sockeye catch rate per trip
-  if (variable == "chum+sockeye_rate") {
-    x_data = x_data[x_data$suit_cr_reliable,]
-    x = (x_data$chum + x_data$sockeye)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of chum+sockeye salmon by fishing area (salmon per 150 feet of net per hour).")
-    digits = 1
-  }
-
-  # prepare information: chum catch per trip
-  if (variable == "chum") {
-    x = x_data$chum
-    cap = paste0("Summary of ", gear, " net catch per trip of chum salmon by fishing area.")
-    digits = 0
-  }
-
-  # prepare information: chum catch rate per trip
-  if (variable == "chum_rate") {
-    x_data = x_data[x_data$suit_cr_reliable,]
-    x = (x_data$chum)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of chum salmon by fishing area (salmon per 150 feet of net per hour).")
-    digits = 1
-  }
-
-  # prepare information: sockeye catch per trip
-  if (variable == "sockeye") {
-    x = x_data$chum
-    cap = paste0("Summary of ", gear, " net catch per trip of sockeye salmon by fishing area.")
-    digits = 0
-  }
-
-  # prepare information: sockeye catch rate per trip
-  if (variable == "sockeye_rate") {
-    x_data = x_data[x_data$suit_cr_reliable,]
-    x = (x_data$sockeye)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of sockeye salmon by fishing area (salmon per 150 feet of net per hour).")
-    digits = 1
-  }
-
-  # prepare information: sheefish catch per trip
-  if (variable == "sheefish") {
-    x = x_data$sheefish
-    cap = paste0("Summary of ", gear, " net catch per trip of sheefish by fishing area.")
-    digits = 0
-  }
-
-  # prepare information: sheefish catch rate per trip
-  if (variable == "sheefish_rate") {
-    x_data = x_data[x_data$suit_cr_reliable,]
-    x = (x_data$sheefish)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of sheefish by fishing area (fish per 150 feet of net per hour).")
-    digits = 1
-  }
-
-  # prepare information: whitefish catch per trip
-  if (variable == "whitefish") {
-    x = x_data$whitefish
-    cap = paste0("Summary of ", gear, " net catch per trip of whitefishes by fishing area.")
-    digits = 0
-  }
-
-  # prepare information: whitefish catch rate per trip
-  if (variable == "whitefish_rate") {
-    x_data = x_data[x_data$suit_cr_reliable,]
-    x = (x_data$whitefish)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of whitefishes by fishing area (fish per 150 feet of net per hour).")
-    digits = 1
-  }
-
-  # prepare information: sheefish+whitefish catch per trip
-  if (variable == "sheefish+whitefish") {
-    x = x_data$sheefish + x_data$whitefish
-    cap = paste0("Summary of ", gear, " net catch per trip of sheefish+whitefishes by fishing area.")
-    digits = 0
-  }
-
-  # prepare information: sheefish+whitefish catch rate per trip
-  if (variable == "sheefish+whitefish_rate") {
-    x_data = x_data[x_data$suit_cr_reliable,]
-    x = (x_data$sheefish + x_data$whitefish)/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = paste0("Summary of ", gear, " net catch rate of sheefish+whitefishes by fishing area (fish per 150 feet of net per hour).")
-    digits = 1
-  }
-
-  # prepare information: soak time per trip
-  if (variable == "soak_duration") {
+  # prepare information: duration variables
+  if (is_duration) {
     x_data = x_data[x_data$suit_avg_soak,]
-    x = as.numeric(x_data$soak_duration, "hours")
-    cap = paste0("Summary of ", gear, " net active fishing hours by fishing area.")
+    x = as.numeric(x_data[,variable], "hours")
+    duration_phrase = ifelse(stringr::str_detect(variable, "soak"), "active fishing hours", "trip duration")
+    cap = "Summary of GEAR net DURATION_PHRASE by fishing area." |>
+      stringr::str_replace("GEAR", gear) |>
+      stringr::str_replace("DURATION_PHRASE", duration_phrase)
     digits = 1
   }
 
-  # prepare information: trip duration
-  if (variable == "trip_duration") {
+  # prepare information: time variables
+  if (is_time) {
     x_data = x_data[KuskoHarvEst:::is_possible_trip(x_data),]
-    x = as.numeric(x_data$trip_duration, "hours")
-    cap = paste0("Summary of ", gear, " net total trip duration by fishing area.")
-    digits = 1
+    x = x_data[,variable]
+    time_type = stringr::str_remove(variable, "^trip_")
+    cap = "Summary of GEAR net trip TIME_TYPE time by fishing area." |>
+      stringr::str_replace("GEAR", gear) |>
+      stringr::str_replace("TIME_TYPE", time_type)
+    digits = NA
   }
 
-  # prepare information: net length
-  if (variable == "net_length") {
+  # prepare information: species composition variables
+  if (is_p) {
+    species_names$is_salmon[species_names$species == "chum+sockeye"] = FALSE
+    p_spp = stringr::str_remove(variable, "^p_")
+    salmon_spp = spp_found[spp_found %in% species_names$species[species_names$is_salmon]]
+    numerator = x_data[,p_spp]
+    if (length(salmon_spp) > 1) denominator = rowSums(x_data[,salmon_spp]) else denominator = x_data[,salmon_spp]
+    x = numerator/denominator
+    cap = "Summary of GEAR net percent composition of SPECIES by fishing area." |>
+      stringr::str_replace("GEAR", gear) |>
+      stringr::str_replace("SPECIES", species_names$in_text[species_names$species == p_spp])
+    digits = NA
+  }
+
+  # prepare information: net characteristics variables
+  if (is_net) {
     x_data = x_data[x_data$suit_avg_net,]
     x = x_data$net_length
-    cap = paste0("Summary of ", gear, " net length (feet) by fishing area.")
+    cap = stringr::str_replace("Summary of GEAR net length (feet) by fishing area.")
     digits = 0
-  }
-
-  # prepare information: trip start time
-  if (variable == "trip_start") {
-    x_data = x_data[KuskoHarvEst:::is_possible_trip(x_data),]
-    x = x_data$trip_start
-    cap = paste0("Summary of ", gear, " net trip start time by fishing area.")
-    digits = NA
-  }
-
-  # prepare information: trip end time
-  if (variable == "trip_end") {
-    x_data = x_data[KuskoHarvEst:::is_possible_trip(x_data),]
-    x = x_data$trip_end
-    cap = paste0("Summary of ", gear, " net trip end time by fishing area.")
-    digits = NA
-  }
-
-  # prepare information: percent chinook catches
-  if (variable == "p_chinook") {
-    x = x_data$chinook/(x_data$chinook + x_data$chum + x_data$sockeye)
-    cap = paste0("Summary of ", gear, " net percent composition of Chinook salmon by fishing area.")
-    digits = NA
   }
 
   # calculate the number of interviews used
@@ -439,7 +369,7 @@ make_appendix_table = function(interview_data, gear, variable) {
   N_all = sum(N)
 
   # calculate and format summaries: numerical quantities that need only rounding for format
-  if (!is.na(digits)) {
+  if (any(is_catch, is_catch_rate, is_net, is_duration)) {
     Min = round(tapply(x, x_data$stratum, function(z) min(z, na.rm = TRUE)), digits = digits)
     q25 = round(tapply(x, x_data$stratum, function(z) quantile(z, 0.25, na.rm = TRUE)), digits = digits)
     Mean = round(tapply(x, x_data$stratum, function(z) mean(z, na.rm = TRUE)), digits = digits)
@@ -454,7 +384,7 @@ make_appendix_table = function(interview_data, gear, variable) {
   }
 
   # calculate and format summaries: percent chinook
-  if (is.na(digits) & variable == "p_chinook") {
+  if (is_p) {
     Min = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) min(z, na.rm = TRUE)), escape = TRUE)
     q25 = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) quantile(z, 0.25, na.rm = TRUE)), escape = TRUE)
     Mean = KuskoHarvUtils::percentize(tapply(x, x_data$stratum, function(z) mean(z, na.rm = TRUE)), escape = TRUE)
@@ -469,7 +399,7 @@ make_appendix_table = function(interview_data, gear, variable) {
   }
 
   # calculate and format summaries: trip times
-  if (is.na(digits) & variable != "p_chinook"){
+  if (is_time){
     Min = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = min, na.rm = T)$x); names(Min) = unique(x_data$stratum)
     q25 = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = quantile, prob = 0.25, na.rm = T)$x); names(q25) = unique(x_data$stratum)
     Mean = KuskoHarvUtils::short_datetime(aggregate(x ~ x_data$stratum, FUN = mean, na.rm = T)$x); names(Mean) = unique(x_data$stratum)
@@ -503,6 +433,7 @@ make_appendix_table = function(interview_data, gear, variable) {
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
     KuskoHarvUtils::add_vspace()
+
 }
 
 #' Create a table displaying reported harvest goal attainment
