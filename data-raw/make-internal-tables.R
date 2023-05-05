@@ -14,6 +14,8 @@ nonsalmon_species = c("whitefish", "sheefish")
 species = c(salmon_species, nonsalmon_species)
 is_salmon = species %in% salmon_species
 in_text = ifelse(species == "chinook", KuskoHarvUtils::capitalize(species), species)
+in_text = ifelse(species == "whitefish", "all whitefishes", in_text)
+in_text = ifelse(is_salmon, paste0(in_text, " salmon"), in_text)
 species_names = data.frame(species = species, is_salmon = is_salmon, in_text = in_text)
 
 # export them to proper structure and location
