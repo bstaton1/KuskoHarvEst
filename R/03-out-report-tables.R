@@ -214,20 +214,25 @@ make_johnson_summary_table = function() {
 
   # build the table to pass to kable()
   tab = cbind(
-    var = c("Total Trips", "Total Catch/Trip", paste0("\\%", KuskoHarvUtils::capitalize(spp), " Salmon")),
+    var = c("Total Trips", "Total Catch/Trip", KuskoHarvUtils::capitalize(spp)),
     rbind(effort_value, cpt_value, pspp_value)
   ); rownames(tab) = NULL
+  tab = t(tab)
+  colnames(tab) = tab[1,]; tab = tab[-1,]
+  tab = cbind("Location" = c("Downstream of Johnson R. ", "Upstream of Johnson R."), tab)
+
   latex_options = "HOLD_position"
   if (length(spp) > 2) latex_options = c(latex_options, "scale_down")
 
   # build the kable
-  knitr::kable(tab, "latex", col.names = c("Quantity", "Downstream", "Upstream"),
+  knitr::kable(tab, "latex",
                row.names = FALSE, booktabs = TRUE, longtable = FALSE, linesep = "",
                align = paste0("lcc", paste(rep("c", length(spp)), collapse = "")), escape = FALSE,
                caption = "Estimated trips, average (95\\% confidence limits) total salmon catch per trip, and percent catch by species summarized for the areas above and below the confluence of the Johnson River with the Kuskokwim River. Quantities are derived from the strata- and species-specific harvest estimates, not the raw interview data.") %>%
-    kableExtra::add_header_above(c(" " = 1, "Proximity to Johnson R. Mouth" = 2), bold = TRUE) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) %>%
+    kableExtra::add_header_above(c(" " = 3, "Salmon Species \\\\% Composition" = length(spp)), bold = TRUE, escape = FALSE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
+    kableExtra::column_spec(1, bold = TRUE) %>%
     KuskoHarvUtils::add_vspace()
 }
 
