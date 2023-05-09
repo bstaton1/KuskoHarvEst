@@ -134,11 +134,14 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
     harv_tab
   )
 
+  latex_options = "HOLD_position"
+  if (length(spp) > 2) latex_options = c(latex_options, "scale_down")
+
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE, row.names = FALSE,
                align = paste(c("l", rep("c", 2 + length(spp))), collapse = ""),
                caption = paste0("Summary of relevant quantities by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position", "scale_down")) %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) %>%
     kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = length(spp)), bold = TRUE) %>%
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
@@ -214,14 +217,16 @@ make_johnson_summary_table = function() {
     var = c("Total Trips", "Total Catch/Trip", paste0("\\%", KuskoHarvUtils::capitalize(spp), " Salmon")),
     rbind(effort_value, cpt_value, pspp_value)
   ); rownames(tab) = NULL
+  latex_options = "HOLD_position"
+  if (length(spp) > 2) latex_options = c(latex_options, "scale_down")
 
   # build the kable
   knitr::kable(tab, "latex", col.names = c("Quantity", "Downstream", "Upstream"),
                row.names = FALSE, booktabs = TRUE, longtable = FALSE, linesep = "",
-               align = "lcc", escape = FALSE,
+               align = paste0("lcc", paste(rep("c", length(spp)), collapse = "")), escape = FALSE,
                caption = "Estimated trips, average (95\\% confidence limits) total salmon catch per trip, and percent catch by species summarized for the areas above and below the confluence of the Johnson River with the Kuskokwim River. Quantities are derived from the strata- and species-specific harvest estimates, not the raw interview data.") %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
     kableExtra::add_header_above(c(" " = 1, "Proximity to Johnson R. Mouth" = 2), bold = TRUE) %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
     KuskoHarvUtils::add_vspace()
 }
