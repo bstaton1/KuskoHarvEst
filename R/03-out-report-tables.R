@@ -315,9 +315,10 @@ make_appendix_table = function(interview_data, gear, variable) {
   if (is_catch_rate) {
     x_data = x_data[x_data$suit_cr_reliable,]
     x = x_data[,stringr::str_remove(variable, "_rate$")]/(as.numeric(x_data$soak_duration, "hours") * x_data$net_length) * 150
-    cap = "Summary of GEAR net catch rate of SPECIES by fishing area (fish per 150 feet of net per hour)" |>
+    regex_spp = paste0("^", stringr::str_replace(stringr::str_remove(variable, "_rate$"), "\\+", "\\\\+"), "$")
+    cap = "Summary of GEAR net catch rate of SPECIES by fishing area (fish per 150 feet of net per hour)." |>
       stringr::str_replace("GEAR", gear) |>
-      stringr::str_replace("SPECIES", species_names$in_text[stringr::str_detect(species_names$species, stringr::str_remove(variable, "_rate$"))])
+      stringr::str_replace("SPECIES", species_names$in_text[stringr::str_detect(species_names$species, regex_spp)])
     digits = 1
   }
 
