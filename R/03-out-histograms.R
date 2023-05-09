@@ -24,7 +24,7 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
   duration_accept = c("trip_duration", "soak_duration")
   time_accept = c("trip_start", "trip_end")
   p_accept = c("p_chinook")
-  accepted_variables = c(spp_accept, rate_accept, duration_accept, time_accept, p_accept, net_accept)
+  accepted_variables = c(spp_accept, duration_accept, time_accept, p_accept)
 
   # determine what kind of variable it is
   is_catch = variable %in% spp_accept
