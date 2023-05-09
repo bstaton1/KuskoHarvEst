@@ -282,7 +282,7 @@ make_appendix_table = function(interview_data, gear, variable) {
   }
 
   # if it is a catch or a catch rate and the species name isn't in data, stop
-  if ((is_catch | is_catch_rate | is_p) & (!stringr::str_remove(variable, "_rate$|^p_") %in% spp_found)) {
+  if ((is_catch | is_catch_rate | is_p) & (!stringr::str_remove(variable, "_rate$|^p_") %in% c(spp_found, "chum+sockeye"))) {
     stop ("species '", stringr::str_remove(variable, "_rate$|^p_"), "' is not contained in interview_data")
   }
 
@@ -304,9 +304,10 @@ make_appendix_table = function(interview_data, gear, variable) {
   # prepare information: catch per trip variables
   if (is_catch) {
     x = x_data[,variable]
+    regex_spp = paste0("^", stringr::str_replace(variable, "\\+", "\\\\+"), "$")
     cap = "Summary of GEAR net catch per trip of SPECIES by fishing area." |>
       stringr::str_replace("GEAR", gear) |>
-      stringr::str_replace("SPECIES", species_names$in_text[stringr::str_detect(species_names$species, variable)])
+      stringr::str_replace("SPECIES", species_names$in_text[stringr::str_detect(species_names$species, regex_spp)])
     digits = 0
   }
 
