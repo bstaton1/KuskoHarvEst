@@ -2,15 +2,17 @@
 % Please edit documentation in R/03-out-sensitivity.R
 \name{make_harvest_sensitivity_table}
 \alias{make_harvest_sensitivity_table}
-\title{Make a table to report results from harvest sensitivity analyses}
+\title{Make a table to report single-species results from harvest sensitivity analyses}
 \usage{
-make_harvest_sensitivity_table(harvest_scenarios, combos)
+make_harvest_sensitivity_table(species, harvest_scenarios, combos)
 }
 \arguments{
+\item{species}{The species to report, only salmon species are accepted as well as \code{"total"}, representing all salmon species.}
+
 \item{harvest_scenarios}{List storing the bootstrapped harvest output from each data scenario}
 
 \item{combos}{The output of \code{\link[=make_harvest_combos]{make_harvest_combos()}}}
 }
 \description{
-Make a table to report results from harvest sensitivity analyses
+Make a table to report single-species results from harvest sensitivity analyses
 }

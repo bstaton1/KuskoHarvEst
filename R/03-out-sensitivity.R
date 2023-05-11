@@ -150,19 +150,42 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
     kableExtra::kable_styling(full_width = FALSE, latex_options = c("scale_down", "HOLD_position")) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    KuskoHarvUtils::add_vspace()
 }
 
-#' Make a table to report results from harvest sensitivity analyses
+#' Make a table to report single-species results from harvest sensitivity analyses
 #'
-#' @param harvest_scenarios List storing the bootstrapped harvest output from each data scenario
-#' @param combos The output of [make_harvest_combos()]
-#'
-#' @export
+#' @inheritParams make_harvest_sensitivity_tables
+#' @param species The species to report, only salmon species are accepted as well as `"total"`, representing all salmon species.
 #' @importFrom magrittr %>%
 #'
+#'
 
-make_harvest_sensitivity_table = function(harvest_scenarios, combos) {
+# species = "chinook"
+# combos = harvest_combos
+
+make_harvest_sensitivity_table = function(species, harvest_scenarios, combos) {
+
+  # which species are accepted
+  species_accept = c(species_names$species[species_names$is_salmon], "total")
+
+  # which species are found in the interview data
+  species_found = c(species_in_data(interview_data)$salmon, "total")
+
+  # if more than one species supplied, stop
+  if (length(species) > 1) {
+    stop ("only one species can be supplied at once")
+  }
+
+  # if the supplied species isn't in the list of those accepted, stop
+  if (!(species %in% species_accept)) {
+    stop ("supplied value for species argument ('", species, "') not accepted.\nAccepted values are:", knitr::combine_words(species_accept, before = "  \n'", after = "'", and = " or "))
+  }
+
+  # if the species name isn't in data, stop
+  if (!species %in% species_found) {
+    stop ("species '", species, "' is not contained in interview_data")
+  }
 
   # create names for each combo
   combo_names = sapply(1:nrow(combos), function(i) {
@@ -174,89 +197,73 @@ make_harvest_sensitivity_table = function(harvest_scenarios, combos) {
     }
   })
 
-  # create a nice column showing the estimate by species group
-  pretty_chinook_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvUtils::tinyCI(report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x))
-  }))
-
-  pretty_chum_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvUtils::tinyCI(report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x))
-  }))
-
-  pretty_sockeye_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvUtils::tinyCI(report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x))
-  }))
-
-  pretty_total_ests = unlist(lapply(harvest_scenarios, function(x) {
-    KuskoHarvUtils::tinyCI(report(spp = "total", gear = "total", stratum = "total", boot_out_use = x))
+  # create a nice column showing the estimate
+  pretty_ests = unlist(lapply(harvest_scenarios, function(x) {
+    KuskoHarvUtils::tinyCI(report(spp = species, gear = "total", stratum = "total", boot_out_use = x), linebreak = FALSE)
   }))
 
   # extract just the means: for calculating %change
-  mean_chinook_ests = unlist(lapply(harvest_scenarios, function(x) {
-    report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
-  }))
-
-  mean_chum_ests = unlist(lapply(harvest_scenarios, function(x) {
-    report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
-  }))
-
-  mean_sockeye_ests = unlist(lapply(harvest_scenarios, function(x) {
-    report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
-  }))
-
-  mean_total_ests = unlist(lapply(harvest_scenarios, function(x) {
-    report(spp = "total", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+  mean_ests = unlist(lapply(harvest_scenarios, function(x) {
+    report(spp = species, gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
   }))
 
   # calculate the % change in mean estimate
-  chinook_p_diff = KuskoHarvUtils::percentize((mean_chinook_ests - mean_chinook_ests[1])/mean_chinook_ests[1], escape = TRUE)
-  chum_p_diff = KuskoHarvUtils::percentize((mean_chum_ests - mean_chum_ests[1])/mean_chum_ests[1], escape = TRUE)
-  sockeye_p_diff = KuskoHarvUtils::percentize((mean_sockeye_ests - mean_sockeye_ests[1])/mean_sockeye_ests[1], escape = TRUE)
-  total_p_diff = KuskoHarvUtils::percentize((mean_total_ests - mean_total_ests[1])/mean_total_ests[1], escape = TRUE)
+  p_diff = KuskoHarvUtils::percentize((mean_ests - mean_ests[1])/mean_ests[1], escape = TRUE)
 
   # calculate the CV for each species group
-  cv_chinook = unlist(lapply(harvest_scenarios, function(x) {
-    mn = report(spp = "chinook", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
-    sd = sd(subset(x, gear == "total" & stratum == "total")$chinook, na.rm = TRUE)
-    KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
-  }))
-
-  cv_chum = unlist(lapply(harvest_scenarios, function(x) {
-    mn = report(spp = "chum", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
-    sd = sd(subset(x, gear == "total" & stratum == "total")$chum, na.rm = TRUE)
-    KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
-  }))
-
-  cv_sockeye = unlist(lapply(harvest_scenarios, function(x) {
-    mn = report(spp = "sockeye", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
-    sd = sd(subset(x, gear == "total" & stratum == "total")$sockeye, na.rm = TRUE)
-    KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
-  }))
-
-  cv_total = unlist(lapply(harvest_scenarios, function(x) {
-    mn = report(spp = "total", gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
-    sd = sd(subset(x, gear == "total" & stratum == "total")$total, na.rm = TRUE)
+  cv = unlist(lapply(harvest_scenarios, function(x) {
+    mn = report(spp = species, gear = "total", stratum = "total", boot_out_use = x, CI = FALSE, return_numeric = TRUE)
+    sd = sd(subset(x, gear == "total" & stratum == "total")[,species], na.rm = TRUE)
     KuskoHarvUtils::percentize(sd/mn, escape = TRUE)
   }))
 
   # build the data frame to print
-  tab = data.frame(
-    combo_names,
-    pretty_chinook_ests, chinook_p_diff, cv_chinook,
-    pretty_chum_ests, chum_p_diff, cv_chum,
-    pretty_sockeye_ests, sockeye_p_diff, cv_sockeye,
-    pretty_total_ests, total_p_diff, cv_total
-  )
+  tab = data.frame(combo_names,pretty_ests, p_diff, cv)
 
   # make nice column names
-  colnames(tab) = c("Scenario", rep(c("Estimate", "\\% Change", "CV"), 4))
+  colnames(tab) = c("Scenario", "Estimate", "\\% Change", "CV")
+
+  # function to replace the species name placeholder
+  # this is a workaround because add_header_above() only accepts hard-coded characters as the header titles
+  # FIXME: should be moved to KuskoHarvUtils; see KuskoHarvUtils#4
+  kable_replace = function(kable_input, pattern, replacement) {
+    kable_input_new = stringr::str_replace(as.character(kable_input), pattern = pattern, replacement = replacement)
+    class(kable_input_new) = class(kable_input)
+    attributes(kable_input_new) = attributes(kable_input)
+    return(kable_input_new)
+  }
 
   # build the kable to print
-  knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lcccccccccccc", escape = FALSE) %>%
-    kableExtra::kable_styling(full_width = F, latex_options = c("scale_down", "HOLD_position")) %>%
-    kableExtra::add_header_above(c(" " = 1, "Chinook" = 3, "Chum" = 3, "Sockeye" = 3, "Total" = 3), bold = TRUE) %>%
+  kable_input = knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lccc", escape = FALSE, label = paste0(species, "-table")) %>%
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
+    kableExtra::add_header_above(c(" " = 1, "SPECIES Salmon" = 3), bold = TRUE) %>%
     kableExtra::row_spec(0, bold = TRUE) %>%
     kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace
+    kableExtra::column_spec(1, bold = TRUE) %>%
+    KuskoHarvUtils::add_vspace() %>%
+    kable_replace(pattern = "SPECIES", replacement = KuskoHarvUtils::capitalize(species))
+}
+
+#' Make a table to report multiple tables from harvest sensitivity analyses
+#'
+#' @param harvest_scenarios List storing the bootstrapped harvest output from each data scenario
+#' @param combos The output of [make_harvest_combos()]
+#' @note Unlike most other functions that make tables (e.g., [make_strata_summary_table()]),
+#'   this function must be used with the chunk option `results = "asis"` to render properly.
+#' @export
+#'
+
+make_harvest_sensitivity_tables = function(harvest_scenarios, combos) {
+
+  # which species are found in the interview data
+  species_found = c(species_in_data(interview_data)$salmon)
+
+  # include a total if there is more than one species
+  if (length(species_found) > 1) species_found = c(species_found, "total")
+
+  # build all tables
+  lapply(species_found, make_harvest_sensitivity_table, harvest_scenarios = harvest_scenarios, combos = combos) |>
+    unlist() |>
+    cat(sep = "\n")
 }

@@ -254,7 +254,7 @@ make_johnson_summary_table = function() {
 make_appendix_table = function(interview_data, gear, variable) {
 
   # set the variables that are accepted, and perform error check
-  spp_accept = c(unlist(paste(species_names$species)), "chum+sockeye")
+  spp_accept = c(species_names$species, "chum+sockeye")
   rate_accept = paste0(spp_accept, "_rate")
   duration_accept = c("trip_duration", "soak_duration")
   time_accept = c("trip_start", "trip_end")
@@ -461,7 +461,7 @@ make_appendix_table = function(interview_data, gear, variable) {
 #'     * `"trip_start"`
 #'     * `"trip_end"`
 #'     * `"net_length"`
-#' @note Unlike the other functions that make tables (e.g., [make_strata_summary_table()]),
+#' @note Unlike most other functions that make tables (e.g., [make_strata_summary_table()]),
 #'   this function must be used with the chunk option `results = "asis"` to render properly.
 #'   Additionally, if Chinook salmon are available and `nonsalmon = FALSE` is set, a table showing
 #'   the percent composition of Chinook salmon among all available salmon species will be included.
