@@ -98,7 +98,7 @@ report = function(spp = "total", gear = "total", stratum = "total", date = NULL,
 
 #' Summarize Harvest Estimates Bullet List
 #'
-#' Wrapper around [`report()`] to cleanly return harvest estimates
+#' Wrapper around [report()] to cleanly return harvest estimates
 #' as a markdown list. Automatically selects species to report.
 #'
 #' @inheritParams estimate_harvest

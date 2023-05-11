@@ -140,7 +140,7 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE, row.names = FALSE,
                align = paste(c("l", rep("c", 2 + length(spp))), collapse = ""),
-               caption = paste0("Summary of relevant quantities by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
+               caption = paste0("Summaries by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) %>%
     kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = length(spp)), bold = TRUE) %>%
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
@@ -250,8 +250,6 @@ make_johnson_summary_table = function() {
 #'   * `"p_chinook"`
 #'
 #' @importFrom magrittr %>%
-#' @export
-#'
 
 make_appendix_table = function(interview_data, gear, variable) {
 
@@ -439,13 +437,67 @@ make_appendix_table = function(interview_data, gear, variable) {
   rownames(tab) = NULL
 
   # build the kable
-  knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", caption = cap, escape = F, align = "lcccccc") %>%
+  knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", caption = cap, escape = F, align = "lcccccc",
+               label = paste0("appendix-table-", stringr::str_replace(variable, "_", "-"))) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
     kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
     kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
     KuskoHarvUtils::add_vspace()
 
+}
+
+#' Create multiple tables for the appendix
+#'
+#' @inheritParams estimate_harvest
+#' @param include_rates Logical; do you wish to include tables summarizing catch rates for the available species
+#'   (expressed as catch/150ft of net/1hr, defaults to `TRUE`)?
+#' @param split_chum_sockeye Logical; if both chum and sockeye salmon data are available, do you wish to
+#'   present their summaries disaggregated by species (`TRUE`, default), or aggregated together as chum+sockeye (`FALSE`)?
+#' @param extra Character; Any extra variables to include summary tables for. Set to `NULL` to exclude any extras.
+#'   Accepted options include:
+#'     * `"trip_duration"` (included by default)
+#'     * `"soak_duration"` (included by default)
+#'     * `"trip_start"`
+#'     * `"trip_end"`
+#'     * `"net_length"`
+#' @note Unlike the other functions that make tables (e.g., [make_strata_summary_table()]),
+#'   this function must be used with the chunk option `results = "asis"` to render properly.
+#'   Additionally, if Chinook salmon are available and `nonsalmon = FALSE` is set, a table showing
+#'   the percent composition of Chinook salmon among all available salmon species will be included.
+#' @export
+
+make_appendix_tables = function(interview_data, gear, include_rates = TRUE, split_chum_sockeye = TRUE, extra = c("trip_duration", "soak_duration"), nonsalmon = FALSE) {
+
+  # which salmon species are present in data
+  spp = KuskoHarvEst:::species_in_data(interview_data)[[ifelse(nonsalmon, "nonsalmon", "salmon")]]
+
+  # handle the case of reporting chum+sockeye
+  if (all(c("chum", "sockeye") %in% spp) & !split_chum_sockeye) {
+    spp = c(spp[-which(spp %in% c("chum", "sockeye"))], "chum+sockeye")
+  }
+
+  # build the species-specific variable names
+  # if including catch rates, order the species such that it goes
+  # spp A catch/trip, spp A catch rate, spp B catch/trip, etc.
+  if (include_rates) {
+    table_vars = rep(NA, length(spp) * 2)
+    table_vars[(1:(length(spp) * 2)) %% 2 != 0] = spp
+    table_vars[(1:(length(spp) * 2)) %% 2 == 0] = paste0(spp, "_rate")
+  } else {
+    table_vars = spp
+  }
+
+  # if chinook is found in data, include its composition
+  if ("chinook" %in% spp) table_vars = c(table_vars, "p_chinook")
+
+  # return the extra variables
+  if (!is.null(extra)) table_vars = c(table_vars, extra)
+
+  # build all tables
+  lapply(table_vars, make_appendix_table, interview_data = interview_data, gear = gear) |>
+    unlist() |>
+    cat(sep = "\n")
 }
 
 #' Create a table displaying reported harvest goal attainment
@@ -511,3 +563,5 @@ make_goals_summary_table = function(interview_data) {
     kableExtra::column_spec(1, bold = TRUE) %>%
     KuskoHarvUtils::add_vspace()
 }
+
+
