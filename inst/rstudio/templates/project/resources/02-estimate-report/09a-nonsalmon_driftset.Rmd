@@ -19,29 +19,14 @@ boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
 boot_out <<-  combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)
 ```
 
-```{r set-summaries-nonsalmon}
-set_harvest = sapply(c("sheefish", "whitefish", "total"), function(sp) report(sp, gear = "set", CI = FALSE, return_numeric = TRUE))
-if (set_harvest["total"] == 0) {
-  set_spp = c(sheefish = 0, whitefish = 0)
-} else {
-  set_spp = KuskoHarvUtils::smart_round(set_harvest[c("sheefish", "whitefish")]/set_harvest["total"], 2)
-}
-set_spp = KuskoHarvUtils::percentize(set_spp)
+```{r harvest-bullets-nonsalmon, results = "asis"}
+harvest_bullets(include_set_summary = TRUE, nonsalmon = TRUE)
 ```
-
-* An estimated total of **`r report()`** non-salmon (sheefish and whitefishes) were harvested.
-  * An estimated total of **`r report(spp = "sheefish")`** sheefish were harvested.
-  * An estimated total of **`r report(spp = "whitefish")`** whitefishes were harvested.
-* Harvest by set nets accounted for an estimated **`r report(gear = "set")`** total non-salmon fishes (`r paste0(set_spp["sheefish"], " sheefish and ", set_spp["whitefish"], " whitefishes")`).
 
 ```{r}
 make_strata_summary_table(interview_data, "drift", nonsalmon = TRUE)
 ```
 
-```{r}
-make_appendix_table(interview_data, "drift", "sheefish")
-```
-
-```{r}
-make_appendix_table(interview_data, "drift", "whitefish")
+```{r, results = "asis"}
+make_appendix_tables(interview_data, gear = "drift", include_rates = FALSE, extra = NULL, nonsalmon = TRUE)
 ```

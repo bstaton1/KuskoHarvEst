@@ -14,21 +14,9 @@ boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
 boot_out <<- combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)
 ```
 
-```{r set-summaries}
-set_harvest = sapply(c("chinook", "chum", "sockeye", "total"), function(sp) report(sp, gear = "set", CI = FALSE, return_numeric = TRUE))
-if (set_harvest["total"] == 0) {
-  set_spp = c(chinook = 0, chum = 0, sockeye = 0)
-} else {
-  set_spp = KuskoHarvUtils::smart_round(set_harvest[c("chinook", "chum", "sockeye")]/set_harvest["total"], 2)
-}
-set_spp = KuskoHarvUtils::percentize(set_spp)
+```{r harvest-bullets, results = "asis"}
+harvest_bullets(include_set_summary = TRUE)
 ```
-
-* An estimated total of **`r report()`** salmon were harvested.
-  * An estimated total of **`r report(spp = "chinook")`** Chinook salmon were harvested.
-  * An estimated total of **`r report(spp = "chum")`** chum salmon were harvested.
-  * An estimated total of **`r report(spp = "sockeye")`** sockeye salmon were harvested.
-* Harvest by set nets accounted for an estimated **`r report(gear = "set")`** total salmon (`r paste0(set_spp["chinook"], " Chinook salmon, ", set_spp["chum"], " chum salmon, and ", set_spp["sockeye"], " sockeye salmon")`).
 
 ```{r strata-summary-table}
 make_strata_summary_table(interview_data, "drift")
