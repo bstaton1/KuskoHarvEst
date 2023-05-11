@@ -12,10 +12,9 @@ boot_out_drift = bootstrap_harvest(interview_data, drift_effort_info,
 boot_out <<- combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = NULL)
 ```
 
-* An estimated total of **`r report()`** salmon were harvested.
-  * An estimated total of **`r report(spp = "chinook")`** Chinook salmon were harvested.
-  * An estimated total of **`r report(spp = "chum")`** chum salmon were harvested.
-  * An estimated total of **`r report(spp = "sockeye")`** sockeye salmon were harvested.
+```{r harvest-bullets, results = "asis"}
+harvest_bullets(include_set_summary = FALSE)
+```
 
 ```{r strata-summary-table}
 make_strata_summary_table(interview_data, "drift")

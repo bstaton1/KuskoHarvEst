@@ -17,12 +17,8 @@ boot_out_drift = bootstrap_harvest(interview_data, drift_effort_info,
 boot_out <<- combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = NULL)
 ```
 
-* An estimated total of **`r report()`** non-salmon (sheefish and whitefishes) were harvested.
-  * An estimated total of **`r report(spp = "sheefish")`** sheefish were harvested.
-  * An estimated total of **`r report(spp = "whitefish")`** whitefishes were harvested.
-
-```{r}
-make_strata_summary_table(interview_data, "drift", nonsalmon = TRUE)
+```{r harvest-bullets-nonsalmon, results = "asis"}
+harvest_bullets(include_set_summary = FALSE, nonsalmon = TRUE)
 ```
 
 ```{r}
