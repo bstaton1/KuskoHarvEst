@@ -22,9 +22,9 @@ harvest_bullets(include_set_summary = FALSE, nonsalmon = TRUE)
 ```
 
 ```{r}
-make_appendix_table(interview_data, "set", "sheefish")
+make_strata_summary_table(interview_data, "set", nonsalmon = TRUE)
 ```
 
-```{r}
-make_appendix_table(interview_data, "set", "whitefish")
+```{r, results = "asis"}
+make_appendix_tables(interview_data, gear = "set", include_rates = FALSE, extra = NULL, nonsalmon = TRUE)
 ```

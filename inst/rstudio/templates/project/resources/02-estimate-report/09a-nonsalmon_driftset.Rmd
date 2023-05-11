@@ -27,10 +27,6 @@ harvest_bullets(include_set_summary = TRUE, nonsalmon = TRUE)
 make_strata_summary_table(interview_data, "drift", nonsalmon = TRUE)
 ```
 
-```{r}
-make_appendix_table(interview_data, "drift", "sheefish")
-```
-
-```{r}
-make_appendix_table(interview_data, "drift", "whitefish")
+```{r, results = "asis"}
+make_appendix_tables(interview_data, gear = "drift", include_rates = FALSE, extra = NULL, nonsalmon = TRUE)
 ```

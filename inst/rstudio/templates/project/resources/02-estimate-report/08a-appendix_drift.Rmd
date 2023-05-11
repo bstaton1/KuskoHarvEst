@@ -5,6 +5,10 @@
 \renewcommand\thefigure{A\arabic{figure}}
 \renewcommand\thetable{A\arabic{table}}
 
+```{r}
+appendix_gear = "drift"
+```
+
 # Appendix A: Detailed Interview Summaries {-}
 
 **Column Meanings**
@@ -17,48 +21,14 @@
 * **75%**: the value that 75% of trips fell below in each area
 * **Max**: the maximum value among trips in each area
 
-_Information is for drift net trips only._
+_Information is for `r appendix_gear` net trips only._
 
-```{r chinook-appendix-table}
-make_appendix_table(interview_data, "drift", "chinook")
-```
-
-```{r chinook-rate-appendix-table}
-make_appendix_table(interview_data, "drift", "chinook_rate")
-```
-
-```{r chum-appendix-table, eval = split_chum_sockeye}
-make_appendix_table(interview_data, "drift", "chum")
-```
-
-```{r chum-rate-appendix-table, eval = split_chum_sockeye}
-make_appendix_table(interview_data, "drift", "chum_rate")
-```
-
-```{r sockeye-appendix-table, eval = split_chum_sockeye}
-make_appendix_table(interview_data, "drift", "sockeye")
-```
-
-```{r sockeye-rate-appendix-table, eval = split_chum_sockeye}
-make_appendix_table(interview_data, "drift", "sockeye_rate")
-```
-
-```{r chum-sockeye-appendix-table, eval = !split_chum_sockeye}
-make_appendix_table(interview_data, "drift", "chum+sockeye")
-```
-
-```{r chum-sockeye-rate-appendix-table, eval = !split_chum_sockeye}
-make_appendix_table(interview_data, "drift", "chum+sockeye_rate")
-```
-
-```{r p-chinook-appendix-table}
-make_appendix_table(interview_data, "drift", "p_chinook")
-```
-
-```{r soak-duration-appendix-table}
-make_appendix_table(interview_data, "drift", "soak_duration")
-```
-
-```{r trip-duration-appendix-table}
-make_appendix_table(interview_data, "drift", "trip_duration")
+```{r appendix-tables, results = "asis"}
+make_appendix_tables(
+  gear = appendix_gear,
+  include_rates = TRUE,
+  split_chum_sockeye = split_chum_sockeye,
+  extra = c("trip_duration", "soak_duration"),
+  nonsalmon = FALSE
+  )
 ```
