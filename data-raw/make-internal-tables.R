@@ -9,7 +9,7 @@ strata_names = data.frame(stratum = c("A", "B", "C", "D1"),
                           stratum_end = c("Johnson R.", "Napaskiak", "Akiachak", "Akiak"))
 
 # make a table specifying which species the program should accept
-salmon_species = c("chinook", "chum", "sockeye")
+salmon_species = c("chinook", "chum", "sockeye", "coho")
 nonsalmon_species = c("whitefish", "sheefish")
 species = c(salmon_species, nonsalmon_species)
 is_salmon = species %in% salmon_species
