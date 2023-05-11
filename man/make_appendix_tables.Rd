@@ -42,7 +42,7 @@ Accepted options include:
 Create multiple tables for the appendix
 }
 \note{
-Unlike the other functions that make tables (e.g., \code{\link[=make_strata_summary_table]{make_strata_summary_table()}}),
+Unlike most other functions that make tables (e.g., \code{\link[=make_strata_summary_table]{make_strata_summary_table()}}),
 this function must be used with the chunk option \code{results = "asis"} to render properly.
 Additionally, if Chinook salmon are available and \code{nonsalmon = FALSE} is set, a table showing
 the percent composition of Chinook salmon among all available salmon species will be included.
