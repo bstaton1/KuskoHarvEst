@@ -23,11 +23,11 @@ harvest_scenarios = lapply(1:nrow(harvest_combos), function(i) {
   
   # estimate (via bootstrap) drift net harvest for all species and and strata
   boot_out_drift = bootstrap_harvest(interview_data_use, drift_effort_info,
-                                     gear = "drift", n_boot = n_boot, stratify_interviews = TRUE)
+                                     gear = "drift", n_boot = params$n_boot, stratify_interviews = TRUE)
   
   # estimate (via bootstrap) set net harvest for all species and and strata
   boot_out_set = bootstrap_harvest(interview_data_use, set_effort_info,
-                                   gear = "set", n_boot = n_boot, stratify_interviews = FALSE)
+                                   gear = "set", n_boot = params$n_boot, stratify_interviews = FALSE)
   
   # combine drift, set, and total into one data frame of bootstrap output
   combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)

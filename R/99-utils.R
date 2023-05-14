@@ -78,3 +78,30 @@ species_in_data = function(interview_data) {
     )
   })
 }
+
+#' Select Species after Data Processing
+#'
+#' Given a data frame of interview data,
+#' return the entire data frame
+#' but including only those selected in
+#' a knitr `params` list.
+#'
+#' @inheritParams estimate_harvest
+#' @param knitr_params List; must contain the names of the desired/undesired
+#'   species as named elements with logical (`TRUE/FALSE`) values.
+#'   Generally provided via the `params` argument to [rmarkdown::render()].
+#'
+
+select_species = function(interview_data, knitr_params) {
+  # get the names of the species contained in yaml params
+  species_choices = unlist(knitr_params[names(knitr_params) %in% KuskoHarvEst:::species_names$species])
+
+  # keep only the species with yaml value of 'true'
+  keep_species = names(species_choices)[which(species_choices)]
+
+  # the variable names of all non-catch variables
+  non_catch_vars = colnames(interview_data)[!colnames(interview_data) %in% KuskoHarvEst:::species_names$species]
+
+  # keep the non-catch and only the desired catch variables
+  interview_data[,colnames(interview_data) %in% c(non_catch_vars, keep_species)]
+}

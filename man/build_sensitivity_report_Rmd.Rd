@@ -5,21 +5,25 @@
 \title{Automate creation of a Rmd source file for sensitivity analysis reports}
 \usage{
 build_sensitivity_report_Rmd(
-  draft = FALSE,
-  do_setnets = TRUE,
-  n_boot = 1000,
-  include_plots = FALSE
+  do_drift,
+  do_set,
+  species = c("chinook", "chum", "sockeye"),
+  include_plots = FALSE,
+  ...
 )
 }
 \arguments{
-\item{draft}{Logical; should a draft watermark be printed in the rendered output?}
+\item{do_drift}{Logical; should harvest and effort estimates be produced for drift nets?}
 
-\item{do_setnets}{Logical; should a set net harvest estimate be produced?}
+\item{do_set}{Logical; should harvest and effort estimates be produced for set nets?}
 
-\item{n_boot}{Numeric; how many bootstrap iterations should be performed?}
+\item{species}{Character; vector of accepted species (see \code{KuskoHarvEst:::species_names}).}
 
 \item{include_plots}{Logical; should the output of \code{\link[=make_effort_plot]{make_effort_plot()}} be displayed
 for each data scenario? This can result in many plots and a long document, so it is \code{FALSE} by default.}
+
+\item{...}{Arguments to be passed to \code{\link[=build_yaml]{build_yaml()}}. Both \code{do_drift = TRUE/FALSE} and \code{do_set = TRUE/FALSE}
+are required, the remainder of the arguments have defaults. See \code{\link[=build_yaml]{build_yaml()}}.}
 }
 \description{
 Based on a set of supplied options, builds the Rmarkdown source file to build

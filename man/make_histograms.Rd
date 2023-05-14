@@ -4,7 +4,14 @@
 \alias{make_histograms}
 \title{Make a multi-panel figure showing multiple histograms}
 \usage{
-make_histograms(interview_data, gear, variables, mfrow = c(2, 3), n_bins = 10)
+make_histograms(
+  interview_data,
+  gear,
+  variables = NULL,
+  mfrow = c(2, 3),
+  n_bins = 10,
+  ...
+)
 }
 \arguments{
 \item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
@@ -16,12 +23,16 @@ make_histograms(interview_data, gear, variables, mfrow = c(2, 3), n_bins = 10)
 }}
 
 \item{variables}{Character; vector indicating which
-variables to draw histograms for. See \code{\link[=make_histogram]{make_histogram()}} for accepted options}
+variables to draw histograms for. See \code{\link[=make_histogram]{make_histogram()}} for accepted options.
+If left \code{NULL} (the default), \code{\link[=select_histogram_variables]{select_histogram_variables()}} will automatically select
+the variables to display.}
 
 \item{mfrow}{Numeric; vector of length 2 specifying how to organize the histogram panels in \code{c(rows,colums)}.
 Supplied to \code{\link[graphics:par]{graphics::par()}} and defaults to \code{c(2,3)}.}
 
 \item{n_bins}{Numeric; the number of bars to draw for the histogram}
+
+\item{...}{Optional arguments to be passed to \code{\link[=select_histogram_variables]{select_histogram_variables()}}}
 }
 \description{
 Calls \code{\link[=make_histogram]{make_histogram()}} several times to build a multipanel figure showing

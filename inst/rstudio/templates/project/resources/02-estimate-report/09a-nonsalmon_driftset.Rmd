@@ -1,19 +1,24 @@
+
+```{r}
+appendix_counter = appendix_counter + 1
+```
+
 \clearpage
 \setcounter{figure}{0}
 \setcounter{table}{0}
-\renewcommand\thefigure{NONSALMON_APPENDIX_REPLACE\arabic{figure}}
-\renewcommand\thetable{NONSALMON_APPENDIX_REPLACE\arabic{table}}
+\renewcommand\thefigure{`r LETTERS[appendix_counter]`\arabic{figure}}
+\renewcommand\thetable{`r LETTERS[appendix_counter]`\arabic{table}}
 
-# Appendix NONSALMON_APPENDIX_REPLACE: Non-salmon Harvest Information {-}
+# Appendix `r LETTERS[appendix_counter]`: Non-salmon Harvest Information {-}
 
 ```{r estimate-harvest-nonsalmon}
 # estimate (via bootstrap) drift net harvest for all species and and strata
 boot_out_drift = bootstrap_harvest(interview_data, drift_effort_info,
-                                   gear = "drift", n_boot = n_boot, stratify_interviews = TRUE, nonsalmon = TRUE)
+                                   gear = "drift", n_boot = params$n_boot, stratify_interviews = TRUE, nonsalmon = TRUE)
 
 # estimate (via bootstrap) set net harvest for all species and and strata
 boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
-                                 gear = "set", n_boot = n_boot, stratify_interviews = FALSE, nonsalmon = TRUE)
+                                 gear = "set", n_boot = params$n_boot, stratify_interviews = FALSE, nonsalmon = TRUE)
 
 # combine drift, set, and total into one data frame of bootstrap output
 boot_out <<-  combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)

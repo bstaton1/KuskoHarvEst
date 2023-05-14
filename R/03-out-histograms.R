@@ -159,15 +159,22 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 #'
 #' @inheritParams estimate_harvest
 #' @param variables Character; vector indicating which
-#'   variables to draw histograms for. See [make_histogram()] for accepted options
+#'   variables to draw histograms for. See [make_histogram()] for accepted options.
+#'   If left `NULL` (the default), [select_histogram_variables()] will automatically select
+#'   the variables to display.
 #' @param mfrow Numeric; vector of length 2 specifying how to organize the histogram panels in `c(rows,colums)`.
 #'   Supplied to [graphics::par()] and defaults to `c(2,3)`.
 #' @param n_bins Numeric; the number of bars to draw for the histogram
+#' @param ... Optional arguments to be passed to [select_histogram_variables()]
 #' @note If 6 or fewer variables are supplied, the panels will be organized as
 #'
 #' @export
 
-make_histograms = function(interview_data, gear, variables, mfrow = c(2,3), n_bins = 10) {
+make_histograms = function(interview_data, gear, variables = NULL, mfrow = c(2,3), n_bins = 10, ...) {
+
+  if (is.null(variables)) {
+    variables = select_histogram_variables(interview_data = interview_data, ...)
+  }
 
   # graphics device settings
   par(mfrow = mfrow, mar = c(1.5,1,2,1), oma = c(0,2,0,0))
@@ -210,3 +217,58 @@ make_histogram_caption = function(interview_data, gear) {
   # return it
   return(hist_fig_cap)
 }
+
+#' Automate selection of histogram variables
+#'
+#' @inheritParams make_appendix_table
+#' @param max_vars Numeric; the maximum number of variables to return, defaults to 6 for a 2x3 multi-panel plot.
+#' @param min_noncatch Numeric; the minimum number of noncatch variables to return, defaults to 2.
+#' @param noncatch_vars Character; vector of variable names to show in addition to the catch variables.
+#'   As many valid options will be returned (in order as specified here) as room allows by `max_vars`.
+#'   Defaults to `c("trip_duration", "soak_duration", "trip_start", "trip_end")`.
+
+select_histogram_variables = function(interview_data, split_chum_sockeye = TRUE,
+                                      max_vars = 6, min_noncatch = 2,
+                                      noncatch_vars = c("trip_duration", "soak_duration", "trip_start", "trip_end")) {
+
+  # get the names of all salmon species contained in the interview data
+  salmon_species = KuskoHarvEst:::species_in_data(interview_data)$salmon
+
+  # set this as the starting point for the list of variables to plot
+  vars = salmon_species
+
+  # handle the split_chum_sockeye argument
+  if (all(c("chum", "sockeye") %in% salmon_species & !split_chum_sockeye)) {
+    vars = salmon_species[-which(salmon_species %in% c("chum", "sockeye"))]
+    vars = c(vars, "chum+sockeye")
+  }
+
+  # how many salmon species-specific panels will there be?
+  n_salmon = length(vars)
+
+  # if more than one species, add a total
+  if (n_salmon > 1) vars = c(vars, "total_salmon")
+
+  # if chinook is present and not the only species, add its composition
+  if (n_salmon > 1 & "chinook" %in% vars) vars = c(vars, "p_chinook")
+
+  # drop the total salmon variable if it puts us over the max_vars count
+  if (length(vars) + min_noncatch > max_vars) {
+    vars = vars[-which(vars == "total_salmon")]
+  }
+
+  # drop the total salmon variable if it puts us over the max_vars count
+  if (length(vars) + min_noncatch > max_vars) {
+    vars = vars[-which(vars == "p_chinook")]
+  }
+
+  # how many noncatch variables will be plotted
+  n_noncatch_vars = min(max_vars - length(vars), length(noncatch_vars))
+
+  # combine the catch and noncatch variables
+  vars = c(vars, noncatch_vars[1:n_noncatch_vars])
+
+  # return
+  vars
+}
+
