@@ -6,7 +6,8 @@ options_file = list.files(pattern = "options", full.names = TRUE, recursive = TR
 flight_file = list.files(pattern = "flight_data", full.names = TRUE, recursive = TRUE)
 
 # load information
-interview_data = readRDS(interview_file)
+interview_data = readRDS(interview_file) |>
+  KuskoHarvEst:::select_species(params)
 flight_data = readRDS(flight_file)
 meta = readRDS(meta_file)
 
