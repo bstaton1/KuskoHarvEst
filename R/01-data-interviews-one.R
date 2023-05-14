@@ -83,6 +83,9 @@ prepare_interviews_one = function(input_file, include_salmon, include_nonsalmon,
     dat_out = dat_out[!unknown_stratum,]
   }
 
+  # if all records have been discarded, return empty output
+  if (nrow(dat_out) == 0) return(NULL)
+
   ### STEP 3: handle the gear (net) type
   gear_entered = stringr::str_remove(dat_in$gear, " ")
   gear_standard = tolower(gear_entered) # make lowercase
