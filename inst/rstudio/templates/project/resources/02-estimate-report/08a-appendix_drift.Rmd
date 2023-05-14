@@ -1,15 +1,19 @@
 
+```{r}
+appendix_counter = appendix_counter + 1
+```
+
 \clearpage
 \setcounter{figure}{0}
 \setcounter{table}{0}
-\renewcommand\thefigure{A\arabic{figure}}
-\renewcommand\thetable{A\arabic{table}}
+\renewcommand\thefigure{`r LETTERS[appendix_counter]`\arabic{figure}}
+\renewcommand\thetable{`r LETTERS[appendix_counter]`\arabic{table}}
 
 ```{r}
 appendix_gear = "drift"
 ```
 
-# Appendix A: Detailed Interview Summaries {-}
+# Appendix `r LETTERS[appendix_counter]`: Detailed Interview Summaries {-}
 
 **Column Meanings**
 
@@ -25,6 +29,7 @@ _Information is for `r appendix_gear` net trips only._
 
 ```{r appendix-tables, results = "asis"}
 make_appendix_tables(
+  interview_data = interview_data,
   gear = appendix_gear,
   include_rates = TRUE,
   split_chum_sockeye = params$split_chum_sockeye,

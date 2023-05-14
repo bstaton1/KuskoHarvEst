@@ -236,10 +236,6 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
   # paste all content into one vector, with entries separated by new lines
   Rmd_contents = paste(yaml_contents, paste(body_contents, collapse = "\n"), collapse = "\n")
 
-  # replace the nonsalmon_appendix_replace placeholder text with the correct appendix letter ID
-  nonsalmon_letter = ifelse(include_appendix, "B", "A")
-  Rmd_contents = stringr::str_replace_all(Rmd_contents, "NONSALMON_APPENDIX_REPLACE", nonsalmon_letter)
-
   # build the file name
   Rmd_file = paste0("KuskoHarvEst_", KuskoHarvUtils::file_date(meta$start_date), ".Rmd")
 
