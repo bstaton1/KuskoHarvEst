@@ -4,7 +4,7 @@
 ```{r estimate-harvest}
 # estimate (via bootstrap) set net harvest for all species and and strata
 boot_out_set = bootstrap_harvest(interview_data, set_effort_info,
-                                 gear = "set", n_boot = n_boot, stratify_interviews = FALSE)
+                                 gear = "set", n_boot = params$n_boot, stratify_interviews = FALSE)
 
 # don't perform a drift net estimate
 

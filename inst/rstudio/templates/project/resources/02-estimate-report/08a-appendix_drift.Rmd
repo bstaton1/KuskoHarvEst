@@ -27,7 +27,7 @@ _Information is for `r appendix_gear` net trips only._
 make_appendix_tables(
   gear = appendix_gear,
   include_rates = TRUE,
-  split_chum_sockeye = split_chum_sockeye,
+  split_chum_sockeye = params$split_chum_sockeye,
   extra = c("trip_duration", "soak_duration"),
   nonsalmon = FALSE
   )

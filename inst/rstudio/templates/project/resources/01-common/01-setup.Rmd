@@ -12,12 +12,6 @@ library(KuskoHarvEst)
 # set the global chunk options
 knitr::opts_chunk$set(echo = FALSE, fig.align = "center", message = FALSE, warning = FALSE, fig.pos = "H", out.extra = "")
 
-# set the number of bootstrap replicates
-n_boot = N_BOOT_REPLACE
-
-# set whether to split or aggregate chum/sockeye summaries in histograms and appendix
-split_chum_sockeye = SPLIT_CHUM_SOCKEYE_REPLACE
-
 # create a directory to store output files if it doesn't already exist
 out_dir = "output"
 if (!dir.exists(out_dir)) dir.create(out_dir)
