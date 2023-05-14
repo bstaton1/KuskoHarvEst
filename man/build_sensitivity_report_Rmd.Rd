@@ -8,7 +8,8 @@ build_sensitivity_report_Rmd(
   do_drift,
   do_set,
   species = c("chinook", "chum", "sockeye"),
-  include_plots = FALSE
+  include_plots = FALSE,
+  ...
 )
 }
 \arguments{
