@@ -162,9 +162,12 @@ make_johnson_summary_table = function() {
   # figure out species to show
   spp = species_in_data(boot_out)[["salmon"]]
 
+  # figure out strata present
+  strata = names(drift_effort_info$effort_est_stratum)
+
   # extract effort estimates above and below Johnson R.
-  below_johnson_effort = drift_effort_info$effort_est_stratum["A"]
-  above_johnson_effort = sum(drift_effort_info$effort_est_stratum[c("B", "C", "D1")])
+  below_johnson_effort = drift_effort_info$effort_est_stratum[strata == "A"]
+  above_johnson_effort = sum(drift_effort_info$effort_est_stratum[strata != "A"])
 
   # extract bootstrap estimates of total harvest below and above johnson R
   below_johnson_total = subset(boot_out, gear == "drift" & stratum == "A")[,"total"]
