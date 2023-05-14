@@ -166,6 +166,7 @@ N_estimator = function(effort_data) {
       # this represents the fraction of (F+1) that was also counted on (F)
       # 1 - this is the fraction of (F+1) that were new trips
       conditional = consec_joint/second_marginal
+      conditional[conditional == "NaN"] = 0   # if the second marginal is 0, this will be NaN.
       names(conditional) = stringr::str_replace(tolower(names(conditional)), "&", "|")
       names(conditional) = paste0("[", names(conditional), "]")
 
@@ -249,7 +250,9 @@ estimate_effort = function(interview_data, flight_data, gear, method = "dbl_exp"
       # get conditional probability (f1|f2) for all joint combos
       p_T1_given_T2 = sapply(joint_names, function(x) {
         f2 = stringr::str_extract(x, "X[:digit:]$")
-        sum(trips[,x])/sum(trips[,f2])
+        out = sum(trips[,x])/sum(trips[,f2])
+        out[out == "NaN"] = 0 # if second flight is zero, this will be NaN
+        out
       })
 
       # get the number of trips counted for the first time on each flight
