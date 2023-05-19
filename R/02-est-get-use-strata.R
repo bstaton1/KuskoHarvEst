@@ -16,7 +16,7 @@
 #'     * Interviews with stratum recorded as `NA` may be used in any stratum
 #'
 
-get_use_strata = function(interview_data, pooling_threshold = getOption("pooling_threshold"), gear = "drift") {
+get_use_strata = function(interview_data, pooling_threshold = KuskoHarvEst_opts("pooling_threshold"), gear = "drift") {
 
   # discard any other gears
   interview_data = interview_data[interview_data$gear == gear,]
