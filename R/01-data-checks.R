@@ -221,26 +221,3 @@ unique_start_dates = function(interview_data) {
   start_dates = lubridate::date(interview_data$trip_start)
   unique(start_dates[!is.na(start_dates)])
 }
-
-#' Determine if all global options have been set
-#'
-
-check_options = function() {
-
-  # query the options needed for KuskoHarvEst
-  KuskoHarvEst_options = list(
-    soak_sd_cut = getOption("soak_sd_cut"),
-    net_length_cut = getOption("net_length_cut"),
-    catch_per_trip_cut = getOption("catch_per_trip_cut"),
-    central_fn = getOption("central_fn"),
-    pooling_threshold = getOption("pooling_threshold")
-  )
-
-  # determine if each is missing
-  is_null_option = unlist(lapply(KuskoHarvEst_options, is.null))
-
-  # if any are missing, return an error
-  if (any(is_null_option)) {
-    stop("The following global options are not set, but are required:\n  ", paste(names(is_null_option[is_null_option]), collapse = ", "))
-  }
-}

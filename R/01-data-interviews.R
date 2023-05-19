@@ -13,9 +13,6 @@
 
 prepare_interviews = function(input_files, include_salmon = "all", include_nonsalmon = "none", include_goals = FALSE, include_village = FALSE) {
 
-  # check to make sure all global options are set
-  check_options()
-
   # get the value of all non-filename arguments in a list to pass to prepare_interviews_one()
   args = as.list(environment())
   args = args[-which(names(args) == "input_files")]
