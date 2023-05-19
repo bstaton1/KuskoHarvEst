@@ -195,6 +195,7 @@ rmd_tool = function() {
       # handle whether gear types can be selected & which options are available
       if (meta$set_only) {
         shiny::updateCheckboxInput(inputId = "est_do_set", value = TRUE)
+        shiny::updateCheckboxInput(inputId = "est_do_drift", value = FALSE)
       }
       shinyjs::toggleState(id = "est_do_drift", condition = !meta$set_only)
       shinyjs::toggleState(id = "est_do_set", condition = !meta$set_only)
@@ -248,7 +249,7 @@ rmd_tool = function() {
     # build a message for set net only openers saying that the sensitivity report can't be produced
     output$sen_setonly_message = renderUI({
       if (meta$set_only) {
-        shiny::p(shiny::strong("This report cannot be produced if the opportunity was for set nets only."))
+        shiny::p(shiny::strong("This report cannot be produced if the opportunity was for set nets only."), style = "color:red;")
       } else {
         NULL
       }
