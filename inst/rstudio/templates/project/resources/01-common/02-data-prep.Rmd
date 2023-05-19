@@ -2,7 +2,6 @@
 ```{r load-data}
 interview_file = list.files(pattern = "interview_data", full.names = TRUE, recursive = TRUE)
 meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
-options_file = list.files(pattern = "options", full.names = TRUE, recursive = TRUE)
 flight_file = list.files(pattern = "flight_data", full.names = TRUE, recursive = TRUE)
 
 # load information
@@ -10,7 +9,4 @@ interview_data = readRDS(interview_file) |>
   KuskoHarvEst:::select_species(params)
 flight_data = readRDS(flight_file)
 meta = readRDS(meta_file)
-
-# apply the global options
-do.call(options, readRDS(options_file))
 ```
