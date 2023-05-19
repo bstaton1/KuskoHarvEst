@@ -105,3 +105,47 @@ select_species = function(interview_data, knitr_params) {
   # keep the non-catch and only the desired catch variables
   interview_data[,colnames(interview_data) %in% c(non_catch_vars, keep_species)]
 }
+
+KuskoHarvEst_OPTIONS = settings::options_manager(
+  soak_sd_cut = 3,
+  net_length_cut = 350,
+  catch_per_trip_cut = 0.05,
+  central_fn = mean,
+  pooling_threshold = 10,
+  interview_data = NULL,
+  flight_data = NULL,
+  boot_out = NULL
+)
+
+#' Set or Get KuskoHarvEst Options
+#'
+#' @param ... Option names to retrieve options values or `key = value` pairs
+#'   to set options. Accepted settings include:
+#'   * `soak_sd_cut`
+#'   * `net_length_cut`
+#'   * `catch_per_trip_cut`
+#'   * `central_fn`
+#'   * `pooling_threshold`
+#'   * `interview_data`
+#'   * `flight_data`
+#'   * `boot_out`
+#'
+#' @export
+
+KuskoHarvEst_opts = function(...) {
+
+  # protect against the use of reserved words in options package
+  settings::stop_if_reserved(...)
+
+  # call KuskoHarvEst options function
+  KuskoHarvEst_OPTIONS(...)
+
+}
+
+#' Reset Global Options for KuskoHarvEst
+#'
+#' @export
+
+KuskoHarvEst_opts_reset = function() {
+  settings::reset(KuskoHarvEst_OPTIONS)
+}

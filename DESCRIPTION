@@ -35,6 +35,7 @@ Imports:
     kableExtra,
     tinytex,
     latex2exp,
-    yaml
+    yaml,
+    settings
 remotes:
     bstaton1/KuskoHarvUtils
