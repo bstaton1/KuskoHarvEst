@@ -29,6 +29,7 @@ be used to inform stratum-specific estimates
 If the number of interviews that document fishing trips occurring in a stratum is
 less than \code{pooling_threshold}, then data must be borrowed from a nearby stratum
 to inform the stratum-specific estimate. Pooling rules are as follows:
+* If stratum D2 has few interviews, data will be borrowed from stratum D1
 * If stratum D1 has few interviews, data will be borrowed from stratum C
 * If stratum C has few interviews, data will be borrowed from stratum B
 * If stratum B has few interviews, data will be borrowed from stratum C

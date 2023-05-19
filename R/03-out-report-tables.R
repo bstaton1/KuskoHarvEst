@@ -91,12 +91,15 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
   if (length(spp) == 0) stop (paste0("No species found matching nonsalmon = ", TRUE))
   if (length(spp) > 1) spp = c(spp, "total")
 
+  # figure out strata to report
+  strata_names_use = strata_names[strata_names$stratum %in% unique(boot_out$stratum),]
+
   # summarize/format harvest: by species and stratum
   spp_summs = lapply(spp, function(sp) {
-    st_summs = lapply(strata_names$stratum, function(stratum) {
+    st_summs = lapply(strata_names_use$stratum, function(stratum) {
       KuskoHarvUtils::tinyCI(report(spp = sp, stratum = stratum, gear = gear))
     })
-    names(st_summs) = strata_names$stratum
+    names(st_summs) = strata_names_use$stratum
     st_summs
   })
   names(spp_summs) = spp
@@ -115,11 +118,11 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
   colnames(harv_tab) = KuskoHarvUtils::capitalize(colnames(harv_tab))
 
   # create nice names for the strata
-  strata = paste0(strata_names$stratum_start, " $\\longleftrightarrow$ ", strata_names$stratum_end)
-  names(strata) = strata_names$stratum
+  strata = paste0(strata_names_use$stratum_start, " $\\longleftrightarrow$ ", strata_names_use$stratum_end)
+  names(strata) = strata_names_use$stratum
 
   # count the number of interviews per stratum
-  n_interviews = with(interview_data[interview_data$gear == gear,], table(factor(stratum, levels = strata_names$stratum)))
+  n_interviews = with(interview_data[interview_data$gear == gear,], table(factor(stratum, levels = strata_names_use$stratum)))
   n_interviews = c(n_interviews, total = sum(n_interviews))
 
   # extract the estimated effort per stratum
@@ -128,7 +131,7 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
 
   # combine information into table
   tab = cbind(
-    Strata = c(strata, total = "Total"),
+    Stratum = c(strata, total = "Total"),
     Interviews = n_interviews,
     "Effort Est." = n_effort,
     harv_tab
@@ -162,9 +165,16 @@ make_johnson_summary_table = function() {
   # figure out species to show
   spp = species_in_data(boot_out)[["salmon"]]
 
+  # figure out strata present
+  strata = names(drift_effort_info$effort_est_stratum)
+
+  if (!"A" %in% strata) {
+    stop ("Estimates for stratum A required for the Johnson R. table")
+  }
+
   # extract effort estimates above and below Johnson R.
-  below_johnson_effort = drift_effort_info$effort_est_stratum["A"]
-  above_johnson_effort = sum(drift_effort_info$effort_est_stratum[c("B", "C", "D1")])
+  below_johnson_effort = drift_effort_info$effort_est_stratum[strata == "A"]
+  above_johnson_effort = sum(drift_effort_info$effort_est_stratum[strata != "A"])
 
   # extract bootstrap estimates of total harvest below and above johnson R
   below_johnson_total = subset(boot_out, gear == "drift" & stratum == "A")[,"total"]
