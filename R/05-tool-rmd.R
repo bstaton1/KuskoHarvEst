@@ -127,10 +127,26 @@ rmd_tool = function() {
           shiny::uiOutput("sen_setonly_message"),
 
           # widgets for sensitivity report control
-          shiny::sliderInput(inputId = "sen_n_boot", label = "Number of Bootstrap Samples", value = 1000, min = 100, max = 1000, step = 100),
-          shiny::checkboxInput(inputId = "sen_draft", label = "Mark as Draft", value = ifelse(meta$set_only, FALSE, TRUE)),
-          shiny::checkboxInput(inputId = "sen_do_setnets", label = "Make Set Net Harvest Estimate", value = ifelse(meta$set_only, FALSE, TRUE)),
-          shiny::checkboxInput(inputId = "sen_include_plots", label = "Include Trip Time Plots", value = FALSE)
+          # species
+          shiny::selectizeInput(inputId = "sen_species", choices = salmon_choices, label = shiny::h4(shiny::strong("Species")), multiple = TRUE, selected = c("chinook", "chum", "sockeye"), options = list("plugins" = list("remove_button"), placeholder = "At Least One Must be Salmon")),
+          shiny::div(shiny::checkboxInput(inputId = "sen_dont_split_chum_sockeye", label = "Combine Chum & Sockeye In Some Summaries?", value = FALSE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+
+          # gear types
+          shiny::h4(shiny::strong("Gear Types")),
+          shiny::div(shiny::checkboxInput(inputId = "sen_do_drift", label = "Drift Nets", value = TRUE),
+                     style = "margin-bottom: -10px; margin-top: -5px;"),
+          shiny::div(shiny::checkboxInput(inputId = "sen_do_set", label = "Set Nets", value = TRUE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+
+          # include
+          shiny::h4(shiny::strong("Include")),
+          shiny::div(shiny::checkboxInput(inputId = "sen_long_boot", label = "Full Bootstrap", value = TRUE),
+                     style = "margin-bottom: -10px; margin-top: -5px;"),
+          shiny::div(shiny::checkboxInput(inputId = "sen_include_plots", label = "Trip Time Plots", value = FALSE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+          shiny::div(shiny::checkboxInput(inputId = "sen_draft", label = "Draft Watermark", value = TRUE),
+                     style = "margin-bottom: -5px; margin-top: -10px;")
         ),
 
         # buttons for sensitivity report
@@ -240,21 +256,40 @@ rmd_tool = function() {
 
     # toggles for sensitivity report tab
     shiny::observe({
-      shinyjs::toggleState("sen_draft", condition = !meta$set_only)
-      shinyjs::toggleState("sen_n_boot", condition = !meta$set_only)
-      shinyjs::toggleState("sen_do_setnets", condition = !meta$set_only)
+
+      # handle whether split chum/sockeye can be checked
+      splitable = all(c("chum", "sockeye") %in% input$sen_species)
+      if (!splitable) {
+        shiny::updateCheckboxInput(inputId = "sen_dont_split_chum_sockeye", value = FALSE)
+      }
+
+      # handle whether the draft watermark must be shown
+      if (!input$sen_long_boot) {
+        shiny::updateCheckboxInput(inputId = "sen_draft", value = TRUE)
+      }
+
+      shinyjs::toggleState("sen_species", condition = !meta$set_only)
+      shinyjs::toggleState("sen_dont_split_chum_sockeye", condition = !meta$set_only & splitable)
+      shinyjs::toggleState("sen_do_drift", condition = !meta$set_only)
+      shinyjs::toggleState("sen_do_set", condition = !meta$set_only)
+      shinyjs::toggleState("sen_draft", condition = !meta$set_only & input$sen_long_boot)
       shinyjs::toggleState("sen_include_plots", condition = !meta$set_only)
-      shinyjs::toggleState("save_sen_rmd", condition = !meta$set_only)
+      shinyjs::toggleState("sen_long_boot", condition = !meta$set_only)
+      shinyjs::toggleState("save_sen_rmd", condition = !meta$set_only & !is.null(input$sen_species))
       shinyjs::toggleState("knit_sen_rmd", condition = !meta$set_only & vals$sen_knitable)
+
     })
 
     # build the sensitivity report rmd when instructed
     shiny::observeEvent(input$save_sen_rmd, {
       vals$sen_knitable = TRUE
-      vals$sen_rmd_file = KuskoHarvEst:::build_sensitivity_report_Rmd(
+      vals$sen_rmd_file = build_sensitivity_report_Rmd(
+        do_drift = input$sen_do_drift,
+        do_set = input$sen_do_set,
+        species = input$sen_species,
         draft = input$sen_draft,
-        do_setnets = input$sen_do_setnets,
-        n_boot = input$sen_n_boot,
+        n_boot = ifelse(input$sen_long_boot, 1000, 100),
+        split_chum_sockeye = !input$sen_dont_split_chum_sockeye,
         include_plots = input$sen_include_plots
       )
     })
