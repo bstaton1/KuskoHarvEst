@@ -35,7 +35,7 @@ build_yaml = function(doc_type = "estimate_report", draft = FALSE,
   }
 
   # create the R code to point to the graphics directory
-  graphics_path = '`r KuskoHarvEst:::resource_path("06-logos")`'
+  graphics_path = paste0('`r KuskoHarvEst:::resource_path("06-logos")`', "/")
   class(graphics_path) = "verbatim"
 
   # create a list with yaml key mappings (i.e., settings for Rmarkdown and the LaTeX template)
@@ -63,7 +63,7 @@ build_yaml = function(doc_type = "estimate_report", draft = FALSE,
                   list(do_drift = list(value = do_drift)),
                   list(do_set = list(value = do_set)),
                   list(split_chum_sockeye = list(value = split_chum_sockeye)),
-                  list(n_boot = list(value = n_boot))
+                  list(n_boot = list(value = as.integer(n_boot)))
   )
 
   # combine params with the other settings
