@@ -58,10 +58,9 @@ data_tool = function() {
               shiny::fillCol(
                 flex = c(1,0.5,1,2),
                 # shiny::fillRow(
-                  shiny::p(shiny::em("Here you will select the interview data files to include and set global options for controlling how data are used.
-                       Click 'Update Global Options' first, then click 'Load Raw Data Files'.
+                  shiny::p(shiny::em("Here you will select the interview data files to include then click 'Load Raw Data Files'.
                        Summaries will be displayed below and the data can be explored on the 'Output' tab.
-                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'options.rds' and 'interview_data.rds' files are present.")),
+                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'interview_data.rds' file is present.")),
                 # ),
                 shiny::actionLink("get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
                 shiny::fillRow(
@@ -70,17 +69,8 @@ data_tool = function() {
 
                 ),
                 shiny::fillCol(
-                  flex = c(0.35,1,1),
-                  shiny::h4(shiny::strong("Choose Global Options"), style = "margin:0;"),
-                  shiny::fillRow(
-                    shiny::numericInput(inputId = "soak_sd_cut", label = "Soak Time SD Threshold", value = 3, min = 0, max = 10, step = 1),
-                    shiny::numericInput(inputId = "net_length_cut", label = "Net Length Threshold", value = 350, min = 0, max = 500, step = 50),
-                    shiny::numericInput(inputId = "catch_per_trip_cut", label = "Exclusion Change Threshold", value = 0.05, min = 0, max = 1, step = 0.05),
-                    shiny::numericInput(inputId = "pooling_threshold", label = "Pooling Threshold", value = 10, min = 5, max = 20, step = 1)
-                  ),
                   miniUI::miniButtonBlock(
                     border = NA,
-                    shiny::actionButton(inputId = "update_options", label = "Update Options", icon = shiny::icon("refresh"), class = "btn-primary"),
                     shiny::actionButton(inputId = "load_interview_data", label = "Load Raw Data Files", icon = shiny::icon("upload"), class = "btn-primary"),
                     shiny::actionButton(inputId = "save_interview_data", label = "Save Formatted Data File", icon = shiny::icon("save"), class = "btn-primary")
                   )
@@ -144,32 +134,9 @@ data_tool = function() {
 
     # reactive container object
     vals = shiny::reactiveValues()
-    vals$loadable = FALSE
-
-    # set the global options when told and save them to a file
-    shiny::observeEvent(input$update_options, {
-      options(
-        soak_sd_cut = input$soak_sd_cut,
-        net_length_cut = input$net_length_cut,
-        catch_per_trip_cut = input$catch_per_trip_cut,
-        central_fn = mean,
-        pooling_threshold = input$pooling_threshold
-      )
-
-      vals$options = list(soak_sd_cut = input$soak_sd_cut,
-                          net_length_cut = input$net_length_cut,
-                          catch_per_trip_cut = input$catch_per_trip_cut,
-                          central_fn = mean,
-                          pooling_threshold = input$pooling_threshold
-      )
-
-      saveRDS(vals$options, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_options.rds")))
-      vals$loadable = TRUE
-    })
 
     # toggle state of buttons
     shiny::observe({
-      shinyjs::toggleState(id = "load_interview_data", condition = vals$loadable)
       shinyjs::toggleState(id = "save_interview_data", condition = !is.null(vals$interview_data))
     })
 
@@ -283,7 +250,6 @@ data_tool = function() {
 
     # toggle flight data buttons
     shiny::observe({
-      shinyjs::toggleState("load_flight_data", !is.null(vals$interview_data))
       shinyjs::toggleState("save_flight_data", !is.null(vals$flight_data))
     })
 
