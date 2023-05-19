@@ -208,7 +208,7 @@ rmd_tool = function() {
 
       # handle whether the Rmd can be built
       # must have at least one salmon species and at least one gear selected
-      shinyjs::toggleState(id = "save_est_rmd", condition = !is.null(input$est_species) & any(salmon_species %in% input$est_species))
+      shinyjs::toggleState(id = "save_est_rmd", condition = !is.null(input$est_species) & any(salmon_species %in% input$est_species) & any(c(input$est_do_drift, input$est_do_set)))
     })
 
     # build the estimate report rmd when instructed
@@ -276,7 +276,7 @@ rmd_tool = function() {
       shinyjs::toggleState("sen_draft", condition = !meta$set_only & input$sen_long_boot)
       shinyjs::toggleState("sen_include_plots", condition = !meta$set_only)
       shinyjs::toggleState("sen_long_boot", condition = !meta$set_only)
-      shinyjs::toggleState("save_sen_rmd", condition = !meta$set_only & !is.null(input$sen_species))
+      shinyjs::toggleState("save_sen_rmd", condition = !meta$set_only & !is.null(input$sen_species) & any(c(input$sen_do_drift, input$sen_do_set)))
       shinyjs::toggleState("knit_sen_rmd", condition = !meta$set_only & vals$sen_knitable)
 
     })
