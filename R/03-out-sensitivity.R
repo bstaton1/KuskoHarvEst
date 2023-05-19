@@ -164,7 +164,7 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
 # species = "chinook"
 # combos = harvest_combos
 
-make_harvest_sensitivity_table = function(species, harvest_scenarios, combos) {
+make_harvest_sensitivity_table = function(species, harvest_scenarios, combos, interview_data) {
 
   # which species are accepted
   species_accept = c(species_names$species[species_names$is_salmon], "total")
@@ -247,6 +247,7 @@ make_harvest_sensitivity_table = function(species, harvest_scenarios, combos) {
 
 #' Make a table to report multiple tables from harvest sensitivity analyses
 #'
+#' @inheritParams estimate_harvest
 #' @param harvest_scenarios List storing the bootstrapped harvest output from each data scenario
 #' @param combos The output of [make_harvest_combos()]
 #' @note Unlike most other functions that make tables (e.g., [make_strata_summary_table()]),
@@ -254,7 +255,7 @@ make_harvest_sensitivity_table = function(species, harvest_scenarios, combos) {
 #' @export
 #'
 
-make_harvest_sensitivity_tables = function(harvest_scenarios, combos) {
+make_harvest_sensitivity_tables = function(interview_data, harvest_scenarios, combos) {
 
   # which species are found in the interview data
   species_found = c(species_in_data(interview_data)$salmon)
@@ -263,7 +264,7 @@ make_harvest_sensitivity_tables = function(harvest_scenarios, combos) {
   if (length(species_found) > 1) species_found = c(species_found, "total")
 
   # build all tables
-  lapply(species_found, make_harvest_sensitivity_table, harvest_scenarios = harvest_scenarios, combos = combos) |>
+  lapply(species_found, make_harvest_sensitivity_table, harvest_scenarios = harvest_scenarios, combos = combos, interview_data = interview_data) |>
     unlist() |>
     cat(sep = "\n")
 }

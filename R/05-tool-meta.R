@@ -11,8 +11,27 @@ meta_tool = function() {
   output_data_dir = file.path(proj_dir, "data-use")
   if(!dir.exists(output_data_dir)) dir.create(output_data_dir)
 
+  ### SET UP THE STRATA DROPDOWN MENUS ###
+
+  # build the names that will be shown in the dropdown menuS
+  strata_show_down = with(strata_names, paste0(stratum, ": ", stratum_start))
+  strata_show_up = with(strata_names, paste0(stratum, ": ", stratum_end))
+
+  # build the choice objects that will be selected from
+  strata_down_choices = strata_names$stratum_start
+  names(strata_down_choices) = strata_show_down
+  strata_up_choices = strata_names$stratum_end
+  names(strata_up_choices) = strata_show_up
+
+  # make the first choice a placeholder
+  strata_down_choices = c("Select One" = "", strata_down_choices)
+  strata_up_choices = c("Select One" = "", strata_up_choices)
+
   # USER-INTERFACE
   ui = miniUI::miniPage(
+
+    # for disabling buttons until actionable
+    shinyjs::useShinyjs(),
 
     # create the title
     miniUI::gadgetTitleBar("KuskoHarvEst Meta-Data Entry Tool"),
@@ -40,8 +59,8 @@ meta_tool = function() {
 
         # estimate spatial coverage
         shiny::fillRow(
-          shiny::textInput(inputId = "downstream_end", label = "Downstream Boundary", value = "Tuntutuliak"),
-          shiny::textInput(inputId = "upstream_end", label = "Upstream Boundary", value = "Akiak")
+          shiny::selectInput(inputId = "downstream_end", choices = strata_down_choices, label = "Downstream Boundary"),
+          shiny::selectInput(inputId = "upstream_end", choices = c("Select Downstream First" = ""), label = "Upstream Boundary")
         ),
 
         # special action identifiers
@@ -77,6 +96,24 @@ meta_tool = function() {
     # when the "get_help" link is clicked:
     shiny::observeEvent(input$get_help, {
       file.show(resource_path("04-documentation/02-meta-data-tool.html"))
+    })
+
+    # when the downstream end is selected
+    # update the options that are available for the upstream
+    # (forces upstream options to include those only upstream of the selected downstream)
+    shiny::observeEvent(input$downstream_end, {
+      s = which(unlist(strata_down_choices) == input$downstream_end)
+      if (s != 1) {
+        shiny::updateSelectizeInput(
+          inputId = "upstream_end",
+          choices = strata_up_choices[c(1, s:length(strata_up_choices))])
+      }
+    })
+
+    # if the strata boundaries haven't been selected,
+    # don't allow the save button to be clicked
+    shiny::observe({
+      shinyjs::toggleState(id = "save_meta", condition = nchar(input$downstream_end) != 0 & nchar(input$upstream_end) != 0)
     })
 
     # when the "save" button is clicked:
