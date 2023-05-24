@@ -22,6 +22,12 @@ build_yaml = function(doc_type = "estimate_report", draft = FALSE,
   meta_file = list.files(pattern = "meta\\.rds", full.names = TRUE, recursive = TRUE)
   meta = readRDS(meta_file)
 
+  # determine the downstream and upstream ends of the estimate
+  # based on strata found in flight data. Can't produce strata estimate if no effort count there.
+  flight_file = list.files(pattern = "flight_data\\.rds", full.names = TRUE, recursive = TRUE)
+  flight_data = readRDS(flight_file)
+  flight_strata = sort(get_flight_strata(flight_data))
+
   # if either do_set or do_drift wasn't specified, stop
   if (missing(do_set) | missing(do_drift)) {
     stop ("Both do_set and do_drift must be specified")
@@ -48,8 +54,8 @@ build_yaml = function(doc_type = "estimate_report", draft = FALSE,
     "opener-start" = KuskoHarvUtils::short_datetime(meta$start_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
     "opener-end" = KuskoHarvUtils::short_datetime(meta$end_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
     "opener-duration" = paste0(round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1), " Hours"),
-    "ds-bound" = meta$ds_bound,
-    "us-bound" = meta$us_bound,
+    "ds-bound" = strata_names$stratum_start[strata_names$stratum == flight_strata[1]],
+    "us-bound" = strata_names$stratum_end[strata_names$stratum == flight_strata[length(flight_strata)]],
     lfooter = ifelse(doc_type == "estimate_report", "In-season Harvest and Effort Estimates", "Sensitivity Analyses"),
     "draft-watermark" = draft,
     "graphics-path" = graphics_path

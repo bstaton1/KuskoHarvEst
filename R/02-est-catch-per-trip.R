@@ -7,7 +7,7 @@
 #' @param central_fn Function; used to calculate central tendency
 #' @param nonsalmon Logical; should estimates be returned non-salmon species rather than salmon species?
 
-estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = getOption("central_fn"), nonsalmon = FALSE) {
+estimate_catch_per_trip = function(interview_data, gear, randomize = FALSE, central_fn = KuskoHarvEst_opts("central_fn"), nonsalmon = FALSE) {
 
   # set the species to keep
   if (!nonsalmon) {

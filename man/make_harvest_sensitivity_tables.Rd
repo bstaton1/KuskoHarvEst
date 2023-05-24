@@ -4,9 +4,11 @@
 \alias{make_harvest_sensitivity_tables}
 \title{Make a table to report multiple tables from harvest sensitivity analyses}
 \usage{
-make_harvest_sensitivity_tables(harvest_scenarios, combos)
+make_harvest_sensitivity_tables(interview_data, harvest_scenarios, combos)
 }
 \arguments{
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
+
 \item{harvest_scenarios}{List storing the bootstrapped harvest output from each data scenario}
 
 \item{combos}{The output of \code{\link[=make_harvest_combos]{make_harvest_combos()}}}

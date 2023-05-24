@@ -105,3 +105,87 @@ select_species = function(interview_data, knitr_params) {
   # keep the non-catch and only the desired catch variables
   interview_data[,colnames(interview_data) %in% c(non_catch_vars, keep_species)]
 }
+
+#' Find Which Strata are in Flight Data
+#'
+#' Extracts the stratum names found in the flight data
+#' and returns an error if any are present that are not accepted.
+#'
+#' @inheritParams estimate_effort
+#'
+
+get_flight_strata = function(flight_data) {
+  # variable names in flight data
+  vars = colnames(flight_data)
+
+  # match these gears
+  match = "_drift|_set"
+
+  # extract the unique strata names found
+  strata_found = vars[stringr::str_detect(vars, match)] |>
+    stringr::str_remove(match) |>
+    unique()
+
+  # check if any strata are not contained in the accepted list
+  if (any(!strata_found %in% strata_names$stratum)) {
+    offenders = strata_found[!strata_found %in% strata_names$stratum]
+    message = paste0(
+      ifelse(length(offenders) > 1, "Strata ", "Stratum"),
+      knitr::combine_words(offenders, before = "'"), " in flight data not accepted. ",
+      "Accepted strata are:", knitr::combine_words(strata_names$stratum, before = "'")
+    )
+    stop (message)
+  } else {
+    return(strata_found)
+  }
+}
+
+KuskoHarvEst_OPTIONS = settings::options_manager(
+  soak_sd_cut = 3,
+  net_length_cut = 350,
+  catch_per_trip_cut = 0.05,
+  central_fn = mean,
+  pooling_threshold = 10,
+  interview_data = NULL,
+  flight_data = NULL,
+  boot_out = NULL
+)
+
+#' Set or Get KuskoHarvEst Options
+#'
+#' @param ... Option names to retrieve options values or `key = value` pairs
+#'   to set options. Accepted settings include:
+#'   * `soak_sd_cut` (default: 3)
+#'   * `net_length_cut` (default: 350)
+#'   * `catch_per_trip_cut` (default: 0.05)
+#'   * `central_fn` (default: mean)
+#'   * `pooling_threshold` (default: 10)
+#'   * `interview_data` (default: `NULL`)
+#'   * `flight_data` (default: `NULL`)
+#'   * `boot_out` (default: `NULL`)
+#' @note The options `interview_data`, `flight_data`, and `boot_out`
+#'   are not currently used in any function. I'm leaving them here
+#'   as placeholders for the future.
+#'
+#' @export
+
+KuskoHarvEst_opts = function(...) {
+
+  # protect against the use of reserved words in options package
+  settings::stop_if_reserved(...)
+
+  # call KuskoHarvEst options function
+  KuskoHarvEst_OPTIONS(...)
+
+}
+
+#' Reset Global Options for KuskoHarvEst
+#'
+#' @export
+
+KuskoHarvEst_opts_reset = function() {
+  settings::reset(KuskoHarvEst_OPTIONS)
+}
+
+
+

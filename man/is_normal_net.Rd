@@ -4,7 +4,10 @@
 \alias{is_normal_net}
 \title{Check if the net characteristics are as expected}
 \usage{
-is_normal_net(interview_data, net_length_cut = getOption("net_length_cut"))
+is_normal_net(
+  interview_data,
+  net_length_cut = KuskoHarvEst_opts("net_length_cut")
+)
 }
 \arguments{
 \item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}

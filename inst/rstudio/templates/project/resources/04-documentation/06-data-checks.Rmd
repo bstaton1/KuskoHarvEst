@@ -51,9 +51,9 @@ This section outlines each of the checks that would result in an interview recor
 * **Incomplete trip** -- if the interview was conducted before the fisher trip was complete, the data require special care. The vast majority of interviews are completed trips -- incomplete trip interviews have only been obtained by law enforcement officers in 2016 -- 2018.
 * **Impossible trip times** -- if the trip end time is recorded to be before the trip start time.
 * **Impossible soak time** -- if the soak duration is longer than the reported trip duration.
-* **Soak time outlier** -- if the soak time for an interview is `x` or more standard deviations away from the mean of all other soak times for that gear type, it is considered an outlier. `x` takes on the value of `getOption("soak_sd_cut")` and should be 3 by default.
-* **Net length outlier** -- if the net length for an interview is longer than `y`, it is considered an outlier. `y` takes on the value of `getOption("net_length_cut")` and should be 350 by default.
-* **Catch/trip outlier** -- if leaving the interview out changes the average all salmon catch per trip by more than `z` * 100%, then it is considered a catch per trip outlier. `z` takes on the value of `getOption("catch_per_trip_cut")` and should be 0.05 by default.
+* **Soak time outlier** -- if the soak time for an interview is `x` or more standard deviations away from the mean of all other soak times for that gear type, it is considered an outlier. `x` takes on the value of `KuskoHarvEst_opts("soak_sd_cut")` and should be 3 by default.
+* **Net length outlier** -- if the net length for an interview is longer than `y`, it is considered an outlier. `y` takes on the value of `KuskoHarvEst_opts("net_length_cut")` and should be 350 by default.
+* **Catch/trip outlier** -- if leaving the interview out changes the average all salmon catch per trip by more than `z` * 100%, then it is considered a catch per trip outlier. `z` takes on the value of `KuskoHarvEst_opts("catch_per_trip_cut")` and should be 0.05 by default.
 
 Click through the buttons below for more details about the checks in the decision rule for each of the suitability categories.
 

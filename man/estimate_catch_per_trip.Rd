@@ -8,7 +8,7 @@ estimate_catch_per_trip(
   interview_data,
   gear,
   randomize = FALSE,
-  central_fn = getOption("central_fn"),
+  central_fn = KuskoHarvEst_opts("central_fn"),
   nonsalmon = FALSE
 )
 }

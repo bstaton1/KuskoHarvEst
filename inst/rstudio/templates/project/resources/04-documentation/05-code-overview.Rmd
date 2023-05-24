@@ -283,7 +283,6 @@ This catalog is intended for users wishing to gain a more complete understanding
   * `is_short_incomplete_soak()` -- if the trip is incomplete and shorter than the shortest completed trip, this function will return a flag indicating its catch rate data should not be used.
   * `is_catch_per_trip_outlier()` -- if leaving out an interview changes the estimate of mean catch/per trip by greater than X%, it is flagged as an outlier and its catch rate data will not be used in the average. Only done for drift trips.
   * `unique_start_dates()` -- extracts the unique start dates for all interviews. All code in this package assumes it is working on one day at a time.
-  * `check_options()` -- this package requires that some global options are defined. This function checks that all required options have been set. The options are: `"soak_sd_cut"` (passed to `is_soak_outlier()`), `"net_length_cut"` (passed to `is_normal_net()`), `"catch_per_trip_cut"` (passed to `is_catch_per_trip_outlier()`), `"central_fn"` (passed to `estimate_catch_per_trip()`), and `"pooling_threshold"` (passed to `get_use_strata()`).
 * `randomize_data()` resamples with replacement from a set of interviews; used to support the non-parametric bootstrap.
 
 ## Core Estimation Functions

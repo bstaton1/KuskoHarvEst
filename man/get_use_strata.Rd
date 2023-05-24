@@ -6,7 +6,7 @@
 \usage{
 get_use_strata(
   interview_data,
-  pooling_threshold = getOption("pooling_threshold"),
+  pooling_threshold = KuskoHarvEst_opts("pooling_threshold"),
   gear = "drift"
 )
 }
