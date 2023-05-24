@@ -39,7 +39,7 @@ meta_tool = function() {
     # populate page with input widgets
     miniUI::miniContentPanel(
       shiny::fillCol(
-        flex = c(2,1,3,3,3,3,1),
+        flex = c(2,1,3,3,3,1),
 
         # descriptive text
         shiny::fillRow(
@@ -55,12 +55,6 @@ meta_tool = function() {
                     value = lubridate::today(), format = "mm-dd-yyyy"),
           shinyTime::timeInput(inputId = "start_time", label = "Start Time (24-hr)", seconds = FALSE, value = strptime("12:00", "%R")),
           shinyTime::timeInput(inputId = "end_time", label = "End Time (24-hr)", seconds = FALSE, value = strptime("23:59", "%R"))
-        ),
-
-        # estimate spatial coverage
-        shiny::fillRow(
-          shiny::selectInput(inputId = "downstream_end", choices = strata_down_choices, label = "Downstream Boundary"),
-          shiny::selectInput(inputId = "upstream_end", choices = c("Select Downstream First" = ""), label = "Upstream Boundary")
         ),
 
         # special action identifiers
@@ -98,24 +92,6 @@ meta_tool = function() {
       file.show(resource_path("04-documentation/02-meta-data-tool.html"))
     })
 
-    # when the downstream end is selected
-    # update the options that are available for the upstream
-    # (forces upstream options to include those only upstream of the selected downstream)
-    shiny::observeEvent(input$downstream_end, {
-      s = which(unlist(strata_down_choices) == input$downstream_end)
-      if (s != 1) {
-        shiny::updateSelectizeInput(
-          inputId = "upstream_end",
-          choices = strata_up_choices[c(1, s:length(strata_up_choices))])
-      }
-    })
-
-    # if the strata boundaries haven't been selected,
-    # don't allow the save button to be clicked
-    shiny::observe({
-      shinyjs::toggleState(id = "save_meta", condition = nchar(input$downstream_end) != 0 & nchar(input$upstream_end) != 0)
-    })
-
     # when the "save" button is clicked:
     shiny::observeEvent(input$save_meta, {
 
@@ -131,8 +107,6 @@ meta_tool = function() {
       meta = list(
         start_date = start_date,
         end_date = end_date,
-        ds_bound = input$downstream_end,
-        us_bound = input$upstream_end,
         announce_name = ifelse(input$announce_name == "", NA, input$announce_name),
         announce_url = ifelse(input$announce_url == "", NA, input$announce_url),
         announce_news_url = ifelse(input$announce_news_url == "", NA, input$announce_news_url),
