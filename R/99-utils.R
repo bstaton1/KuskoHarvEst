@@ -121,14 +121,17 @@ KuskoHarvEst_OPTIONS = settings::options_manager(
 #'
 #' @param ... Option names to retrieve options values or `key = value` pairs
 #'   to set options. Accepted settings include:
-#'   * `soak_sd_cut`
-#'   * `net_length_cut`
-#'   * `catch_per_trip_cut`
-#'   * `central_fn`
-#'   * `pooling_threshold`
-#'   * `interview_data`
-#'   * `flight_data`
-#'   * `boot_out`
+#'   * `soak_sd_cut` (default: 3)
+#'   * `net_length_cut` (default: 350)
+#'   * `catch_per_trip_cut` (default: 0.05)
+#'   * `central_fn` (default: mean)
+#'   * `pooling_threshold` (default: 10)
+#'   * `interview_data` (default: `NULL`)
+#'   * `flight_data` (default: `NULL`)
+#'   * `boot_out` (default: `NULL`)
+#' @note The options `interview_data`, `flight_data`, and `boot_out`
+#'   are not currently used in any function. I'm leaving them here
+#'   as placeholders for the future.
 #'
 #' @export
 
@@ -149,3 +152,6 @@ KuskoHarvEst_opts = function(...) {
 KuskoHarvEst_opts_reset = function() {
   settings::reset(KuskoHarvEst_OPTIONS)
 }
+
+
+
