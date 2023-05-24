@@ -6,7 +6,7 @@
 \usage{
 is_catch_per_trip_outlier(
   interview_data,
-  catch_per_trip_cut = getOption("catch_per_trip_cut")
+  catch_per_trip_cut = KuskoHarvEst_opts("catch_per_trip_cut")
 )
 }
 \arguments{

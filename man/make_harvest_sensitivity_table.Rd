@@ -4,7 +4,12 @@
 \alias{make_harvest_sensitivity_table}
 \title{Make a table to report single-species results from harvest sensitivity analyses}
 \usage{
-make_harvest_sensitivity_table(species, harvest_scenarios, combos)
+make_harvest_sensitivity_table(
+  species,
+  harvest_scenarios,
+  combos,
+  interview_data
+)
 }
 \arguments{
 \item{species}{The species to report, only salmon species are accepted as well as \code{"total"}, representing all salmon species.}
@@ -12,6 +17,8 @@ make_harvest_sensitivity_table(species, harvest_scenarios, combos)
 \item{harvest_scenarios}{List storing the bootstrapped harvest output from each data scenario}
 
 \item{combos}{The output of \code{\link[=make_harvest_combos]{make_harvest_combos()}}}
+
+\item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}
 }
 \description{
 Make a table to report single-species results from harvest sensitivity analyses
