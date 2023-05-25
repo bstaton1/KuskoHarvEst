@@ -6,4 +6,6 @@
 set_effort_info <<- estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
 ```
 
-* An estimated **`r set_effort_info$effort_est_total`** total set net trips occurred.
+```{r results = "asis"}
+effort_bullets(do_drift = FALSE, do_set = TRUE)
+```
