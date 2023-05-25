@@ -194,15 +194,7 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
 
   # 9: select the right file to use for the nonsalmon appendix
   if (any(species_names$species[!species_names$is_salmon] %in% species)) {
-    if (!meta$set_only) {
-      if (do_set) {
-        nonsalmon_file = resource_path(file.path("02-estimate-report", "09a-nonsalmon_driftset.Rmd"))
-      } else {
-        nonsalmon_file = resource_path(file.path("02-estimate-report", "09b-nonsalmon_driftset_noset.Rmd"))
-      }
-    } else {
-      nonsalmon_file = resource_path(file.path("02-estimate-report", "09c-nonsalmon_setonly.Rmd"))
-    }
+    nonsalmon_file = resource_path(file.path("02-estimate-report", "09-nonsalmon.Rmd"))
   } else {
     nonsalmon_file = blank_file
   }
