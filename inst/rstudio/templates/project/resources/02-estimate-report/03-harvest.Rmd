@@ -29,7 +29,7 @@ boot_out <<- combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = bo
 ```
 
 ```{r harvest-bullets, results = "asis"}
-harvest_bullets(include_set_summary = params$do_set)
+harvest_bullets(include_set_summary = params$do_set & params$do_drift)
 ```
 
 ```{r strata-summary-table}

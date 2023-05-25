@@ -18,5 +18,5 @@ if (params$do_set) {
 ```
 
 ```{r results = "asis"}
-effort_bullets(do_drift = params$do_drift, do_set = params$do_drift)
+effort_bullets(do_drift = params$do_drift, do_set = params$do_set)
 ```
