@@ -6,11 +6,19 @@ _This analysis leaves out one interview data source at a time and recalculates t
 :::
 
 ```{r perform-harvest-sensitivity, results = "asis"}
-# estimate drift net effort with all data
-drift_effort_info = estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
+# estimate drift net effort if instructed
+if (params$do_drift) {
+  drift_effort_info <<- estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
+} else {
+  drift_effort_info <<- NULL
+}
 
-# estimate set net effort with all data
-set_effort_info = estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
+# estimate set net effort if instructed
+if (params$do_set) {
+  set_effort_info <<- estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
+} else {
+  set_effort_info <<- NULL
+}
 
 # make the combinations of data sources to leave out
 harvest_combos = KuskoHarvEst:::create_harvest_combos(interview_data)
@@ -21,13 +29,27 @@ for (i in 1:nrow(harvest_combos)) {
    # leave out the data in question
   interview_data_use = interview_data[interview_data$source %in% names(harvest_combos)[which(unlist(harvest_combos[i,]))],]
   
-  # estimate (via bootstrap) drift net harvest for all species and and strata
-  boot_out_drift = bootstrap_harvest(interview_data_use, drift_effort_info,
-                                     gear = "drift", n_boot = params$n_boot, stratify_interviews = TRUE)
+  # estimate (via bootstrap) drift net harvest for all species and and strata if instructed
+  if (params$do_drift) {
+    boot_out_drift = bootstrap_harvest(
+      interview_data_use, drift_effort_info,
+      gear = "drift", n_boot = params$n_boot,
+      stratify_interviews = TRUE
+    )
+  } else {
+    boot_out_drift = NULL
+  }
   
-  # estimate (via bootstrap) drift net harvest for all species and and strata
-  boot_out_set = bootstrap_harvest(interview_data_use, set_effort_info,
-                                     gear = "set", n_boot = params$n_boot, stratify_interviews = FALSE)
+  # estimate (via bootstrap) drift net harvest for all species and and strata if instructed
+  if (params$do_set) {
+    boot_out_set = bootstrap_harvest(
+      interview_data_use, set_effort_info,
+      gear = "set", n_boot = params$n_boot,
+      stratify_interviews = FALSE
+    )
+  } else {
+    boot_out_set = NULL
+  }
   
   # combine drift, set, and total into one data frame of bootstrap output
   harvest_scenarios[[i]] = combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)

@@ -275,11 +275,7 @@ build_sensitivity_report_Rmd = function(do_drift, do_set,
   }
 
   # 2: select the right file to produce effort sensitivity analyses
-  if (do_set) {
-    harvest_file = resource_path(file.path("03-sensitivity-report", "02a-harvest_driftset.Rmd"))
-  } else {
-    harvest_file = resource_path(file.path("03-sensitivity-report", "02b-harvest_driftset_noset.Rmd"))
-  }
+  harvest_file = resource_path(file.path("03-sensitivity-report", "02-harvest.Rmd"))
 
   # build the YAML header
   yaml_contents = build_yaml(doc_type = "sensitivity_report", do_drift = do_drift, do_set = do_set, species = species, ...)
