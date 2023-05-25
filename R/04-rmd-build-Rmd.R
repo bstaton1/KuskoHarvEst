@@ -187,11 +187,7 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
 
   # 8: select the right file to use for the appendix
   if (include_appendix) {
-    if (!meta$set_only) {
-      appendix_file = resource_path(file.path("02-estimate-report", "08a-appendix_drift.Rmd"))
-    } else {
-      appendix_file = resource_path(file.path("02-estimate-report", "08b-appendix_set.Rmd"))
-    }
+    appendix_file = resource_path(file.path("02-estimate-report", "08-appendix.Rmd"))
   } else {
     appendix_file = blank_file
   }

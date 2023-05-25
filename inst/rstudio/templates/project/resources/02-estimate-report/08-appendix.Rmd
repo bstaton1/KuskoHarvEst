@@ -1,6 +1,7 @@
 
 ```{r}
 appendix_counter = appendix_counter + 1
+appendix_gear = ifelse(params$do_drift, "drift", "set")
 ```
 
 \clearpage
@@ -8,10 +9,6 @@ appendix_counter = appendix_counter + 1
 \setcounter{table}{0}
 \renewcommand\thefigure{`r LETTERS[appendix_counter]`\arabic{figure}}
 \renewcommand\thetable{`r LETTERS[appendix_counter]`\arabic{table}}
-
-```{r}
-appendix_gear = "set"
-```
 
 # Appendix `r LETTERS[appendix_counter]`: Detailed Interview Summaries {-}
 
