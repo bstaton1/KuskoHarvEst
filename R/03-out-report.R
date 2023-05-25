@@ -178,3 +178,51 @@ harvest_bullets = function(include_set_summary, nonsalmon = FALSE) {
   # report(gear = "set")
   cat(paste0(out, "."), sep = "\n")
 }
+
+#' Summarize Effort Estimates Bullet List
+#'
+#' Depending on which gears to report,
+#' builds the appropriate summary bullet list.
+#'
+#' @param do_drift Logical; should drift net effort estimates (and corresponding estimator info) be returned?
+#' @param do_set Logical; should set net effort estimates be returned?
+#' @export
+
+effort_bullets = function(do_drift, do_set) {
+
+  if (do_drift) {
+    # create the main bullet: presents total estimate
+    drift_main = paste0("* An estimated **", drift_effort_info$effort_est_total, "** drift boat trips occurred")
+
+    # count how many flights were conducted
+    n_flights = length(drift_effort_info$p_T1_given_T2) + 1
+
+    # if more than one flight, report conditional probabilities
+    if (n_flights > 1) {
+      p_T1_given_T2 = KuskoHarvUtils:::percentize(drift_effort_info$p_T1_given_T2)
+      double_bullets = sapply(1:(n_flights-1), function(f) {
+        paste0("  * An estimated **", p_T1_given_T2[f], "** of the trips counted on flight ", f+1, " were also counted on flight ", f)
+      })
+    } else {
+      double_bullets = NULL
+    }
+
+    # bullet to report how many trips occurred when no flights were active
+    never_bullet = paste0("  * An estimated **", drift_effort_info$effort_not_count, "** trips started and ended when no flights occurred")
+
+    # combine
+    drift_bullet = c(drift_main, double_bullets, never_bullet)
+  } else {
+    drift_bullet = NULL
+  }
+
+  # set net effort estimation is much simpler, just report the total
+  if (do_set) {
+    set_bullet = paste0("* An estimated **", set_effort_info$effort_est_total, "** set net trips occurred")
+  } else {
+    set_bullet = paste0("* No set net effort estimate was made")
+  }
+
+  # return the bullet list
+  cat(paste0(c(drift_bullet, set_bullet), "."), sep = "\n")
+}
