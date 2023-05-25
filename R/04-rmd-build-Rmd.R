@@ -176,11 +176,7 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
   }
 
   # 6: select the right file to use for the histograms
-  if (!meta$set_only) {
-    histogram_file = resource_path(file.path("02-estimate-report", "06a-histograms_drift.Rmd"))
-  } else {
-    histogram_file = resource_path(file.path("02-estimate-report", "06b-histograms_set.Rmd"))
-  }
+  histogram_file = resource_path(file.path("02-estimate-report", "06-histograms.Rmd"))
 
   # 7: select the right file to use for saving the bootstrapped output file
   if (save_bootstrap) {
