@@ -158,15 +158,8 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
   effort_file = resource_path(file.path("02-estimate-report", "02-effort.Rmd"))
 
   # 3: select the right file to produce harvest estimate summaries
-  if (!meta$set_only) {
-    if (do_set) {
-      harvest_file = resource_path(file.path("02-estimate-report", "03a-harvest_driftset.Rmd"))
-    } else {
-      harvest_file = resource_path(file.path("02-estimate-report", "03b-harvest_driftset_noset.Rmd"))
-    }
-  } else {
-    harvest_file = resource_path(file.path("02-estimate-report", "03c-harvest_setonly.Rmd"))
-  }
+  harvest_file = resource_path(file.path("02-estimate-report", "03-harvest.Rmd"))
+
 
   # 4: select the right file to use for the place where the johnson summary table should go if requested
   if (include_johnson_table & !meta$set_only) {
