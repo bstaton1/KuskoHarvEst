@@ -155,15 +155,7 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
   }
 
   # 2: select the right file to produce effort estimate summaries
-  if (!meta$set_only) {
-    if (do_set) {
-      effort_file = resource_path(file.path("02-estimate-report", paste0("02a-effort_driftset_", n_flights, "flight.Rmd")))
-    } else {
-      effort_file = resource_path(file.path("02-estimate-report", paste0("02b-effort_driftset_noset_", n_flights, "flight.Rmd")))
-    }
-  } else {
-    effort_file = resource_path(file.path("02-estimate-report", "02c-effort_setonly.Rmd"))
-  }
+  effort_file = resource_path(file.path("02-estimate-report", "02-effort.Rmd"))
 
   # 3: select the right file to produce harvest estimate summaries
   if (!meta$set_only) {
