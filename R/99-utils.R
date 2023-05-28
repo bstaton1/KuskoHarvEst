@@ -187,5 +187,35 @@ KuskoHarvEst_opts_reset = function() {
   settings::reset(KuskoHarvEst_OPTIONS)
 }
 
+#' Install All Necessary TeX Dependencies
+#'
+#' Including tinytex and all needed TeX packages
+#'
+#' @param remove_existing Logical; do you wish to delete the existing
+#'   distribution found on your computer before installing? Defaults to `TRUE`.
+#' @export
 
+install_TeX = function(remove_existing = TRUE) {
+
+  # determine if already installed
+  TeX_found = tinytex::is_tinytex()
+
+  # remove exisiting installation of tinytex if requested
+  if (remove_existing & TeX_found) {
+    tinytex::uninstall_tinytex(force = TRUE)
+  }
+
+  # install tinytex
+  tinytex::install_tinytex(force = !TeX_found)
+
+  # install TeX packages
+  tinytex::tlmgr_install(pkgs = c(
+    "sansmathfonts", "setspace", "titlesec", "footmisc",
+    "microtype", "caption", "floatrow", "multirow",
+    "colortbl", "wrapfig", "pdflscape", "tabu",
+    "varwidth", "threeparttable", "threeparttablex",
+    "environ", "trimspaces", "ulem", "makecell",
+    "fancyhdr", "draftwatermark", "parskip"
+  ))
+}
 
