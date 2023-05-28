@@ -155,26 +155,11 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
   }
 
   # 2: select the right file to produce effort estimate summaries
-  if (!meta$set_only) {
-    if (do_set) {
-      effort_file = resource_path(file.path("02-estimate-report", paste0("02a-effort_driftset_", n_flights, "flight.Rmd")))
-    } else {
-      effort_file = resource_path(file.path("02-estimate-report", paste0("02b-effort_driftset_noset_", n_flights, "flight.Rmd")))
-    }
-  } else {
-    effort_file = resource_path(file.path("02-estimate-report", "02c-effort_setonly.Rmd"))
-  }
+  effort_file = resource_path(file.path("02-estimate-report", "02-effort.Rmd"))
 
   # 3: select the right file to produce harvest estimate summaries
-  if (!meta$set_only) {
-    if (do_set) {
-      harvest_file = resource_path(file.path("02-estimate-report", "03a-harvest_driftset.Rmd"))
-    } else {
-      harvest_file = resource_path(file.path("02-estimate-report", "03b-harvest_driftset_noset.Rmd"))
-    }
-  } else {
-    harvest_file = resource_path(file.path("02-estimate-report", "03c-harvest_setonly.Rmd"))
-  }
+  harvest_file = resource_path(file.path("02-estimate-report", "03-harvest.Rmd"))
+
 
   # 4: select the right file to use for the place where the johnson summary table should go if requested
   if (include_johnson_table & !meta$set_only) {
@@ -191,11 +176,7 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
   }
 
   # 6: select the right file to use for the histograms
-  if (!meta$set_only) {
-    histogram_file = resource_path(file.path("02-estimate-report", "06a-histograms_drift.Rmd"))
-  } else {
-    histogram_file = resource_path(file.path("02-estimate-report", "06b-histograms_set.Rmd"))
-  }
+  histogram_file = resource_path(file.path("02-estimate-report", "06-histograms.Rmd"))
 
   # 7: select the right file to use for saving the bootstrapped output file
   if (save_bootstrap) {
@@ -206,26 +187,14 @@ build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "c
 
   # 8: select the right file to use for the appendix
   if (include_appendix) {
-    if (!meta$set_only) {
-      appendix_file = resource_path(file.path("02-estimate-report", "08a-appendix_drift.Rmd"))
-    } else {
-      appendix_file = resource_path(file.path("02-estimate-report", "08b-appendix_set.Rmd"))
-    }
+    appendix_file = resource_path(file.path("02-estimate-report", "08-appendix.Rmd"))
   } else {
     appendix_file = blank_file
   }
 
   # 9: select the right file to use for the nonsalmon appendix
   if (any(species_names$species[!species_names$is_salmon] %in% species)) {
-    if (!meta$set_only) {
-      if (do_set) {
-        nonsalmon_file = resource_path(file.path("02-estimate-report", "09a-nonsalmon_driftset.Rmd"))
-      } else {
-        nonsalmon_file = resource_path(file.path("02-estimate-report", "09b-nonsalmon_driftset_noset.Rmd"))
-      }
-    } else {
-      nonsalmon_file = resource_path(file.path("02-estimate-report", "09c-nonsalmon_setonly.Rmd"))
-    }
+    nonsalmon_file = resource_path(file.path("02-estimate-report", "09-nonsalmon.Rmd"))
   } else {
     nonsalmon_file = blank_file
   }
@@ -306,11 +275,7 @@ build_sensitivity_report_Rmd = function(do_drift, do_set,
   }
 
   # 2: select the right file to produce effort sensitivity analyses
-  if (do_set) {
-    harvest_file = resource_path(file.path("03-sensitivity-report", "02a-harvest_driftset.Rmd"))
-  } else {
-    harvest_file = resource_path(file.path("03-sensitivity-report", "02b-harvest_driftset_noset.Rmd"))
-  }
+  harvest_file = resource_path(file.path("03-sensitivity-report", "02-harvest.Rmd"))
 
   # build the YAML header
   yaml_contents = build_yaml(doc_type = "sensitivity_report", do_drift = do_drift, do_set = do_set, species = species, ...)

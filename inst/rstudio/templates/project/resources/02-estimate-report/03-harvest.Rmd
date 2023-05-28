@@ -1,0 +1,37 @@
+
+# Harvest Estimates {-}
+
+```{r estimate-harvest}
+# estimate (via bootstrap) drift net harvest for all species and and strata if requested
+if (params$do_drift) {
+  boot_out_drift = bootstrap_harvest(
+    interview_data, drift_effort_info,
+    gear = "drift", n_boot = params$n_boot,
+    stratify_interviews = TRUE
+  )
+} else {
+  boot_out_drift = NULL
+}
+
+# estimate (via bootstrap) set net harvest for all species and and strata if requested
+if (params$do_set) {
+  boot_out_set = bootstrap_harvest(
+    interview_data, set_effort_info,
+    gear = "set", n_boot = params$n_boot,
+    stratify_interviews = FALSE
+  )
+} else {
+  boot_out_set = NULL
+}
+
+# combine drift, set, and total into one data.frame of bootstrap output
+boot_out <<- combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)
+```
+
+```{r harvest-bullets, results = "asis"}
+harvest_bullets(include_set_summary = params$do_set & params$do_drift)
+```
+
+```{r strata-summary-table}
+make_strata_summary_table(interview_data, gear = ifelse(params$do_drift, "drift", "set"))
+```

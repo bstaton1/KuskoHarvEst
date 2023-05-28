@@ -1,4 +1,0 @@
-
-```{r histograms, fig.width = 7.5, fig.height = 4, fig.cap = KuskoHarvEst:::make_histogram_caption(interview_data, "set")}
-make_histograms(interview_data, gear = "set", split_chum_sockeye = params$split_chum_sockeye)
-```
