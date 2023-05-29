@@ -192,22 +192,27 @@ KuskoHarvEst_opts_reset = function() {
 #' Including tinytex and all needed TeX packages
 #'
 #' @param force Logical; If `TRUE`, will install TinyTeX even if a version is already installed.
-#'   TeX packages are installed regardless.
+#'   TeX packages are installed regardless (default `FALSE`).
 #' @export
 
-install_TeX = function(force = TRUE) {
+install_TeX = function(force = FALSE) {
+
+  # check if installed already
+  inst_already = tinytex::is_tinytex()
 
   # install tinytex
   tinytex::install_tinytex(force = force)
 
   # install TeX packages
-  tinytex::tlmgr_install(pkgs = c(
-    "sansmathfonts", "setspace", "titlesec", "footmisc",
-    "microtype", "caption", "floatrow", "multirow",
-    "colortbl", "wrapfig", "pdflscape", "tabu",
-    "varwidth", "threeparttable", "threeparttablex",
-    "environ", "trimspaces", "ulem", "makecell",
-    "fancyhdr", "draftwatermark", "parskip"
-  ))
+  if (!inst_already | force) {
+    tinytex::tlmgr_install(pkgs = c(
+      "sansmathfonts", "setspace", "titlesec", "footmisc",
+      "microtype", "caption", "floatrow", "multirow",
+      "colortbl", "wrapfig", "pdflscape", "tabu",
+      "varwidth", "threeparttable", "threeparttablex",
+      "environ", "trimspaces", "ulem", "makecell",
+      "fancyhdr", "draftwatermark", "parskip"
+    ))
+  }
 }
 
