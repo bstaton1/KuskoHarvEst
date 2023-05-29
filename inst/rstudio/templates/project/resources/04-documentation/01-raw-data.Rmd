@@ -6,6 +6,8 @@ author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d
 output: 
   html_document:
     number_sections: false
+editor_options: 
+  chunk_output_type: console
 ---
 
 ---
@@ -21,7 +23,7 @@ By design, entering, formatting, and checking these data will be the most diffic
 
 The length of this document may make this seem complicated -- and it may be at first -- but this document is meant to be comprehensive (that is, explains _everything_).
 
-If at any time you need a quick reminder about which variables are needed and how they should be formatted for the program to work, you can access example data files using the KuskoHarvEst help tool through the RStudio addins menu:
+If at any time you need a quick reminder about which variables are needed and how they should be formatted for the program to work, you can access example data files using the 'KuskoHarvEst' help tool through the RStudio addins menu:
 
 <p align="center">
   <img src="screenshots/common/addins-menu-get-help.png" width="500"/>
@@ -35,27 +37,36 @@ The exact formatting of different data values and column headers is essential. T
 
 ### Dates
 
-**The month, day, year, minute, and hour must be entered in a specific format**. Below, MM/DD means that two digits for the month and two digits for the day are required. M/D means that only one digit may be used. For example June 5 in MM/DD format must be `06/05`, whereas in M/D format it must be in `6/5` (June 12 would be `6/12` for M/D). This concept extends to times expressed as hours:minutes (H:MM).
+**The month, day, year, minute, and hour must be entered in a specific format**.
+Below, MM/DD means that two digits for the month and two digits for the day are required.
+M/D means that only one digit may be used. For example June 5 in MM/DD format must be `06/05`, whereas in M/D format it must be in `6/5` (June 12 would be `6/12` for M/D). This concept extends to times expressed as hours:minutes (H:MM).
 
-**Dates entered into data cells must be in M/D/YYYY format**. For example, June 24, 2020 should be entered `6/24/2020`.
+**Dates entered into data cells must be in M/D/YYYY format**.
+For example, June 24, 2020 should be entered `6/24/2020`.
 
-**Dates in file names should be in YYYY_MM_DD format**. For example, June 24, 2020 should be entered `2020_06_24`.
+**Dates in file names should be in YYYY_MM_DD format**.
+For example, June 24, 2020 should be entered `2020_06_24`.
 
 ### Times
 
-**Times (as in time of day) entered into data cells must be in H:MM format and on the 24 hour clock (i.e., military time)**. For example, 8:00 AM is `8:00`, 11:45 AM is `11:45`, 1:30 PM is `13:30`.
+**Times (as in time of day) entered into data cells must be in H:MM format and on the 24 hour clock (i.e., military time)**.
+For example, 8:00 AM is `8:00`, 11:45 AM is `11:45`, 1:30 PM is `13:30`.
 
 ### Missing Data
 
-Each row in the interview data files will be an individual interview. **If an interview has some data available, but some are missing, the missing cells should have `NA` entered into them. Do not leave missing cells totally empty.**
+Each row in the interview data files will be an individual interview.
+**If an interview has some data available, but some are missing, the missing cells should have `NA` entered into them. Do not leave missing cells totally empty.**
 
 ### One Date Per File
 
-**The raw data files must have data from one calendar day only.** The exception is if a trip started on one day and ended on the next -- see the section on dates in interview files below for details.
+**The raw data files must have data from one calendar day only.**
+The exception is if a trip started on one day and ended on the next -- see the section on dates in interview files below for details.
 
 ### CSV File Format
 
-**All raw data files must be in CSV file format.** This is basically a spreadsheet that contains only data (no formulas). You will edit data files using Excel or a similar spreadsheet software. 
+**All raw data files must be in CSV file format.**
+This is basically a spreadsheet that contains only data (no formulas).
+You will edit data files using Excel or a similar spreadsheet software. 
 
 If you have been provided data files in XLSX file format, open the file in Excel and go to File > Save As > File Type > Comma Separated Values (CSV). 
 
@@ -77,7 +88,8 @@ The date the flight was conducted (entered in M/D/YYYY format).
 
 #### `flight`
 
-A numeric flight identifier. For example, rows corresponding to the first flight of the day would have `1` in this column, same for `2` and the second flight of the day.
+A numeric flight identifier.
+For example, rows corresponding to the first flight of the day would have `1` in this column, same for `2` and the second flight of the day.
 
 #### `gear`
 
@@ -85,27 +97,28 @@ The type of gear corresponding to the counts. Must be one of `drift` or `set`.
 
 #### `start`
 
-The time the observer started searching for nets -- generally several minutes after take off. Must be entered in military time with H:MM format.
+The time the observer started searching for nets -- generally several minutes after take off.
+Must be entered in military time with H:MM format.
 
 #### `end`
 
-The time the observer stopped searching for nets. Must be entered in military time with H:MM format.
+The time the observer stopped searching for nets.
+Must be entered in military time with H:MM format.
 
-#### `A`
+#### Stratum-specific Counts
 
-The count made in geographic stratum A, which spans Tuntutuliak to the Johnson River mouth.
+Column names should be the letters corresponding to the area the count was made.
+If a stratum was missing, do not include a column for it.
 
-#### `B`
+These areas are accepted:
 
-The count made in geographic stratum B, which spans the Johnson River mouth to Napaskiak.
-
-#### `C`
-
-The count made in geographic stratum C, which spans Napaskiak to Akiachak.
-
-#### `D1`
-
-The count made in geographic stratum D1, which spans Akiachak to Akiak.
+```{r strata-table, echo = FALSE}
+tab = KuskoHarvEst:::strata_names
+colnames(tab) = c("Stratum", "Downstream", "Upstream")
+kableExtra::kable(tab) |>
+  kableExtra::kable_styling(full_width = FALSE, bootstrap_options = c("condensed")) |>
+  kableExtra::add_header_above(c(" " = 1, "Boundary" = 2), bold = TRUE)
+```
 
 ## Example Screenshot
 
@@ -115,19 +128,22 @@ Here is an example of a case with two flights conducted in a day where both drif
   <img src="screenshots/01-raw-data/flight-data.png" width="500"/>
 </p>
 
-Each row stores the counts made for one gear type on one flight in each geographic stratum. If there were three flights, there would be two more rows containing the drift and set counts and flight times for the third flight as well.
+Each row stores the counts made for one gear type on one flight in each geographic stratum.
+If there were three flights, there would be two more rows containing the drift and set counts and flight times for the third flight as well.
 
-If the opportunity allowed only set net gear, keep the "drift" rows but insert zeros in the `A` - `D1` columns.
+If the opportunity allowed only set net gear, **keep the "drift" rows but insert zeros for the count values** on each flight.
 
 # Interview Data Files {.tabset .tabset-pills}
 
-Interview data files are more complicated than the flight data file. There will likely be several data files (one per source per day).
+Interview data files are more complicated than the flight data file.
+There will likely be several data files (one per source per day).
 
 Click each of the sections below to get information about how file names and variables should be entered, as well as a screenshot of an example data file. 
 
 ## File Name Requirements
 
-The files storing raw interview data **must** be named `SOURCE_YYYY_MM_DD.csv`, where `SOURCE` is replaced by the data source that collected the data. Typically, these will be one of:
+The files storing raw interview data **must** be named `SOURCE_YYYY_MM_DD.csv`, where `SOURCE` is replaced by the data source that collected the data.
+Typically, these will be one of:
 
 * `BBH`: for interviews conducted at the Bethel Boat Harbor
 * `CBM`: for interviews conducted by the Community Based Harvest Monitoring program
@@ -140,11 +156,14 @@ In the past, these sources have been used as well:
 
 ## Required File Contents
 
-Each row in the data set is a unique interview. No cells should be empty within a row -- if a value is not available, insert `NA`. The order of the columns does not matter, but the column names must be identical to those described below and the cells in each column must be formatted as described.
+Each row in the data set is a unique interview.
+No cells should be empty within a row -- if a value is not available, insert `NA`.
+The order of the columns does not matter, but the column names must be identical to those described below and the cells in each column must be formatted as described.
 
 #### Date(s)
 
-The date(s) the trip occurred on, entered as M/D/YYYY format. There are two options here:
+The date(s) the trip occurred on, entered as M/D/YYYY format.
+There are two options here:
 
 1. Have one column called `date`. This is usable if all trips started and ended on the same day.
 2. Have one `date.start` and one `date.end` column, where each stores the start and end date of each trip. This is included to handle (rare) cases where a set net may be set overnight -- fishing started on one day and ended the next. 
@@ -157,19 +176,32 @@ cat("Warning: Only the 'date' column was found in the raw data, not 'date_start'
 
 Thus, option (2) is preferable to use in all cases because it is explicit -- if all trips began and ended the same day, then the two columns will be identical for each row.
 
-Interview data should be placed in the data file corresponding to the day the trip started. So for example, if you have a trip that started on one day and ended the next day, it should go in the data file that includes other interviews that started on that same day, even though the end date is different.
+Interview data should be placed in the data file corresponding to the day the trip started.
+So for example, if you have a trip that started on one day and ended the next day, it should go in the data file that includes other interviews that started on that same day, even though the end date is different.
 
 #### `stratum`
 
-The geographic stratum in which the majority of the fishing trip occurred. Must be one of `A`, `B`, `C`, `D1`, or `NA`.
+```{r, echo = FALSE}
+accepted_strata = knitr::combine_words(c(KuskoHarvEst:::strata_names$stratum, "NA"), before = '`', and = ' or ')
+```
+
+The geographic stratum in which the majority of the fishing trip occurred.
+Must be one of `r accepted_strata`; records with any other value (e.g., area `O` for "other") will be discarded automatically later with a warning:
+
+```{r, echo = FALSE, comment = NA}
+cat("Warning: There were X records with invalid stratum values: O.\n  They have been discarded.")
+```
 
 #### `gear`
 
-The type of gillnet used by the fisher (non-gillnet gears should not be included in the data set). Can be formatted several ways, acceptable options are: `drift`, `driftnet`, `set`, or `setnet` (or capitalized versions of these).
+The type of gillnet used by the fisher (non-gillnet gears should not be included in the data set).
+Can be formatted several ways, acceptable options are: `drift`, `driftnet`, `set`, or `setnet` (or capitalized versions of these).
 
 #### `length`
 
-The length of the gillnet used by the fisher (in feet). Fishers will commonly report net length in fathoms. One fathom = 6 feet.
+The length of the gillnet used by the fisher (in feet).
+Fishers will commonly report net length in fathoms.
+One fathom = 6 feet.
 
 #### `trip.start`
 
@@ -181,38 +213,39 @@ The time the fisher ended their fishing trip, entered in military time as H:MM f
 
 #### Soak Time
 
-The fisher's best approximation of how long their net was actively fishing for. There are several acceptable ways to enter this:
+The fisher's best approximation of how long their net was actively fishing for.
+There are several acceptable ways to enter this:
 
 * A column called `soak.min` with the number of minutes of soak time, for example, a trip that fished actively for 1.25 hours would be entered `75`.
 * A column called `soak.hrs` with the number of hours of soak time, for example, a trip that fished actively for 1.25 hours would be entered `1.25`.
 * A column called `soak.hrs` with the soak time elapsed entered as H:MM, for example, a trip that fished actively for 1.25 hours would be entered `1:15`.
 
-#### `chinook`
+#### Catch
 
-The reported number of Chinook salmon harvested during the fishing trip. Only enter a zero if the data sheet has a zero. If the data sheet has an empty cell, use `NA`.
+There will be columns for the number of fish harvested per species reported by the fisher.
+Each species will have a different column; these species are accepted:
 
-#### `chum`
+```{r species-table, echo = FALSE}
+tab = KuskoHarvEst:::species_names
+tab2 = data.frame(
+  "Species" = KuskoHarvUtils::capitalize(tab$species),
+  "Enter As" = paste0("`", tab$species, "`")
+  )
+tab2$Species = ifelse(tab$is_salmon, paste0(tab2$Species, " salmon"), tab2$Species)
+knitr::kable(tab2, escape = FALSE, col.names = c("Species", "Column Title")) |>
+  kableExtra::kable_styling(full_width = FALSE, bootstrap_options = c("condensed"))
+```
 
-The reported number of chum salmon harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column. 
-
-#### `sockeye`
-
-The reported number of sockeye salmon harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column.
+If no data are available for a species, you may omit the column for that species entirely.
+Only enter a zero if the data sheet has a zero for that species and interview, if the data sheet has an empty cell, use `NA`.
 
 ## Optional File Contents
 
 These are columns that are not required in the interview data to produce the primary estimates, but some optional features of 'KuskoHarvEst' rely on some of them. 
+
 #### `mesh`
 
 The mesh size of the gillnet used by the fisher on their trip. Measured in inches of stretched mesh. Must be formatted as a number (possibly with decimals). **Fractions (e.g., `5 7/8`) are not accepted and will cause the software to crash and should instead be formatted as decimals.** _This variable is not currently used by any aspect of 'KuskoHarvest'_.
-
-#### `sheefish`
-
-The reported number of sheefish harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column.
-
-#### `whitefish`
-
-The reported number of miscellaneous whitefishes harvested during the fishing trip. Treat zeros and `NA`s the same as the `chinook` column.
 
 #### `type`
 
@@ -222,24 +255,25 @@ The type of interview conducted, for example, in person at the primary village f
 
 The village in which the interviewer is stationed. Typically found only in CBM files. _This variable is not currently used by any aspect of 'KuskoHarvEst'_.
 
-#### `chinook.goal`
+#### Harvest Goal Attainment
 
-Some interviews ask fishers to report their progress towards meeting their desired total harvest for Chinook salmon for the season. They have four response options:
+Some interviews ask fishers to report their progress towards meeting their desired total harvest for Chinook salmon for the season.
+They have four response options:
 
-* "Under halfway done" -- coded as a `1`
-* "Halfway done" -- coded as a `2`
-* "Over halfway done" -- coded as a `3`
-* "Completely done" -- coded as a `4`
+```{r goal-table, echo = FALSE}
+tab = 
+tab2 = data.frame(
+  "Category" = paste0(c("Under halfway", "Halfway", "Over halfway", "Completely"), " done"),
+  "Enter As" = paste0("`", 1:4, "`")
+  )
+knitr::kable(tab2, escape = FALSE, col.names = c("Category", "Enter As")) |>
+  kableExtra::kable_styling(full_width = FALSE, bootstrap_options = c("condensed"))
+```
 
-When available, this column is typically found only in CBM files.
+Enter these values in columns with the name `SPECIES.goal`, where `SPECIES` is replaced with the species in question; e.g., for Chinook, chum, and sockeye salmon, you would have three columns titled `chinook.goal`, `chum.goal`, and `sockeye.goal`.
+The cell in each column stores the response (`1`, `2`, `3`, `4`, or `NA` if no response).
 
-#### `chum.goal`
-
-Same as `chinook.goal`, but for chum salmon harvest.
-
-#### `sockeye.goal`
-
-Same as `chinook.goal`, but for sockeye salmon harvest.
+When available, these data are typically found only in CBM files.
 
 ## Example Screenshots {.tabset .tabset-pills}
 
@@ -266,7 +300,7 @@ A couple things to note about this data file:
 
 A couple things to note about this data file:
 
-* Only one `date` column used
+* Only one `date` column used, recall this will return a warning but it can be safely ignored if all trips started and ended the same day
 * Soak time entered using the `soak.min` option
 * No `chinook.goal`, `chum.goal`, `sockeye.goal` columns included
 
@@ -278,7 +312,7 @@ A couple things to note about this data file:
 
 A couple things to note about this data file:
 
-* Only one `date` column used
+* Only one `date` column used, recall this will return a warning but it can be safely ignored if all trips started and ended the same day
 * Soak time entered using the `soak.hrs` military time option
 * Contains `chinook.goal`, `chum.goal`, `sockeye.goal` columns
 

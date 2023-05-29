@@ -127,7 +127,7 @@ An interview's catch rate data will be deemed unreliable if any of the following
 
 #### User Control of Decision Rule
 
-The classification of a soak time outlier can be controlled by `options("soak_sd_cut")` (3 is the default, lower values will deem more soak times unsuitable). The classification of a net length outlier can be controlled by `options("net_length_cut")` (350 is the default).
+The classification of a soak time outlier can be controlled by `KuskoHarvEst_opts("soak_sd_cut")` (3 is the default, lower values will deem more soak times unsuitable). The classification of a net length outlier can be controlled by `KuskoHarvEst_opts("net_length_cut")` (350 is the default).
 
 #### R Functions Used
 
@@ -151,7 +151,7 @@ An interview be deemed to have an unsuitable soak time for the average if any of
 
 #### User Control of Decision Rule
 
-The classification of a soak time outlier can be controlled by `options("soak_sd_cut")` (3 is the default, lower values will deem more soak times unsuitable).
+The classification of a soak time outlier can be controlled by `KuskoHarvEst_opts("soak_sd_cut")` (3 is the default, lower values will deem more soak times unsuitable).
 
 #### R Functions Used
 
@@ -172,7 +172,7 @@ An interview be deemed to have an unsuitable net length for the average if any o
 
 #### User Control of Decision Rule
 
-The classification of a net length outlier can be controlled by `options("net_length_cut")` (350 is the default).
+The classification of a net length outlier can be controlled by `KuskoHarvEst_opts("net_length_cut")` (350 is the default).
 
 #### R Functions Used
 

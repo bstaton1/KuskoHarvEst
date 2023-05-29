@@ -70,53 +70,55 @@ First, ensure you are on this tab of the tool:
   <img src="screenshots/04-report-builder-tool/navbar-est.png" width="700"/>
 </p>
 
-The first item you can change is how many bootstrap samples to run.
+First, select which species to produce estimates for:
 
 <p align="center">
-  <img src="screenshots/04-report-builder-tool/nboot.png" width="300"/>
+  <img src="screenshots/04-report-builder-tool/est-species.png" width="300"/>
 </p>
 
-The bootstrap procedure is used to estimate uncertainty in harvest estimates, and the more samples you run, the longer the calculations take. Thus, for early drafts of the document, you may want to reduce this number to make sure everything is working properly. For final estimates, be sure to set this to 1,000.
+You **must** select at least one salmon species but selecting any of the nonsalmon species is optional.
+If no harvest data exist for a selected species, the returned harvest estimate will be zero.
+
+If you selected both chum and sockeye salmon, you may check this box to present a combined "Chum+Sockeye" category (rather than separately by species) in the appendix and histogram content of the report:
+
+<p align="center">
+  <img src="screenshots/04-report-builder-tool/split-chum-sockeye.png" width="300"/>
+</p>
+
+Next, select which gear types to produce estimates for:
+
+<p align="center">
+  <img src="screenshots/04-report-builder-tool/gear.png" width="150"/>
+</p>
+
+If "Set Nets Only" was selected in the `r KuskoHarvEst:::link_to_doc("02-meta-data-tool.html", "meta-data tool")`, you will not have the option to change the gear settings.
 
 Next, you will need to check or uncheck these boxes to control what content you want to include in the output document:
 
 <p align="center">
-  <img src="screenshots/04-report-builder-tool/checkboxes-est.png" width="250"/>
+  <img src="screenshots/04-report-builder-tool/est-include.png" width="325"/>
 </p>
 
 Here is what each item controls:
 
-* **Mark as Draft**: If checked, this will include a "Draft" watermark on each page of the document, indicating that it is not yet considered finalized. When you are ready to make the estimate final, run the tool with this box unchecked. 
+* **Full Bootstrap**: If checked, the bootstrap algorithm (how uncertainty is estimated) will be executed for the complete duration. This may take a minute or two; uncheck this box for testing and drafting the document and you will see the output more quickly.
 
-* **Make Set Net Harvest Estimate**: If checked, a set net harvest estimate will be produced and reported. In some rare cases, you may deem that set net interviews are too sparse to provide a reliable estimate (for example, if the effort estimate is 30, but only 1 or 2 interviews were collected). If this is the case, uncheck this box and the set net harvest estimate will not be produced (but an effort estimate will be).
+* **Draft Watermark**: If checked, this will include a "Draft" watermark on each page of the document, indicating that it is not yet considered finalized. When you are ready to make the estimate final, run the tool with this box unchecked. Note that the draft watermark is required if not executing the full bootstrap. 
 
-* **Include Johnson River Proximity Table**: If checked, a table like the one shown below will be included in the document. Uncheck this box if you do not wish to display this table.
+* **Johnson R. Table**: If checked, a table summarizing effort, catch rates, and species composition upstream and downstream of the Johnson R. confluence will be included. Note that this option is only available if drift net harvest is included.
 
-<p align="center">
-  <img src="screenshots/04-report-builder-tool/johnson-table.png" width="600"/>
-</p>
+* **Appendix Summarizing Interview Data**: If checked, a set of tables summarizing interview quantities across different geographic strata will be displayed at the end of the document. Uncheck this box if you do not wish to display this content.
 
-* **Include Harvest Goal Attainment Table**: If checked, a table like the one shown below will be included in the document. Uncheck this box if you do not wish to display this table.
-
-<p align="center">
-  <img src="screenshots/04-report-builder-tool/goal-table.png" width="600"/>
-</p>
-
-* **Include Detailed Appendix**: If checked, a set of tables (like those shown below) summarizing interview quantities across different geographic strata will be displayed at the end of the document. Uncheck this box if you do not wish to display this content.
-
-<p align="center">
-  <img src="screenshots/04-report-builder-tool/appendix-tables.png" width="600"/>
-</p>
-
-* **Present Some Summaries for Chum and Sockeye Separately**: If checked, the histograms and appendix tables will show summaries for chum and sockeye salmon separately. The default (unchecked) will show summaries for these species summed together as "chum+sockeye".
-
-* **Include Appendix with Non-Salmon Harvest Estimates**: If checked, an appendix will be added to the output that displays estimated harvest of non-salmon species.
-
-When you are done selecting these options, click the "Save Rmarkdown Source File" button and then the "Build PDF Report" button (note that you cannot click the second button without clicking the first button). After you click "Build PDF Report", you will see some text appear in the R console behind the tool indicating that calculations are happening. When these are complete, a PDF file will automatically be opened showing you the results. **If you wish to make changes to the PDF file after it has already been created, close the PDF file if it is still open, reselect the correct settings, then click both buttons again.**
+When you are done selecting these options, click the "Save Rmarkdown Source File" button and then the "Build PDF Report" button (note that you cannot click the second button without clicking the first button).
 
 <p align="center">
   <img src="screenshots/04-report-builder-tool/buttons.png" width="700"/>
 </p>
+
+After you click "Build PDF Report", you will see some text appear in the R console behind the tool indicating that calculations are happening.
+When these are complete, a PDF file will automatically be opened showing you the results.
+
+**If you wish to make changes to the PDF file after it has already been created, close the PDF file if it is still open, re-select the correct settings, then click both buttons again.**
 
 You can find several new files in your project folder now:
 
@@ -140,15 +142,18 @@ where you will find this page:
   <img src="screenshots/04-report-builder-tool/whole-tool-sen.png" width="700"/>
 </p>
 
-This part of the tool works very similarly to the previous tab, so consult that section of this document for details on exactly how to use it. The calculations behind sensitivity analyses take quite a bit longer than for the main document, so be prepared to wait several minutes if using the full 1,000 bootstrap samples (which is advised for final output).
+This part of the tool works very similarly to the previous tab, so consult that section of this document for details on exactly how to use it.
+The calculations behind sensitivity analyses take quite a bit longer than for the main document, so be prepared to wait several minutes if you have selected to run the full bootstrap.
+
+You cannot produce the sensitivity analysis for nonsalmon species or if the opener allowed set nets only.
 
 There is one additional setting for sensitivity analyses:
 
 <p align="center">
-  <img src="screenshots/04-report-builder-tool/checkboxes-sen.png" width="250"/>
+  <img src="screenshots/04-report-builder-tool/sen-include.png" width="150"/>
 </p>
 
-The checkbox labeled **Include Trip Time Plots**, if checked, will include many plots that look approximately like this:
+If this checkbox is checked, the report will include many plots that look approximately like this:
 
 <p align="center">
   <img src="screenshots/04-report-builder-tool/trips-plot.png" width="700"/>

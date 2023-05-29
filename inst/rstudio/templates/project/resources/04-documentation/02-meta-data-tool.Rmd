@@ -40,13 +40,13 @@ Clicking the link that says "Get Help with Using this tool" will open this docum
 This first block of entry boxes is where you will enter the date and times for the day the fishery was open and that the estimates pertain to:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/date-time.png" width="600"/>
+  <img src="screenshots/02-meta-data-tool/date-time.png" width="450"/>
 </p>
 
 You can either type the date in directly in MM-DD-YYYY format, or you can use the day selector to ensure the date is formatted properly:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/calendar.png" width="225"/>
+  <img src="screenshots/02-meta-data-tool/calendar.png" width="150"/>
 </p>
 
 For the times, enter the minutes and hours of the start time and end time of the opportunity that occurred that day. A couple things to emphasize here:
@@ -54,16 +54,6 @@ For the times, enter the minutes and hours of the start time and end time of the
 * Be sure to use military time (the 24-hour clock) -- the above example shows an opportunity that started at 6:00 AM and ended at 6:00 PM the same day.
 * If the opportunity was truly all day (i.e., from midnight to midnight), then enter the date as the day of fishing, enter the start time as `00:00`, and enter the end time as `23:59`.
 * Remember, this program allows producing harvest estimates for one day at a time only.
-
-### Geographic Boundaries
-
-The reader of the output documents will want to know what areas of the Kuskokwim River these estimates pertain to. You can enter the upstream and downstream boundaries of this area here:
-
-<p align="center">
-  <img src="screenshots/02-meta-data-tool/spatial.png" width="600"/>
-</p>
-
-In nearly all cases, this should stay as the default downstream boundary of `Tuntutuliak` to the upstream boundary of `Akiak`. In rare cases, the flights may not be able to cover this whole area, and no option exists for imputing values for the missing counts. In that case, change these values to correspond to the landmarks (villages, tributary confluences, etc.) that best describe the area covered by the estimates.
 
 ### Special Action Information
 
@@ -79,7 +69,7 @@ You can enter this information:
 * The weblink to access the announcement document (for example, <https://www.doi.gov/sites/doi.gov/files/uploads/3-ks-03-20-signed.pdf> for 6/12/2020)
 * The weblink to access the news release of the announcement (for example, <https://www.fws.gov/uploadedFiles/2020_3-KS-03-20_News%20Release%20FINAL.pdf>)
 
-**NOTE**: these particular links may not work indefinitely, but they were active at the time of writing (9/19/2021).
+**NOTE**: these particular links may not work indefinitely, but they were active at the time of first writing (9/19/2021).
 
 **NOTE**: this information is optional to include, but you are recommended to include it if it is available.
 
