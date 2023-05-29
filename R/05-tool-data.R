@@ -129,7 +129,7 @@ data_tool = function() {
 
     # when the "get_help" link is clicked:
     shiny::observeEvent(input$get_help, {
-      file.show(resource_path("04-documentation/03-interview-flight-data-tool.html"))
+      file.show(resource_path("04-docs/03-interview-flight-data-tool.html"))
     })
 
     # reactive container object

@@ -5,7 +5,7 @@
 the_dir = getwd()
 
 # set the working directory to the location of the documentation source files
-doc_dir = "inst/rstudio/templates/04-documentation"
+doc_dir = "inst/rstudio/templates/04-docs"
 setwd(doc_dir)
 
 # get the names of the Rmd source files located there

@@ -8,7 +8,7 @@
 help_tool = function() {
 
   # find all documentation files
-  doc_files = list.files(resource_path("04-documentation"), full.names = TRUE)
+  doc_files = list.files(resource_path("04-docs"), full.names = TRUE)
 
   # find which are .html output and which are .Rmd source
   html_files = doc_files[stringr::str_detect(doc_files, "\\.html$")]
@@ -121,12 +121,12 @@ help_tool = function() {
 
     # open the 2018 report when requested
     shiny::observeEvent(input$open_2018_report, {
-      file.show(resource_path("04-documentation/Staton - 2018 - In-season harvest and effort estimates.pdf"))
+      file.show(resource_path("04-docs/Staton - 2018 - In-season harvest and effort estimates.pdf"))
     })
 
     # open the 2021 report when requested
     shiny::observeEvent(input$open_2021_report, {
-      file.show(resource_path("04-documentation/KuskoHarvEst-final-report/3-submit/KuskoHarvEst-final-report.pdf"))
+      file.show(resource_path("04-docs/KuskoHarvEst-final-report/3-submit/KuskoHarvEst-final-report.pdf"))
     })
 
     # Handle the Done button being pressed
