@@ -126,7 +126,7 @@ help_tool = function() {
 
     # open the 2021 report when requested
     shiny::observeEvent(input$open_2021_report, {
-      file.show(resource_path("04-docs/KuskoHarvEst-final-report/3-submit/KuskoHarvEst-final-report.pdf"))
+      file.show(resource_path("04-docs/pkg-report/3-submit/KuskoHarvEst-final-report.pdf"))
     })
 
     # Handle the Done button being pressed
