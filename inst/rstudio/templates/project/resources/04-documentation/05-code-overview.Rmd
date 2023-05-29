@@ -61,21 +61,7 @@ interview_files = data_files[!stringr::str_detect(data_files, "Flight_counts")]
 
 Ensuring the data files are properly formatted is a key step to using 'KuskoHarvEst' successfully. Full instructions can be found `r KuskoHarvEst:::link_to_doc("01-raw-data.html")`.
 
-## Step 1: Define Global Options
-
-This code sets some options that will be used by some of the background functions used in the package. Do not change them unless you have a good reason to:
-
-```{r}
-options(
-  soak_sd_cut = 3,
-  net_length_cut = 350,
-  catch_per_trip_cut = 0.05,
-  central_fn = mean,
-  pooling_threshold = 10
-)
-```
-
-## Step 2: Prepare Flight Data
+## Step 1: Prepare Flight Data
 
 Assuming the data file is formatted properly, preparing the flight data is simple:
 
@@ -91,7 +77,7 @@ flight_data
 
 Each row is a flight and the columns store the flight times and the counts by gear type and stratum.
 
-## Step 3: Prepare Interview Data
+## Step 2: Prepare Interview Data
 
 Again, assuming the data files are formatted properly, preparing the interview data is also simple:
 
@@ -109,7 +95,7 @@ head(interview_data, 20)
 
 The columns that start with `"suit_"` store a `TRUE` if that object is suitable for a purpose and `FALSE` if not and the `"note"` column stores some information about records that required special treatment.
 
-## Step 4: Produce Effort Estimates
+## Step 3: Produce Effort Estimates
 
 Next, produce effort estimates using `estimate_effort()`. June 12, 2020 was a opportunity that allowed both set and drift net harvest, so estimates must be made for two gear types separately:
 
@@ -172,9 +158,9 @@ For the drift estimate, other useful information is contained in this object:
 
 In practice, most users will not need to access these elements and need only concern themselves with `drift_effort_info$effort_est_total`.
 
-## Step 5: Produce Harvest Estimate (with bootstrap)
+## Step 4: Produce Harvest Estimate (with bootstrap)
 
-Next, produce harvest estimates using a non-parametric bootstrap using `bootstrap_harvest()`. Estimates must be generated for each gear type separately, but this function performs estimates for all species and geographic strata all at once. Note that the argument `n_boot` is required: this is the number of bootstrap samples to generate; 100 is used here for demonstration but for real applications this should be set to 1000.
+Next, produce harvest estimates using a non-parametric bootstrap using `bootstrap_harvest()`. Estimates must be generated for each gear type separately, but this function performs estimates for all species and geographic strata all at once. Note that the argument `n_boot` is required: this is the number of bootstrap samples to generate; 100 is used here for demonstration but for real applications this should be set to 1,000.
 
 ```{r}
 # estimate (via bootstrap) drift net harvest for all species and and strata
@@ -282,12 +268,19 @@ This catalog is intended for users wishing to gain a more complete understanding
   * `is_soak_outlier()` -- checks each soak time for consistency with other soak times for that gear type. If the soak time is >X SDs away from the mean of all other soak times for that gear type, it will be flagged as a soak time outlier. The value of X is selected by the user and defaults to 3.
   * `is_short_incomplete_soak()` -- if the trip is incomplete and shorter than the shortest completed trip, this function will return a flag indicating its catch rate data should not be used.
   * `is_catch_per_trip_outlier()` -- if leaving out an interview changes the estimate of mean catch/per trip by greater than X%, it is flagged as an outlier and its catch rate data will not be used in the average. Only done for drift trips.
-  * `unique_start_dates()` -- extracts the unique start dates for all interviews. All code in this package assumes it is working on one day at a time.
-* `randomize_data()` resamples with replacement from a set of interviews; used to support the non-parametric bootstrap.
+* `unique_start_dates()` -- extracts the unique start dates for all interviews. All code in this package assumes it is working on one day at a time.
+* `select_species()` -- a shortcut to quickly trim out species that will not be included in the estimate.
+* `species_in_data()` -- a shortcut to quickly return which species are found in the interview data set
+* `get_flight_strata()` -- a shortcut to quickly return the strata found in the flight data set
+* `randomize_data()` -- resamples with replacement from a set of interviews; used to support the non-parametric bootstrap.
+* `install_TeX()` -- helps the user easily install all needed $\mathrm{\LaTeX}$ dependencies.
 
 ## Core Estimation Functions
 
-* `estimate_effort()` -- performs the calculations for estimating effort for either drift nets or set nets
+* `was_counted()` -- determines if each interview was available to be counted on each flight, to be passed to `tally_effort_data()`.
+* `tally_effort_data()` -- counts how many interviews were available to be counted on each flight, to be passed to `N_estimator()`.
+* `N_estimator()` -- performs the calculations for estimating drift net effort.
+* `estimate_effort()` -- wrapper around `N_estimator()`, also estimates harvest for set nets
 * `stratify_effort()` -- apportions the aggregate effort estimate into strata-specific estimates
 * `estimate_harvest()` -- estimates harvest by species and geographic stratum as `effort * catch_per_trip`
 * `bootstrap_harvest()` -- replicates resampling with replacement from interview data and calling `estimate_harvest()` on each resample to generate a distribution of plausible harvest estimates
@@ -298,9 +291,12 @@ This catalog is intended for users wishing to gain a more complete understanding
 ## Output Element Functions
 
 * `report()` -- summarizes the output of `bootstrap_harvest()`; see the [code tutorial](#tutorial) step 6 for usage examples
+* `effort_bullets()` -- summarizes the effort estimate information and returns a bullet list to be included in the report.
+* `harvest_bullets()` -- summarizes the harvest estimates and returns a bullet list to be included in the report.
 * `make_histogram()` -- generates one histogram showing the distribution of a quantity across interviewed trips
 * `make_histograms()` -- wrapper for `make_histogram()` that generates a multi-panel plot of six histograms
 * `make_histogram_caption()` -- the caption of the histogram depends on the data sources available; this function automates this
+* `select_histogram_variables()` -- automatically selects which variables to display in the histograms.
 * A handful of functions dedicated to making a specific kind of table for displaying in PDF reports:
   * `make_interview_data_table()`
   * `make_flight_data_table()`
@@ -308,8 +304,10 @@ This catalog is intended for users wishing to gain a more complete understanding
   * `make_johnson_summary_table()`
   * `make_goals_summary_table()`
   * `make_appendix_table()`
+  * `make_appendix_tables()`
   * `make_effort_sensitivity_table()`
   * `make_harvest_sensitivity_table()`
+  * `make_harvest_sensitivity_tables()`
 * `make_effort_plot()` -- generates a diagnostic plot that shows the interviewed trips and flight times as an overlay; a visual for examining correct entry of time information and seeing how many trips were available to be counted on each flight.
 * Three functions that create the sensitivity analysis scenarios: combinations of flight and interview data exclusion. These are: `create_flight_combos()`, `create_interview_combos()`, and `create_harvest_combos()`
 
@@ -351,18 +349,22 @@ See the section on [construcing Rmarkdown source scripts](#Rmd) for details on w
     KuskoHarvEst:::strata_names
     ```
 
+* An object named `species_names` that includes information about the species the software accepts. **If new species to be included, this object needs to be updated.**
+
+    ```{r}
+    KuskoHarvEst:::strata_names
+    ```
+
 # Construction of Rmarkdown Source Scripts {#rmd}
 
-The PDF report is generated by code that runs the analysis and embeds the results in the output at the same time using a framework called Rmarkdown. The file that contains the code is called an Rmarkdown (Rmd) source script. However, the code contained in this script depends on some characteristics of the opportunity and data available such as:
+The PDF report is generated by code that runs the analysis and embeds the results in the output at the same time using a framework called Rmarkdown.
+The file that contains the code is called an Rmarkdown (Rmd) source script.
 
-* How many flights were flown
-* If the opportunity was set net only, or allowed both set nets and drift nets to be used
-* If a set net estimate is desired or not
-* Which output tables are desired
+In previous versions of this code, the user had to copy the Rmd script from the previous estimate and edit it by hand to reflect the features of the new estimate.
+In 'KuskoHarvEst', all of the possibilities for different code that could go in the Rmd script has now been placed into separate files that then are combined as needed to build the final Rmd source script that ultimately becomes rendered. 
+This is the purpose of `build_estimate_report_Rmd()` and `build_sensitivity_report_Rmd()` -- they accept options for which features should be included and they combine the separate files. The function `build_yaml()` builds what is called a YAML header for the Rmd script, which contains some basic instructions for how to convert the code to a PDF.
 
-In previous versions of this code, the user had to copy the Rmd script from the previous estimate and edit it by hand to reflect the features of the new estimate. In 'KuskoHarvEst', all of the possibilities for different code that could go in the Rmd script has now been placed into many separate files that then are combined as needed to build the final Rmd source script that ultimately becomes rendered. This is the purpose of `build_estimate_report_Rmd()` and `build_sensitivity_report_Rmd()` -- they accept options for which features should be included and they combine the separate files. The function `build_yaml()` builds what is called a YAML header for the Rmd script, which contains some basic instructions for how to convert the code to a PDF.
-
-The location on your computer that houses the many separate files containing the Rmd code components that ultimately become combined can be found using this code:
+The location on your computer that houses the separate files containing the Rmd code components that ultimately become combined can be found using this code:
 
 * Code that is used across multiple outputs:
 
@@ -382,6 +384,6 @@ The location on your computer that houses the many separate files containing the
     KuskoHarvEst:::resource_path("03-sensitivity-report")
     ```
 
-Rmarkdown includes default configurations for the PDF output (e.g., font, margins, overall spacing, title format, page numbering, footer contents, etc.). These features have been edited using a Pandoc/LaTeX template file found at the path returned by `KuskoHarvEst:::resource_path("01-common/report_template.tex")`. Further, instead of using the default output class of `rmarkdown::pdf_document()`, 'KuskoHarvEst' includes `KuskoHarvEst:::pdf_report()` which uses this template automatically.
-
-
+Rmarkdown includes default configurations for the PDF output (e.g., font, margins, overall spacing, title format, page numbering, footer contents, etc.).
+These features have been edited using a Pandoc/LaTeX template file found at the path returned by `KuskoHarvEst:::resource_path("01-common/report_template.tex")`.
+Further, instead of using the default output class of `rmarkdown::pdf_document()`, 'KuskoHarvEst' includes `KuskoHarvEst:::pdf_report()` which uses this template automatically.
