@@ -7,7 +7,7 @@
 #'
 
 resource_path = function(file) {
-  system.file(file.path("rstudio", "templates", "project", "resources", file), package = "KuskoHarvEst")
+  system.file(file.path("rstudio", "templates", file), package = "KuskoHarvEst")
 }
 
 #' Create a project directory to use for use with 'KuskoHarvEst'
