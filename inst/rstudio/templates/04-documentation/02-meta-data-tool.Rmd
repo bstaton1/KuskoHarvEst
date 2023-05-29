@@ -2,7 +2,7 @@
 title: "**How to Use: Meta-Data Tool**"
 subtitle: "_KuskoHarvEst Documentation_"
 date: '`r paste0("Last Updated: ", KuskoHarvUtils::basic_date(lubridate::today()))`'
-author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d[3])`"
+author: "`r d = readLines('../../../../DESCRIPTION'); paste0('Package ', d[3])`"
 output: 
   html_document:
     number_sections: false
