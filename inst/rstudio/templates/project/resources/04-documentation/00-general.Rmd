@@ -40,7 +40,7 @@ In the event that you are faced with a fishery opening that spans multiple days 
 
 Harvest estimation relies on completed trip fisher interviews and aerial counts of the number of trips active at a given time.
 Gathering, entering, formatting, and checking these data will be the most difficult part of your job.
-**If the program crashes, it is due to an error in the raw data files and the error message you receive will not likely be very informative.**
+**If the program crashes, it is almost certainly due to an error in the raw data files and the error message you receive will not likely be very informative.**
 Because of this, you should pay special attention to the raw data files.
 See the documentation about the raw data files (`r KuskoHarvEst:::link_to_doc("01-raw-data.html")`) for more details.
 
@@ -92,7 +92,7 @@ After you are done with this process, you should paste the raw data files (fligh
 # Enter Estimate Meta-Data
 
 The next step will be to enter some high level information about the opportunity and the estimate.
-This includes the date, times, areas of the river monitored, gear types allowed, URLs for readers to get more information about the decision that led to the opportunity, and contact information of the person(s) producing the estimate.
+This includes the date, times, gear types allowed, URLs for readers to get more information about the decision that led to the opportunity, and contact information of the person(s) producing the estimate.
 These items are referred to as "meta-data" for the estimate.
 
 The tool that allows you to enter these data can be accessed through the RStudio addin menu shown below (documentation `r KuskoHarvEst:::link_to_doc("02-meta-data-tool.html")`).
