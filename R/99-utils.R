@@ -191,22 +191,14 @@ KuskoHarvEst_opts_reset = function() {
 #'
 #' Including tinytex and all needed TeX packages
 #'
-#' @param remove_existing Logical; do you wish to delete the existing
-#'   distribution found on your computer before installing? Defaults to `TRUE`.
+#' @param force Logical; If `TRUE`, will install TinyTeX even if a version is already installed.
+#'   TeX packages are installed regardless.
 #' @export
 
-install_TeX = function(remove_existing = TRUE) {
-
-  # determine if already installed
-  TeX_found = tinytex::is_tinytex()
-
-  # remove exisiting installation of tinytex if requested
-  if (remove_existing & TeX_found) {
-    tinytex::uninstall_tinytex(force = TRUE)
-  }
+install_TeX = function(force = TRUE) {
 
   # install tinytex
-  tinytex::install_tinytex(force = !TeX_found)
+  tinytex::install_tinytex(force = force)
 
   # install TeX packages
   tinytex::tlmgr_install(pkgs = c(

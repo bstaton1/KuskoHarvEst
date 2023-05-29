@@ -4,11 +4,11 @@
 \alias{install_TeX}
 \title{Install All Necessary TeX Dependencies}
 \usage{
-install_TeX(remove_existing = TRUE)
+install_TeX(force = TRUE)
 }
 \arguments{
-\item{remove_existing}{Logical; do you wish to delete the existing
-distribution found on your computer before installing? Defaults to \code{TRUE}.}
+\item{force}{Logical; If \code{TRUE}, will install TinyTeX even if a version is already installed.
+TeX packages are installed regardless.}
 }
 \description{
 Including tinytex and all needed TeX packages
