@@ -187,5 +187,31 @@ KuskoHarvEst_opts_reset = function() {
   settings::reset(KuskoHarvEst_OPTIONS)
 }
 
+#' Install All Necessary TeX Dependencies
+#'
+#' Including tinytex and all needed TeX packages
+#'
+#' @param force Logical; If `TRUE`, will install TinyTeX and packages even if already installed (default `TRUE`).
+#' @export
 
+install_TeX = function(force = TRUE) {
+
+  # check if installed already
+  inst_already = tinytex::is_tinytex()
+
+  # install tinytex
+  tinytex::install_tinytex(force = force)
+
+  # install TeX packages
+  if (!inst_already | force) {
+    tinytex::tlmgr_install(pkgs = c(
+      "sansmathfonts", "setspace", "titlesec", "footmisc",
+      "microtype", "caption", "floatrow", "multirow",
+      "colortbl", "wrapfig", "pdflscape", "tabu",
+      "varwidth", "threeparttable", "threeparttablex",
+      "environ", "trimspaces", "ulem", "makecell",
+      "fancyhdr", "draftwatermark", "parskip"
+    ))
+  }
+}
 
