@@ -26,13 +26,13 @@ After you have completed these steps, you are ready to proceed to the interview/
 Navigate to the RStudio addins menu, and select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/common/addins-menu-interview-flight-data.png" width="700"/>
+  <img src="SS/common/addins-menu-interview-flight-data.png" width="700"/>
 </p>
 
 This window will open within RStudio:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/whole-tool-interviews.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/whole-tool-interviews.png" width="700"/>
 </p>
 
 Clicking the link that says "Get Help with Using this tool" will open this document.
@@ -70,30 +70,30 @@ Clicking the link that says "Get Help with Using this tool" will open this docum
 Start by ensuring you are in this section of the tool, by clicking the highlighted items below:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/navbar-interview-options.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/navbar-interview-options.png" width="700"/>
 </p>
 
 Next, the tool automatically identifies which raw data files contain interviews, and places then in the list as shown below.
 Generally, you will want to include all files, but this box allows you to prevent some sources from being included in the final data set.
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/sources-to-include.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/sources-to-include.png" width="700"/>
 </p>
 
 Click the "Load Raw Data Files" button and then "Save Formatted Data File" button displayed below:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/interview-buttons.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/interview-buttons.png" width="700"/>
 </p>
 
 After a few seconds, two tables will display under the buttons:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/strata-gear-summary.png" width="300"/>
+  <img src="SS/03-interview-flight-data-tool/strata-gear-summary.png" width="300"/>
 </p>
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/unsuitable-summary.png" width="400"/>
+  <img src="SS/03-interview-flight-data-tool/unsuitable-summary.png" width="400"/>
 </p>
 
 The first shows how many interviews are available within each geographic stratum by gear type.
@@ -170,13 +170,13 @@ You may want to explore the data a bit before clicking the "Save Formatted Data 
 Navigate to this tab:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/navbar-interview-output.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/navbar-interview-output.png" width="700"/>
 </p>
 
 where you will see a table with options allowing you to filter which records are displayed:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/interview-output.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/interview-output.png" width="700"/>
 </p>
 
 You can filter the data by data source, gear type, geographic stratum, and the various reasons why an interview may be considered unreliable.
@@ -192,13 +192,13 @@ You will not be able to open this file directly -- it is used by R automatically
 When you are done with the interview data steps, navigate to the flight data tab:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/navbar-flights.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/navbar-flights.png" width="700"/>
 </p>
 
 where you will see this page:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/whole-tool-flights.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/whole-tool-flights.png" width="700"/>
 </p>
 
 Note that you will not be able to click the "Load Flight Data" button until after you have completed the steps in the interview data tab.
@@ -207,7 +207,7 @@ Make sure the correct flight data file is selected, then click "Load Flight Data
 A table like the one displayed below will appear with the formatted flight data:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/flight-table.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/flight-table.png" width="700"/>
 </p>
 
 If the opportunity allowed both drift and set net gears, then a figure like the one displayed below will appear showing the reported start and end times of each trip, along with the times each flight was active.
@@ -219,7 +219,7 @@ The line types indicate how many flights the trip could have been counted on:
 * Dotted black: trip was counted on three flights
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/flight-plot.png" width="700"/>
+  <img src="SS/03-interview-flight-data-tool/flight-plot.png" width="700"/>
 </p>
 
 **When you are done viewing these outputs, make sure click "Save Flight Data".**
@@ -229,5 +229,5 @@ You will not be able to open this file directly -- it is used by R automatically
 When you are done with both the interview and flight data tabs and have ensured that the all exported data files are found in the `data-use` folder, you may click the "Done" button at the top right to exit the tool:
 
 <p align="center">
-  <img src="screenshots/03-interview-flight-data-tool/done.png" width="60"/>
+  <img src="SS/03-interview-flight-data-tool/done.png" width="60"/>
 </p>

@@ -54,13 +54,13 @@ In my opinion, they do nothing but create clutter. You can prevent RStudio from 
 First, navigate to the "Tools" menu in RStudio, then select "Global Options":
 
 <p align="center">
-  <img src="man/figures/readme-screenshots/rstudio-tools.png" width="500"/>
+  <img src="man/figures/readme-SS/rstudio-tools.png" width="500"/>
 </p>
 
 Then, make sure your settings look just like the highlighted ones below, and click "Apply" and "OK":
 
 <p align="center">
-  <img src="man/figures/readme-screenshots/rstudio-global-options.png" width="500"/>
+  <img src="man/figures/readme-SS/rstudio-global-options.png" width="500"/>
 </p>
 
 ## The Estimation/Reporting Workflow
@@ -86,13 +86,13 @@ It is recommended that you review the documentation for 'KuskoHarvEst' before us
 Lots of information is available through the built-in "Help" tool, available through the "Addins" menu at the top of RStudio:
 
 <p align="center">
-  <img src="man/figures/readme-screenshots/addin-menu.png" width="600"/>
+  <img src="man/figures/readme-SS/addin-menu.png" width="600"/>
 </p>
 
 There are dedicated documents with step-by-step instructions and general guidance on how to use each interactive tool and more, accessible through this menu in the 'KuskoHarvEst' help tool:
 
 <p align="center">
-  <img src="man/figures/readme-screenshots/help-instructions.png" width="300"/>
+  <img src="man/figures/readme-SS/help-instructions.png" width="300"/>
 </p>
 The key documentation for all users is labeled "General Instructions" and "How To".
 Further documentation is accessible here for users interested in learning about how the code framework operates, which quality assurance checks are performed on the interview data, and how to generate content (tables and figures) for the end-of-season final report.
@@ -101,20 +101,20 @@ Additionally, users can find example data files to illustrate precisely how the 
 These are accessible through this menu in the 'KuskoHarvEst' help tool:
 
 <p align="center"> 
-  <img src="man/figures/readme-screenshots/help-data.png" width="300"/> 
+  <img src="man/figures/readme-SS/help-data.png" width="300"/> 
 </p>
 
 Users new to in-season Kuskokwim River subsistence harvest monitoring and estimation are advised to read the Staton (2018) report - it details the data collection and analytical methods.
 This is accessible by clicking the link in this section of the 'KuskoHarvEst' help tool:
 
 <p align="center">
-  <img src="man/figures/readme-screenshots/help-report.png" width="600"/>
+  <img src="man/figures/readme-SS/help-report.png" width="600"/>
 </p>
 
 Finally, users can find some information about the 'KuskoHarvEst' development project in the project summary report:
 
 <p align="center">
-  <img src="man/figures/readme-screenshots/summary-report.png" width="600"/>
+  <img src="man/figures/readme-SS/summary-report.png" width="600"/>
 </p>
 
 ## Contact

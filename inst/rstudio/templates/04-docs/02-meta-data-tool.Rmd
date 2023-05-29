@@ -24,13 +24,13 @@ _This document describes how to use the meta-data tool, where you will enter spe
 After you have completed these steps, you are ready to proceed to the meta-data entry step. Navigate to the RStudio addins menu, and select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/common/addins-menu-meta-data.png" width="600"/>
+  <img src="SS/common/addins-menu-meta-data.png" width="600"/>
 </p>
 
 This window will open within RStudio:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/whole-tool.png" width="600"/>
+  <img src="SS/02-meta-data-tool/whole-tool.png" width="600"/>
 </p>
 
 Clicking the link that says "Get Help with Using this tool" will open this document.
@@ -40,13 +40,13 @@ Clicking the link that says "Get Help with Using this tool" will open this docum
 This first block of entry boxes is where you will enter the date and times for the day the fishery was open and that the estimates pertain to:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/date-time.png" width="450"/>
+  <img src="SS/02-meta-data-tool/date-time.png" width="450"/>
 </p>
 
 You can either type the date in directly in MM-DD-YYYY format, or you can use the day selector to ensure the date is formatted properly:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/calendar.png" width="150"/>
+  <img src="SS/02-meta-data-tool/calendar.png" width="150"/>
 </p>
 
 For the times, enter the minutes and hours of the start time and end time of the opportunity that occurred that day. A couple things to emphasize here:
@@ -60,7 +60,7 @@ For the times, enter the minutes and hours of the start time and end time of the
 Generally, the harvest opportunity will be authorized by an official announcement and readers of the output document may be interested in gaining more information about it. Using these boxes:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/announcement-info.png" width="600"/>
+  <img src="SS/02-meta-data-tool/announcement-info.png" width="600"/>
 </p>
 
 You can enter this information:
@@ -78,7 +78,7 @@ You can enter this information:
 If readers of the output documents have questions about the data or analysis, they should know who to contact. You can enter this here:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/contact.png" width="600"/>
+  <img src="SS/02-meta-data-tool/contact.png" width="600"/>
 </p>
 
 Although it is optional, you are recommended to include the contact information for the person(s) who created the harvest estimates. You are recommended to use the format `Person 1 (p1@email.com), Person 2 (p2@email.com)` if there are multiple people involved.
@@ -88,7 +88,7 @@ Although it is optional, you are recommended to include the contact information 
 If the opportunity allowed only set nets (and not both set and drift nets), then **it is critical** that you check this box at the bottom of the tool:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/set-only.png" width="150"/>
+  <img src="SS/02-meta-data-tool/set-only.png" width="150"/>
 </p>
 
 ### Save and Close
@@ -96,7 +96,7 @@ If the opportunity allowed only set nets (and not both set and drift nets), then
 When you are done entering this information, you **must** click the "Save and Close" button at the bottom of the tool:
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/save.png" width="600"/>
+  <img src="SS/02-meta-data-tool/save.png" width="600"/>
 </p>
 
 This creates a file in the `data-use` folder in your project with the name `YYYY_MM_DD_meta.rds` and the tool will be closed automatically. You will not be able to open this file directly -- it is used by R automatically in later steps. If you need to change the meta-data, relaunch this tool and start over.
@@ -104,5 +104,5 @@ This creates a file in the `data-use` folder in your project with the name `YYYY
 If you wish to exit the tool without saving the output, you may click the "Done" button at the top right.
 
 <p align="center">
-  <img src="screenshots/02-meta-data-tool/done.png" width="60"/>
+  <img src="SS/02-meta-data-tool/done.png" width="60"/>
 </p>
