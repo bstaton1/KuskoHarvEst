@@ -188,6 +188,11 @@ This is the role of the `combine_boot_out()` function:
 boot_out = combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)
 ```
 
+```{r, echo = FALSE}
+# combine drift, set, and total into one data frame of bootstrap output
+boot_out <<- combine_boot_out(boot_out_drift = boot_out_drift, boot_out_set = boot_out_set)
+```
+
 ## Step 6: Summarize Output
 
 The final step is to summarize the bootstrap output; this is the role of the `report()` function. Using it without any arguments will summarize `boot_out` for the total harvest (across strata, species, and gears):
