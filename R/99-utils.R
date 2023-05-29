@@ -192,7 +192,7 @@ KuskoHarvEst_opts_reset = function() {
 #' Including tinytex and all needed TeX packages
 #'
 #' @param force Logical; If `TRUE`, will install TinyTeX and packages even if already installed (default `TRUE`).
-#' @export
+
 
 install_TeX = function(force = TRUE) {
 
