@@ -65,7 +65,7 @@ For the first example above, one way this was addressed was to discard the catch
 For the second example, the software will automatically alter the active fishing time to be no longer than the reported trip duration.
 In both cases, the user is notified of the action the software took.
 For the data sharing case, a rule is now imposed that will share data from the closest area whenever there are fewer than 10 interviews in an area.
-These are useful examples of the automation that was added to these kinds of issues, but a complete list can be found [here](https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/project/resources/04-documentation/06-data-checks.html).
+These are useful examples of the automation that was added to these kinds of issues, but a complete list can be found [here](https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/04-docs/06-data-checks.html).
 
 ## (4) Lack of Documentation {-}
 

@@ -2,7 +2,7 @@
 title: "**Creation of Final Report Content**"
 subtitle: "_KuskoHarvEst Documentation_"
 date: '`r paste0("Last Updated: ", KuskoHarvUtils::basic_date(lubridate::today()))`'
-author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d[3])`"
+author: "`r d = readLines('../../../../DESCRIPTION'); paste0('Package ', d[3])`"
 output: 
   html_document:
     toc: true
@@ -16,7 +16,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-_This document provides an overview of the capabilities included in 'KuskoHarvEst' for producing figures and tables that can be placed in the final (i.e., season-wide summary) report, similar to those found in Staton (`r KuskoHarvEst:::link_to_doc("Staton - 2018 - In-season harvest and effort estimates.pdf", "2018")`)._
+_This document provides an overview of the capabilities included in 'KuskoHarvEst' for producing figures and tables that can be placed in the final (i.e., season-wide summary) report, similar to those found in Staton (`r KuskoHarvEst:::link_to_doc("Staton - 2018.pdf", "2018")`)._
 
 **The steps described here are only to be completed after the last harvest opportunity of the year and after all raw data sets have been finalized. This is part of the post-season workflow, not the in-season workflow.**
 
@@ -29,26 +29,26 @@ The final reports summarize all data and harvest estimates obtained from a singl
 To create a new R project, go to the "File" menu within RStudio, and select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/new-project.png" width="500"/>
+  <img src="SS/07-final-report-content/new-project.png" width="500"/>
 </p>
 
 This window will pop up, select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/new-directory.png" width="500"/>
+  <img src="SS/07-final-report-content/new-directory.png" width="500"/>
 </p>
 
 Which will take you to this page, select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/new-KuskoHarvEst-project.png" width="500"/>
+  <img src="SS/07-final-report-content/new-KuskoHarvEst-project.png" width="500"/>
 </p>
 
 Although optional, you are advised to name the project "KuskoHarvEst_YYYY_final_report_content", but replace "YYYY" with the current year.
 **Make sure the highlighted check box shown below is checked** and click "Create Project".
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/new-project-info.png" width="500"/>
+  <img src="SS/07-final-report-content/new-project-info.png" width="500"/>
 </p>
 
 After you click "Create Project", RStudio will open that project.
@@ -61,13 +61,13 @@ You must place the raw data files from each opportunity in this folder.
 Here is an example of the `raw-data-files` folder contents for the 2021 season:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/raw-data-files-folder.png" width="250"/>
+  <img src="SS/07-final-report-content/raw-data-files-folder.png" width="250"/>
 </p>
 
 Notice there is a separate folder for each opportunity. Each of these subfolders should contain only the data from that opportunity; here is an example of the `raw-data-files/2021_06_02` subfolder:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/raw-data-files-example.png" width="250"/>
+  <img src="SS/07-final-report-content/raw-data-files-example.png" width="250"/>
 </p>
 
 **Do not move to the next step until you have organized all data for the season this way.**
@@ -86,7 +86,7 @@ This step requires that you enter the dates of the opportunities that meet these
 From RStudio, open the file `00-specify-odd-openers.R`, which will look like this:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/odd-openers-verbatim.png" width="500"/>
+  <img src="SS/07-final-report-content/odd-openers-verbatim.png" width="500"/>
 </p>
 
 Using 2021 as an example, 
@@ -98,7 +98,7 @@ Using 2021 as an example,
 These should be entered like this:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/odd-openers-example.png" width="500"/>
+  <img src="SS/07-final-report-content/odd-openers-example.png" width="500"/>
 </p>
 
 **Make sure to save your changes to this file before moving on.**
@@ -128,7 +128,7 @@ From RStudio, open the file `03-make-all-figures.R`. No edits to this file shoul
 The output from this code will be stored in a new folder called `figures-for-report`. Examine the files contained here. If you detect any problems with the formatting of the figures, the code that produced them can be edited as necessary -- if you are uncomfortable with this, it is advisable to contact someone with knowledge of R code editing to help with this process. The primary issue you may run into is on the figures that look like this:
 
 <p align="center">
-  <img src="screenshots/07-final-report-content/setnet-effort-by-opener.png" width="500"/>
+  <img src="SS/07-final-report-content/setnet-effort-by-opener.png" width="500"/>
 </p>
 
 The "A", "B", "C", and "D" labels will all be placed on the first date (here, 6/2) by default. However notice on the figure above that there is no room for the "A" label on the first date. You can control which date each label goes on by changing this code (found near line number 90 in `03-make-all-figures.R`):

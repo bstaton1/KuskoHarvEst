@@ -89,7 +89,7 @@ meta_tool = function() {
 
     # when the "get_help" link is clicked:
     shiny::observeEvent(input$get_help, {
-      file.show(resource_path("04-documentation/02-meta-data-tool.html"))
+      file.show(resource_path("04-docs/02-meta-data-tool.html"))
     })
 
     # when the "save" button is clicked:

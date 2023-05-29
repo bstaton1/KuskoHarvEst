@@ -2,7 +2,7 @@
 title: "**General Instructions**"
 subtitle: "_KuskoHarvEst Documentation_"
 date: '`r paste0("Last Updated: ", KuskoHarvUtils::basic_date(lubridate::today()))`'
-author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d[3])`"
+author: "`r d = readLines('../../../../DESCRIPTION'); paste0('Package ', d[3])`"
 output: 
   html_document:
     number_sections: true
@@ -53,19 +53,19 @@ You will create a new one for each harvest estimate you create.
 To create a new R project, go to the "File" menu within RStudio, and select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/00-general/new-project.png" width="500"/>
+  <img src="SS/00-general/new-project.png" width="500"/>
 </p>
 
 This window will pop up, select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/00-general/new-directory.png" width="500"/>
+  <img src="SS/00-general/new-directory.png" width="500"/>
 </p>
 
 Which will take you to this page, select the highlighted option:
 
 <p align="center">
-  <img src="screenshots/00-general/new-KuskoHarvEst-project.png" width="500"/>
+  <img src="SS/00-general/new-KuskoHarvEst-project.png" width="500"/>
 </p>
 
 Finally, enter the correct information on this page and click "Create Project".
@@ -75,7 +75,7 @@ Although these features are flexible, you are advised to:
 * Have a consistent folder on your computer where you store all of these harvest estimation projects. **Do not put one harvest estimation project folder within another harvest estimation project folder.**
 
 <p align="center">
-  <img src="screenshots/00-general/new-project-info.png" width="500"/>
+  <img src="SS/00-general/new-project-info.png" width="500"/>
 </p>
 
 **NOTE**: For in-season use, make sure the checkbox labeled "Check this box if season is complete..." is **unchecked**. See `r KuskoHarvEst:::link_to_doc("07-final-report-content.html")` for details on when to check this box.
@@ -84,7 +84,7 @@ After you click "Create Project", RStudio will open that project.
 You can see which project is active (or close, open, etc. other projects) from this menu in the upper right-hand corner of RStudio:
 
 <p align="center">
-  <img src="screenshots/00-general/active-project.png" width="150"/>
+  <img src="SS/00-general/active-project.png" width="150"/>
 </p>
 
 After you are done with this process, you should paste the raw data files (flight and interview data files, formatted as described `r KuskoHarvEst:::link_to_doc("01-raw-data.html")`) into the `data-raw` folder in your new project.
@@ -98,7 +98,7 @@ These items are referred to as "meta-data" for the estimate.
 The tool that allows you to enter these data can be accessed through the RStudio addin menu shown below (documentation `r KuskoHarvEst:::link_to_doc("02-meta-data-tool.html")`).
 
 <p align="center">
-  <img src="screenshots/common/addins-menu-meta-data.png" width="600"/>
+  <img src="SS/common/addins-menu-meta-data.png" width="600"/>
 </p>
 
 When you are done using this tool, you will notice that a new folder in your project has been created titled `data-use`. The program will use files stored here in the steps that follow; you will not be able to open them without using R code.
@@ -111,7 +111,7 @@ This step also automates some quality assurance checks of the data.
 The tool that allows you to perform these tasks can be accessed through the RStudio addin menu shown below (documentation `r KuskoHarvEst:::link_to_doc("03-interview-flight-data-tool.html")`).
 
 <p align="center">
-  <img src="screenshots/common/addins-menu-interview-flight-data.png" width="600"/>
+  <img src="SS/common/addins-menu-interview-flight-data.png" width="600"/>
 </p>
 
 When you are done using this tool, you will notice that new files storing the options, standardized interview data, and and standardized flight data are now placed in the `data-use` folder in your project.
@@ -126,9 +126,9 @@ In this step, you will perform both the main estimation that will eventually be 
 The tool that allows you to perform these tasks can be accessed through the RStudio addin menu shown below (documentation `r KuskoHarvEst:::link_to_doc("04-report-builder-tool.html")`).
 
 <p align="center">
-  <img src="screenshots/common/addins-menu-build-reports.png" width="600"/>
+  <img src="SS/common/addins-menu-build-reports.png" width="600"/>
 </p>
 
 # Post-Season Workflow {-}
 
-After each season, a season-wide summary report has been written by the primary analysts that season (see `r KuskoHarvEst:::link_to_doc("Staton - 2018 - In-season harvest and effort estimates.pdf")` for an example). The report contains many figures and tables and 'KuskoHarvEst' contains some features to help you make this content at the end of the season. See `r KuskoHarvEst:::link_to_doc("07-final-report-content.html")` for more details.
+After each season, a season-wide summary report has been written by the primary analysts that season (see `r KuskoHarvEst:::link_to_doc("Staton - 2018.pdf")` for an example). The report contains many figures and tables and 'KuskoHarvEst' contains some features to help you make this content at the end of the season. See `r KuskoHarvEst:::link_to_doc("07-final-report-content.html")` for more details.

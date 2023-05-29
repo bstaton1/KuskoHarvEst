@@ -163,10 +163,10 @@ rmd_tool = function() {
 
     # when the "get_help" link is clicked:
     shiny::observeEvent(input$est_get_help, {
-      file.show(resource_path("04-documentation/04-report-builder-tool.html"))
+      file.show(resource_path("04-docs/04-report-builder-tool.html"))
     })
     shiny::observeEvent(input$sen_get_help, {
-      file.show(resource_path("04-documentation/04-report-builder-tool.html"))
+      file.show(resource_path("04-docs/04-report-builder-tool.html"))
     })
 
     # reactive container/values

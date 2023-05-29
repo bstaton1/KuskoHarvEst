@@ -2,7 +2,7 @@
 title: "**Raw Data File Format**"
 subtitle: "_KuskoHarvEst Documentation_"
 date: '`r paste0("Last Updated: ", KuskoHarvUtils::basic_date(lubridate::today()))`'
-author: "`r d = readLines('../../../../../../DESCRIPTION'); paste0('Package ', d[3])`"
+author: "`r d = readLines('../../../../DESCRIPTION'); paste0('Package ', d[3])`"
 output: 
   html_document:
     number_sections: false
@@ -26,7 +26,7 @@ The length of this document may make this seem complicated -- and it may be at f
 If at any time you need a quick reminder about which variables are needed and how they should be formatted for the program to work, you can access example data files using the 'KuskoHarvEst' help tool through the RStudio addins menu:
 
 <p align="center">
-  <img src="screenshots/common/addins-menu-get-help.png" width="500"/>
+  <img src="SS/common/addins-menu-get-help.png" width="500"/>
 </p>
 
 # Conventions
@@ -125,7 +125,7 @@ kableExtra::kable(tab) |>
 Here is an example of a case with two flights conducted in a day where both drift and set nets were allowed:
 
 <p align="center">
-  <img src="screenshots/01-raw-data/flight-data.png" width="500"/>
+  <img src="SS/01-raw-data/flight-data.png" width="500"/>
 </p>
 
 Each row stores the counts made for one gear type on one flight in each geographic stratum.
@@ -275,13 +275,13 @@ The cell in each column stores the response (`1`, `2`, `3`, `4`, or `NA` if no r
 
 When available, these data are typically found only in CBM files.
 
-## Example Screenshots {.tabset .tabset-pills}
+## Example SS {.tabset .tabset-pills}
 
 Below you will find three examples of how these data have been entered in the past (6/12/2020 used here; first 20 records from each data source displayed). 
-You can access the actual files behind these screenshots through the 'KuskoHarvEst' help tool from the RStudio addins menu:
+You can access the actual files behind these SS through the 'KuskoHarvEst' help tool from the RStudio addins menu:
 
 <p align="center">
-  <img src="screenshots/common/addins-menu-get-help.png" width="500"/>
+  <img src="SS/common/addins-menu-get-help.png" width="500"/>
 </p>
 
 ### FC
@@ -293,7 +293,7 @@ A couple things to note about this data file:
 * No `chinook.goal`, `chum.goal`, `sockeye.goal` columns included
 
 <p align="center">
-  <img src="screenshots/01-raw-data/fc-data.png" width="800"/>
+  <img src="SS/01-raw-data/fc-data.png" width="800"/>
 </p>
 
 ### BBH
@@ -305,7 +305,7 @@ A couple things to note about this data file:
 * No `chinook.goal`, `chum.goal`, `sockeye.goal` columns included
 
 <p align="center">
-  <img src="screenshots/01-raw-data/bbh-data.png" width="800"/>
+  <img src="SS/01-raw-data/bbh-data.png" width="800"/>
 </p>
 
 ### CBM
@@ -317,5 +317,5 @@ A couple things to note about this data file:
 * Contains `chinook.goal`, `chum.goal`, `sockeye.goal` columns
 
 <p align="center">
-  <img src="screenshots/01-raw-data/cbm-data.png" width="800"/>
+  <img src="SS/01-raw-data/cbm-data.png" width="800"/>
 </p>
