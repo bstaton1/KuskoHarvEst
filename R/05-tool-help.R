@@ -121,7 +121,7 @@ help_tool = function() {
 
     # open the 2018 report when requested
     shiny::observeEvent(input$open_2018_report, {
-      file.show(resource_path("04-docs/Staton - 2018 - In-season harvest and effort estimates.pdf"))
+      file.show(resource_path("04-docs/Staton - 2018.pdf"))
     })
 
     # open the 2021 report when requested

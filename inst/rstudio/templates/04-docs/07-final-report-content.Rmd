@@ -16,7 +16,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-_This document provides an overview of the capabilities included in 'KuskoHarvEst' for producing figures and tables that can be placed in the final (i.e., season-wide summary) report, similar to those found in Staton (`r KuskoHarvEst:::link_to_doc("Staton - 2018 - In-season harvest and effort estimates.pdf", "2018")`)._
+_This document provides an overview of the capabilities included in 'KuskoHarvEst' for producing figures and tables that can be placed in the final (i.e., season-wide summary) report, similar to those found in Staton (`r KuskoHarvEst:::link_to_doc("Staton - 2018.pdf", "2018")`)._
 
 **The steps described here are only to be completed after the last harvest opportunity of the year and after all raw data sets have been finalized. This is part of the post-season workflow, not the in-season workflow.**
 

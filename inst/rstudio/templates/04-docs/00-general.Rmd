@@ -131,4 +131,4 @@ The tool that allows you to perform these tasks can be accessed through the RStu
 
 # Post-Season Workflow {-}
 
-After each season, a season-wide summary report has been written by the primary analysts that season (see `r KuskoHarvEst:::link_to_doc("Staton - 2018 - In-season harvest and effort estimates.pdf")` for an example). The report contains many figures and tables and 'KuskoHarvEst' contains some features to help you make this content at the end of the season. See `r KuskoHarvEst:::link_to_doc("07-final-report-content.html")` for more details.
+After each season, a season-wide summary report has been written by the primary analysts that season (see `r KuskoHarvEst:::link_to_doc("Staton - 2018.pdf")` for an example). The report contains many figures and tables and 'KuskoHarvEst' contains some features to help you make this content at the end of the season. See `r KuskoHarvEst:::link_to_doc("07-final-report-content.html")` for more details.
