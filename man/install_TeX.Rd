@@ -4,11 +4,10 @@
 \alias{install_TeX}
 \title{Install All Necessary TeX Dependencies}
 \usage{
-install_TeX(force = FALSE)
+install_TeX(force = TRUE)
 }
 \arguments{
-\item{force}{Logical; If \code{TRUE}, will install TinyTeX even if a version is already installed.
-TeX packages are installed regardless (default \code{FALSE}).}
+\item{force}{Logical; If \code{TRUE}, will install TinyTeX and packages even if already installed (default \code{TRUE}).}
 }
 \description{
 Including tinytex and all needed TeX packages

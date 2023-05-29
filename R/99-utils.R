@@ -191,11 +191,10 @@ KuskoHarvEst_opts_reset = function() {
 #'
 #' Including tinytex and all needed TeX packages
 #'
-#' @param force Logical; If `TRUE`, will install TinyTeX even if a version is already installed.
-#'   TeX packages are installed regardless (default `FALSE`).
+#' @param force Logical; If `TRUE`, will install TinyTeX and packages even if already installed (default `TRUE`).
 #' @export
 
-install_TeX = function(force = FALSE) {
+install_TeX = function(force = TRUE) {
 
   # check if installed already
   inst_already = tinytex::is_tinytex()
