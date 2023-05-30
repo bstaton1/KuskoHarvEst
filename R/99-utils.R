@@ -210,7 +210,7 @@ install_TeX = function(force = TRUE) {
       "colortbl", "wrapfig", "pdflscape", "tabu",
       "varwidth", "threeparttable", "threeparttablex",
       "environ", "trimspaces", "ulem", "makecell",
-      "fancyhdr", "draftwatermark", "parskip"
+      "fancyhdr", "draftwatermark", "parskip", "grffile"
     ))
   }
 }
