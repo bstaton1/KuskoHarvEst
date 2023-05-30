@@ -8,9 +8,6 @@ rm(list = ls(all = TRUE))
 # load the info about odd openers
 source("00-specify-odd-openers.R")
 
-# set the necessary KuskoHarvEst options
-options(soak_sd_cut = 3, net_length_cut = 350, catch_per_trip_cut = 0.1, central_fn = mean, pooling_threshold = 10)
-
 # extract the names of all openers with data
 dirs = dir("raw-data-files", full.names = TRUE, pattern = "_[0-9][0-9]$")
 
@@ -31,6 +28,18 @@ interview_df = NULL
 flight_df = NULL
 boot_out = NULL
 
+# create placeholders to handle cases where some strata were missing
+flight_empty = c(NA, NA, NA, rep(NA, length(KuskoHarvEst:::strata_names$stratum) * 2))
+names(flight_empty) = c(
+  c("flight", "start_time", "end_time"),
+  paste0(KuskoHarvEst:::strata_names$stratum, "_drift"),
+  paste0(KuskoHarvEst:::strata_names$stratum, "_set")
+)
+flight_empty = flight_empty[order(names(flight_empty))]
+flight_emtpy = as.data.frame(t(flight_empty))
+strata_empty = rep(NA, length(KuskoHarvEst:::strata_names$stratum))
+names(strata_empty) = KuskoHarvEst:::strata_names$stratum
+
 # start a timer
 starttime = Sys.time()
 
@@ -46,7 +55,7 @@ for (i in 1:length(dirs)) {
   flight_file = files[stringr::str_detect(files, "Flight")]
 
   # prepare raw interview data files for this opener
-  interview_data = suppressWarnings(KuskoHarvEst::prepare_interviews(interview_files))
+  interview_data = suppressWarnings(KuskoHarvEst::prepare_interviews(interview_files, include_salmon = "all", include_nonsalmon = "none"))
   interview_df = rbind(interview_df, interview_data)
 
   # prepare raw flight data files for this opener: treat a bit different if missing
@@ -59,7 +68,11 @@ for (i in 1:length(dirs)) {
   }
 
   # combine flight data with output from other openers
-  flight_df = rbind(flight_df, flight_data)
+  for (j in 1:nrow(flight_data)) {
+    new_row = flight_empty
+    new_row[colnames(flight_data)] = flight_data[j,]
+    flight_df = rbind(flight_df, as.data.frame(new_row))
+  }
 
   # produce set effort estimates
   if (!(dates[i] %in% c(no_set_openers, no_flight_openers))) {
@@ -68,12 +81,15 @@ for (i in 1:length(dirs)) {
       flight_data = flight_data,
       gear = "set", method = "max_per_stratum"
     )
+    to_save = strata_empty
+    to_save[names(set_effort_info$effort_est_stratum)] = set_effort_info$effort_est_stratum
   } else {
-    set_effort_info = list(gear = "set", effort_est_total = NA, effort_est_stratum = c(A = NA, B = NA, C = NA, D1 = NA))
+    to_save = strata_empty
+    set_effort_info = list(gear = "set", effort_est_total = NA, effort_est_stratum = strata_empty)
   }
 
   # combine effort estimates with those from other openers
-  set_effort_tmp = c(set_effort_info$effort_est_stratum, total = set_effort_info$effort_est_total)
+  set_effort_tmp = c(to_save, total = sum(to_save, na.rm = TRUE))
   set_effort_tmp = data.frame(date = dates[i], gear = "set", stratum = names(set_effort_tmp), estimate = unname(set_effort_tmp))
   set_effort_df = rbind(set_effort_df, set_effort_tmp); rm(set_effort_tmp)
 
@@ -85,46 +101,46 @@ for (i in 1:length(dirs)) {
       flight_data = flight_data,
       gear = "drift", method = "dbl_exp"
     )
+    to_save = strata_empty
+    to_save[names(drift_effort_info$effort_est_stratum)] = drift_effort_info$effort_est_stratum
   } else {
-    drift_effort_info = list(gear = "drift", effort_est_total = NA, effort_est_stratum = c(A = NA, B = NA, C = NA, D1 = NA))
+    to_save = strata_empty
+    drift_effort_info = list(gear = "drift", effort_est_total = NA, effort_est_stratum = strata_empty)
   }
 
   # combine effort estimates with those from other openers
-  drift_effort_tmp = c(drift_effort_info$effort_est_stratum, total = drift_effort_info$effort_est_total)
+  drift_effort_tmp = c(to_save, total = sum(to_save, na.rm = TRUE))
   drift_effort_tmp = data.frame(date = dates[i], gear = "drift", stratum = names(drift_effort_tmp), estimate = unname(drift_effort_tmp))
   drift_effort_df = rbind(drift_effort_df, drift_effort_tmp); rm(drift_effort_tmp)
 
   # estimate set net harvest
-  tmp_boot_out_set = KuskoHarvEst::bootstrap_harvest(
-    interview_data = interview_data,
-    effort_info = set_effort_info,
-    gear = "set",
-    n_boot = n_boot,
-    stratify_interviews = FALSE
-  )
+  if (!(dates[i] %in% c(no_set_openers, no_flight_openers))) {
+    tmp_boot_out_set = KuskoHarvEst::bootstrap_harvest(
+      interview_data = interview_data,
+      effort_info = set_effort_info,
+      gear = "set",
+      n_boot = n_boot,
+      stratify_interviews = FALSE
+    )
+  } else {
+    tmp_boot_out_set = NULL
+  }
 
   # estimate drift net harvest
-  tmp_boot_out_drift = KuskoHarvEst::bootstrap_harvest(
-    interview_data = interview_data,
-    effort_info = drift_effort_info,
-    gear = "drift",
-    n_boot = n_boot,
-    stratify_interviews = TRUE
-  )
-
-  # sum up across gears
-  tmp_boot_out_total = data.frame(iter = tmp_boot_out_drift$iter,
-                                  date = tmp_boot_out_drift$date,
-                                  gear = "total",
-                                  stratum = tmp_boot_out_drift$stratum,
-                                  chinook = rowSums(cbind(tmp_boot_out_drift[,"chinook"], tmp_boot_out_set[,"chinook"]), na.rm = TRUE),
-                                  chum = rowSums(cbind(tmp_boot_out_drift[,"chum"], tmp_boot_out_set[,"chum"]), na.rm = TRUE),
-                                  sockeye = rowSums(cbind(tmp_boot_out_drift[,"sockeye"], tmp_boot_out_set[,"sockeye"]), na.rm = TRUE),
-                                  total = rowSums(cbind(tmp_boot_out_drift[,"total"], tmp_boot_out_set[,"total"]), na.rm = TRUE)
-  )
+  if(!(dates[i] %in% c(set_only_openers, no_flight_openers))) {
+    tmp_boot_out_drift = KuskoHarvEst::bootstrap_harvest(
+      interview_data = interview_data,
+      effort_info = drift_effort_info,
+      gear = "drift",
+      n_boot = n_boot,
+      stratify_interviews = TRUE
+    )
+  } else {
+    tmp_boot_out_drift = NULL
+  }
 
   # combine drift, set, and total into one data frame of bootstrap output
-  tmp_boot_out = rbind(tmp_boot_out_total, tmp_boot_out_drift, tmp_boot_out_set)
+  tmp_boot_out = KuskoHarvEst::combine_boot_out(boot_out_drift = tmp_boot_out_drift, boot_out_set = tmp_boot_out_set)
 
   # combine bootstrap output with output from other openers
   boot_out = rbind(boot_out, tmp_boot_out)
@@ -135,24 +151,23 @@ stoptime = Sys.time()
 cat("\nEstimation Time Elapsed:", format(round(stoptime - starttime, 2)))
 
 ##### CALCULATE SEASON-WIDE TOTALS FOR EACH BOOTSTRAP SAMPLE #####
-library(magrittr)
 
 # obtain season totals by species, gear, and stratum and combine with other bootstrapped output
-total_boot = boot_out %>%
+total_boot = boot_out |>
   # group as needed
-  dplyr::group_by(iter, gear, stratum) %>%
+  dplyr::group_by(iter, gear, stratum) |>
 
   # calculate season totals for each group
-  dplyr::summarize(chinook = sum(chinook, na.rm = TRUE), chum = sum(chum, na.rm = TRUE), sockeye = sum(sockeye, na.rm = TRUE), total = sum(total, na.rm = TRUE)) %>%
+  dplyr::summarize(chinook = sum(chinook, na.rm = TRUE), chum = sum(chum, na.rm = TRUE), sockeye = sum(sockeye, na.rm = TRUE), coho = sum(coho, na.rm = TRUE), total = sum(total, na.rm = TRUE)) |>
 
   # add the "date" variable
-  dplyr::mutate(date = "total") %>%
+  dplyr::mutate(date = "total") |>
 
   # reorder the columns
-  dplyr::select(iter, date, gear, stratum, chinook, chum, sockeye, total) %>%
+  dplyr::select(iter, date, gear, stratum, chinook, chum, sockeye, coho, total) |>
 
   # change object type
-  as.data.frame
+  as.data.frame()
 
 # combine with the opener-specific bootstrap output
 boot_out$date = as.character(boot_out$date)

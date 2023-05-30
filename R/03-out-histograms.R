@@ -47,7 +47,7 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 
   # add a total_salmon variable
   if (any(species_names$species[species_names$is_salmon] %in% spp_found)) {
-    interview_data$total_salmon = rowSums(as.matrix(interview_data[,species_in_data(interview_data)$salmon]))
+    interview_data$total_salmon = rowSums(as.matrix(interview_data[,species_in_data(interview_data)$salmon]), na.rm = TRUE)
   } else {
     interview_data$total_salmon = 0
   }
@@ -102,7 +102,7 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
     p_spp = stringr::str_remove(variable, "^p_")
     salmon_spp = spp_found[spp_found %in% species_names$species[species_names$is_salmon]]
     numerator = x_data[,p_spp]
-    denominator = rowSums(as.matrix(x_data[,salmon_spp]))
+    denominator = rowSums(as.matrix(x_data[,salmon_spp]), na.rm = TRUE)
     x = numerator/denominator
     x = x * 100
     main = "% Chinook Salmon"

@@ -26,11 +26,11 @@ flight_df$end_time = paste0(stringr::str_pad(lubridate::hour(flight_df$end_time)
                             ":", stringr::str_pad(lubridate::minute(flight_df$end_time), 2, "left", "0"))
 
 # extract/format only important variables
-flight_df = flight_df[,c("date", "start_time", "end_time", "A_drift", "B_drift", "C_drift", "D1_drift")]
+flight_df = flight_df[,c("date", "start_time", "end_time", paste0(KuskoHarvEst:::strata_names$stratum, "_drift"))]
 colnames(flight_df) = stringr::str_remove(colnames(flight_df), "_drift")
 
 # calculate the total count per flight
-flight_df$total = rowSums(flight_df[,c("A", "B", "C", "D1")])
+flight_df$total = rowSums(flight_df[,KuskoHarvEst:::strata_names$stratum], na.rm = TRUE)
 
 # export the output file
 write.csv(flight_df, file.path(out_dir, "all-driftnet-counts.csv"), row.names = FALSE)
@@ -48,11 +48,11 @@ flight_df$end_time = paste0(stringr::str_pad(lubridate::hour(flight_df$end_time)
                             ":", stringr::str_pad(lubridate::minute(flight_df$end_time), 2, "left", "0"))
 
 # extract/format only important variables
-flight_df = flight_df[,c("date", "start_time", "end_time", "A_set", "B_set", "C_set", "D1_set")]
+flight_df = flight_df[,c("date", "start_time", "end_time", paste0(KuskoHarvEst:::strata_names$stratum, "_set"))]
 colnames(flight_df) = stringr::str_remove(colnames(flight_df), "_set")
 
 # calculate the total count per flight
-flight_df$total = rowSums(flight_df[,c("A", "B", "C", "D1")])
+flight_df = flight_df[,c("date", "start_time", "end_time", paste0(KuskoHarvEst:::strata_names$stratum, "_set"))]
 
 # export the output file
 write.csv(flight_df, file.path(out_dir, "all-setnet-counts.csv"), row.names = FALSE)
@@ -100,7 +100,7 @@ out_numeric = NULL
 date_pool = unique(boot_out$date)
 gear_pool = c("drift", "set", "total")
 species_pool = c("chinook", "chum", "sockeye", "total")
-strata_pool = c("A", "B", "C", "D1", "total")
+strata_pool = c(KuskoHarvEst:::strata_names$stratum, "total")
 
 # loop through each combination
 for (date in date_pool) {
@@ -127,9 +127,9 @@ for (date in date_pool) {
 }
 
 # coerce appropriate cases to NA
-out_numeric[out_numeric$mean == "NaN","mean"] = NA
+# out_numeric[out_numeric$mean == "NaN","mean"] = NA
 out_numeric[out_numeric$date %in% no_flight_openers,c("mean", "lwr95ci", "upr95ci")] = NA
-out_character[out_character$estimate == "NaN (NA -- NA)","estimate"] = NA
+# out_character[out_character$estimate == "NaN (NA -- NA)","estimate"] = NA
 out_character[out_character$date %in% no_flight_openers,"estimate"] = NA
 
 # reformat the date

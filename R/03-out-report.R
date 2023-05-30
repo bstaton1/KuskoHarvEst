@@ -54,7 +54,8 @@ report = function(spp = "total", gear = "total", stratum = "total", date = NULL,
 
   # return error if no estimates available
   if (nrow(long_boot_sub) == 0) {
-    stop ("No bootstrap samples meeting the desired attributes (gear, species, or stratum)")
+    warning ("No bootstrap samples meeting the desired attributes (gear, species, or stratum)")
+    return(NA)
   }
 
   # extract only the bootstrapped harvest numbers
