@@ -1,0 +1,81 @@
+# Specific Issues and Solutions {-}
+
+Although a workflow using Rmarkdown was previously available, it suffered from some usability issues.
+This section highlights the four primary undesirable features of the old framework (developed and used by B. Staton in 2016 -- 2018 and used in 2019 and 2020 by G. Decossas) and how they were addressed by 'KuskoHarvEst'.
+With the exception of several standardized/automated decisions that were previously subjective/manual (see item 3, below), the core statistical framework described in @staton-2018 and used between 2016 -- 2020 is still contained in 'KuskoHarvEst'.
+
+\noindent
+Nearly all of the solutions described below were enabled by bundling the estimation and reporting software into an R package.
+
+## (1) Copy/Paste/Edit Workflow {-}
+
+As originally developed, the estimation/reporting workflow required copying/pasting the code from a previous estimate and editing aspects of it to be suitable for the current estimate.
+This required knowledge of the code and which parts needed to be edited, but even for experienced users this could be time-consuming and error-prone depending on the needed changes.
+In some simple cases, for example, the only things that required editing were dates and file names.
+In other cases, the code needed to be altered by hand based on (_i_) how many flights were conducted, (_ii_) which interview data sources were available, (_iii_) which gears were included, and (_iv_) whether interview data needed to be shared among river sections.
+
+### 'KuskoHarvEst' Solution {-}
+
+This issue was addressed in three primary ways. First, the code was organized in a much better fashion by "compartmentalizing" nearly every task into a designated function.
+This vastly reduced the amount of code needed to do repeated tasks, and functions can accept "arguments" which can be seen as settings for how it should carry out the task.
+Second, and supported by the first, was the development of a set of "swappable templates" of Rmarkdown code that could be readily and automatically included/excluded to complete a specific task under specific conditions.
+Essentially, any code that the user previously needed to edit by hand to address items like (_i_) - (_iv_) above are now contained as separate files, and the proper ones are used when the circumstances require.
+Third, and supported by the first two, was the construction of interactive interfaces [implemented as RStudio Add-ins via R package 'shiny', @r-shiny], so the user never needs to look at or edit any code to produce an estimate.
+The selections the user makes in the interface triggers the execution of code in the background, which then selects the correct templates to use automatically.
+
+\noindent
+Now the necessary code for a given situation is standardized, and its selection is either automated or selected via user interface inputs.
+This change will reduce the possibility of errors as well as the time needed to produce an estimate once the data set is finalized.
+
+## (2) Installation Difficulties {-}
+
+The original estimation/reporting software required that each user place many files in specific locations, know precisely where they are, and yet never edit most of them.
+These files contained the code that actually did the calculations for estimation (core function source code) and had to be obtained from another person who had created estimates previously, not from a centralized location.
+As a result, it would be possible for there to be multiple versions of the source code and eventually there could be uncertainty about the correct version to use.
+
+### 'KuskoHarvEst' Solution {-}
+
+This solution is made possible by bundling the code into an R package.
+Rather than transferring the many files from user to user via USB drive or email, users simply run these two lines of code from their RStudio console (a program they also previously needed):
+
+```
+install.packages("remotes")
+remotes::install_github("bstaton1/KuskoHarvEst")
+```
+
+\noindent
+This will install the official and most current version of the 'KuskoHarvEst' package (which contains all custom parts of the workflow that were previously disorganized) and all packages it depends on which contain more generalized R extensions. An example of an R package that 'KuskoHarvEst' depends on is the 'lubridate' package [@r-lubridate], which provides tools for clean and easy handling of date and time variables.
+After this, users only need to install a \LaTeX $\space$ distribution, which is a key part of the code-to-PDF document functionality and users have always needed.
+The source code now lives somewhere on the user's computer where they do not need to know where it is located, and can be easily updated to the most current version at anytime by running the code above again.
+Complete installation instructions can be found [here](https://github.com/bstaton1/KuskoHarvEst#computer-set-up).
+
+## (3) Subjectivity in Data Quality Decisions {-}
+
+In some (relatively rare) cases, the data from an interview look highly inconsistent with the other interviews or are outright impossible.
+An example of the former is an implied catch rate (expressed as salmon/trip) that is abnormally higher than the majority of other interviews.
+An example of the latter is a reported active fishing time that is longer than that of the trip as indicated by the reported start and end times.
+A related topic is the decision of how to share data across areas of the river when some locations have low interview coverage.
+Previously, there were no standardized rules for how these kinds of cases should be handled, meaning that it was possible for two analysts to obtain different results when given the same original input data.
+
+### 'KuskoHarvEst' Solution {-}
+
+Early in the 'KuskoHarvEst' development process, a set of "decision rules" was proposed by the developer and feedback was gathered from a core group of collaborators.
+These decision rules established a programmed way that questionable interview data would be handled, so that specific and reoccurring issues could always be handled the same way.
+For the first example above, one way this was addressed was to discard the catch rate data for any interview that alters the average catch rate across all other interviews by more than $\pm$ 5%.
+For the second example, the software will automatically alter the active fishing time to be no longer than the reported trip duration.
+In both cases, the user is notified of the action the software took.
+For the data sharing case, a rule is now imposed that will share data from the closest area whenever there are fewer than 10 interviews in an area.
+These are useful examples of the automation that was added to these kinds of issues, but a complete list can be found [here](https://htmlpreview.github.io/?https://github.com/bstaton1/KuskoHarvEst/blob/main/inst/rstudio/templates/04-docs/06-data-checks.html).
+
+## (4) Lack of Documentation {-}
+
+Previously, there was very little information about how to actually use the software to produce an estimation report from raw data.
+This was, at the time, not a terrible problem since only two people had ever used it and both were experienced R users.
+However, in the event that a new user needed to use the software, no method existed for them to learn it other than by asking one of these two individuals -- such a case arose in 2021.
+
+### 'KuskoHarvEst' Solution {-}
+
+Accompanying 'KuskoHarvEst' is a comprehensive set of documentation, all of which has been referenced in this document.
+It is now possible for a new user to learn the entire process from start to finish based solely on the information contained at the [GitHub repository](https://www.github.com/bstaton1/KuskoHarvEst).
+Also included are example data files, showing the precise format that data must be entered in and the @staton-2018 report which contains a complete statistical description of the analytical methods.
+In addition to these helpful materials, each core function is documented with R's native help file system for users who wish to learn more about how the code works, which can be accessed from within RStudio by running, for example, `?KuskoHarvEst::bootstrap_harvest`.

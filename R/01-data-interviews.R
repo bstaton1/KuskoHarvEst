@@ -4,16 +4,21 @@
 #'   and performs data quality checks
 #'
 #' @param input_files Character; vector of file names that contain interview data
-#' @param ... Optional arguments passed to [prepare_interviews_one()]
+#' @param include_salmon Character; accepted options are `"all"`, `"none"`, or any combination of acceptable salmon species names
+#' @param include_nonsalmon Character; accepted options are `"all"`, `"none"`, or any combination of acceptable nonsalmon species names
+#' @param include_goals Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?
+#' @param include_village Logical; should the village of the fisher be included in the output?
+#' @note For the list of acceptable species names, please see `KuskoHarvEst:::species_names`.
 #' @export
 
-prepare_interviews = function(input_files, ...) {
+prepare_interviews = function(input_files, include_salmon = "all", include_nonsalmon = "none", include_goals = FALSE, include_village = FALSE) {
 
-  # check to make sure all global options are set
-  check_options()
+  # get the value of all non-filename arguments in a list to pass to prepare_interviews_one()
+  args = as.list(environment())
+  args = args[-which(names(args) == "input_files")]
 
   # read in and format raw interview data
-  interview_data_list = lapply(input_files, function(file) prepare_interviews_one(file, ...))
+  interview_data_list = lapply(input_files, function(file) do.call(prepare_interviews_one, append(list(input_file = file), args)))
 
   # combine individual list elements into a data frame
   interview_data = do.call(rbind, interview_data_list)
@@ -68,13 +73,16 @@ prepare_interviews = function(input_files, ...) {
   }
 
   # perform checks for if the average catch per trip is an outlier
-  cpt_outliers = is_catch_per_trip_outlier(interview_data)
-  if (any(cpt_outliers)) {
-    outlier_cpt_notes[cpt_outliers] = "Catch per trip highly influential, catch rate rate, soak time, and net length deemed unsuitable for average"
-    interview_data$suit_cr_reliable[cpt_outliers] = FALSE
-    interview_data$suit_avg_soak[cpt_outliers] = FALSE
-    interview_data$suit_avg_net[cpt_outliers] = FALSE
-    warning("\n", sum(cpt_outliers), " interview(s) had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
+  # only perform for salmon
+  if (!("none" %in% include_salmon)) {
+    cpt_outliers = is_catch_per_trip_outlier(interview_data)
+    if (any(cpt_outliers)) {
+      outlier_cpt_notes[cpt_outliers] = "Catch per trip highly influential, catch rate rate, soak time, and net length deemed unsuitable for average"
+      interview_data$suit_cr_reliable[cpt_outliers] = FALSE
+      interview_data$suit_avg_soak[cpt_outliers] = FALSE
+      interview_data$suit_avg_net[cpt_outliers] = FALSE
+      warning("\n", sum(cpt_outliers), " interview(s) had a large influence on the average catch per trip.\nFor these records, the catch rate info has been deemed unreliable,\nand the soak time and net length will not be used in the average.")
+    }
   }
 
   # extract notes on suitability

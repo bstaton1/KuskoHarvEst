@@ -4,7 +4,7 @@
 \alias{is_soak_outlier}
 \title{Check soak time for outliers}
 \usage{
-is_soak_outlier(interview_data, soak_sd_cut = getOption("soak_sd_cut"))
+is_soak_outlier(interview_data, soak_sd_cut = KuskoHarvEst_opts("soak_sd_cut"))
 }
 \arguments{
 \item{interview_data}{Data frame storing interview data; created using \code{\link[=prepare_interviews]{prepare_interviews()}}}

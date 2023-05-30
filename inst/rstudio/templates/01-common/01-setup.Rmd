@@ -1,0 +1,21 @@
+
+<!-- 
+NOTE: this file was generated automatically and should not require any manual changes on your part.
+However, if you wish to edit it by hand, it is recommended that you save it under a different name,
+otherwise your changes will be overwritten if the automated process is re-executed.
+-->
+
+```{r setup, include = FALSE}
+# load the KuskoHarvEst package
+library(KuskoHarvEst)
+
+# set the global chunk options
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center", message = FALSE, warning = FALSE, fig.pos = "H", out.extra = "")
+
+# create a directory to store output files if it doesn't already exist
+out_dir = "output"
+if (!dir.exists(out_dir)) dir.create(out_dir)
+
+# start an appendix counter: for selecting the letter to ID the appendix
+appendix_counter = 0
+```

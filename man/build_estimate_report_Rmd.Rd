@@ -5,23 +5,22 @@
 \title{Automate creation of a Rmd source file for in-season reports}
 \usage{
 build_estimate_report_Rmd(
-  draft = FALSE,
-  do_setnets = TRUE,
-  n_boot = 1000,
+  do_drift,
+  do_set,
+  species = c("chinook", "chum", "sockeye"),
   include_johnson_table = TRUE,
   include_goal_table = FALSE,
   include_appendix = FALSE,
-  split_chum_sockeye = FALSE,
-  include_nonsalmon = FALSE,
-  save_bootstrap = TRUE
+  save_bootstrap = TRUE,
+  ...
 )
 }
 \arguments{
-\item{draft}{Logical; should a draft watermark be printed in the rendered output?}
+\item{do_drift}{Logical; should harvest and effort estimates be produced for drift nets?}
 
-\item{do_setnets}{Logical; should a set net harvest estimate be produced?}
+\item{do_set}{Logical; should harvest and effort estimates be produced for set nets?}
 
-\item{n_boot}{Numeric; how many bootstrap iterations should be performed?}
+\item{species}{Character; vector of accepted species (see \code{KuskoHarvEst:::species_names}).}
 
 \item{include_johnson_table}{Logical; should the output of \code{\link[=make_johnson_summary_table]{make_johnson_summary_table()}} be included?}
 
@@ -29,11 +28,10 @@ build_estimate_report_Rmd(
 
 \item{include_appendix}{Logical; should the many tables each produced by \code{\link[=make_appendix_table]{make_appendix_table()}} be included?}
 
-\item{split_chum_sockeye}{Logical; should histograms and appendix tables show summaries of chum+sockeye, or summaries for these species separately?}
-
-\item{include_nonsalmon}{Logical; should an appendix showing results of estimating non-salmon harvest be included?}
-
 \item{save_bootstrap}{Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?}
+
+\item{...}{Arguments to be passed to \code{\link[=build_yaml]{build_yaml()}}. Both \code{do_drift = TRUE/FALSE} and \code{do_set = TRUE/FALSE}
+are required, the remainder of the arguments have defaults. See \code{\link[=build_yaml]{build_yaml()}}.}
 }
 \description{
 Based on a set of supplied options, builds the Rmarkdown source file to build

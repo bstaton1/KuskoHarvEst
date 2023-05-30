@@ -10,5 +10,5 @@ make_johnson_summary_table()
 Create a table to summarize catch rates and species composition relative to Johnson River
 }
 \details{
-Relies an an object names \code{boot_out} to be in existence
+Requires that an object named \code{boot_out} to be in existence
 }

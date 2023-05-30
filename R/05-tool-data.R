@@ -58,10 +58,9 @@ data_tool = function() {
               shiny::fillCol(
                 flex = c(1,0.5,1,2),
                 # shiny::fillRow(
-                  shiny::p(shiny::em("Here you will select the interview data files to include and set global options for controlling how data are used.
-                       Click 'Update Global Options' first, then click 'Load Raw Data Files'.
+                  shiny::p(shiny::em("Here you will select the interview data files to include then click 'Load Raw Data Files'.
                        Summaries will be displayed below and the data can be explored on the 'Output' tab.
-                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'options.rds' and 'interview_data.rds' files are present.")),
+                       When you are finished, click 'Save Formatted Data File'. Then, check the 'data-use' subdirectory of your project to make sure the 'interview_data.rds' file is present.")),
                 # ),
                 shiny::actionLink("get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
                 shiny::fillRow(
@@ -70,17 +69,8 @@ data_tool = function() {
 
                 ),
                 shiny::fillCol(
-                  flex = c(0.35,1,1),
-                  shiny::h4(shiny::strong("Choose Global Options"), style = "margin:0;"),
-                  shiny::fillRow(
-                    shiny::numericInput(inputId = "soak_sd_cut", label = "Soak Time SD Threshold", value = 3, min = 0, max = 10, step = 1),
-                    shiny::numericInput(inputId = "net_length_cut", label = "Net Length Threshold", value = 350, min = 0, max = 500, step = 50),
-                    shiny::numericInput(inputId = "catch_per_trip_cut", label = "Exclusion Change Threshold", value = 0.05, min = 0, max = 1, step = 0.05),
-                    shiny::numericInput(inputId = "pooling_threshold", label = "Pooling Threshold", value = 10, min = 5, max = 20, step = 1)
-                  ),
                   miniUI::miniButtonBlock(
                     border = NA,
-                    shiny::actionButton(inputId = "update_options", label = "Update Options", icon = shiny::icon("refresh"), class = "btn-primary"),
                     shiny::actionButton(inputId = "load_interview_data", label = "Load Raw Data Files", icon = shiny::icon("upload"), class = "btn-primary"),
                     shiny::actionButton(inputId = "save_interview_data", label = "Save Formatted Data File", icon = shiny::icon("save"), class = "btn-primary")
                   )
@@ -139,43 +129,20 @@ data_tool = function() {
 
     # when the "get_help" link is clicked:
     shiny::observeEvent(input$get_help, {
-      file.show(resource_path("04-documentation/03-interview-flight-data-tool.html"))
+      file.show(resource_path("04-docs/03-interview-flight-data-tool.html"))
     })
 
     # reactive container object
     vals = shiny::reactiveValues()
-    vals$loadable = FALSE
-
-    # set the global options when told and save them to a file
-    shiny::observeEvent(input$update_options, {
-      options(
-        soak_sd_cut = input$soak_sd_cut,
-        net_length_cut = input$net_length_cut,
-        catch_per_trip_cut = input$catch_per_trip_cut,
-        central_fn = mean,
-        pooling_threshold = input$pooling_threshold
-      )
-
-      vals$options = list(soak_sd_cut = input$soak_sd_cut,
-                          net_length_cut = input$net_length_cut,
-                          catch_per_trip_cut = input$catch_per_trip_cut,
-                          central_fn = mean,
-                          pooling_threshold = input$pooling_threshold
-      )
-
-      saveRDS(vals$options, file.path(output_data_dir, paste0(file_date(meta$start_date), "_options.rds")))
-      vals$loadable = TRUE
-    })
 
     # toggle state of buttons
     shiny::observe({
-      shinyjs::toggleState(id = "load_interview_data", condition = vals$loadable)
       shinyjs::toggleState(id = "save_interview_data", condition = !is.null(vals$interview_data))
     })
 
     # read in and prepare the interview data and populate the filters in the DT tab
     shiny::observeEvent(input$load_interview_data, {
-      vals$interview_data = prepare_interviews(input_files = file.path(input_data_dir, input$interview_files), include_village = TRUE, include_goals = TRUE, include_nonsalmon = TRUE)
+      vals$interview_data = prepare_interviews(input_files = file.path(input_data_dir, input$interview_files), include_village = TRUE, include_goals = TRUE, include_nonsalmon = "all")
       shiny::updateSelectInput(session, "filter_DT_source", choices = unique(vals$interview_data$source), selected = unique(vals$interview_data$source))
       shiny::updateSelectInput(session, "filter_DT_gear", choices = unique(vals$interview_data$gear), selected = unique(vals$interview_data$gear))
       shiny::updateSelectInput(session, "filter_DT_stratum", choices = sort(unique(vals$interview_data$stratum)), selected = sort(unique(vals$interview_data$stratum)))
@@ -183,7 +150,7 @@ data_tool = function() {
 
     # save the formatted interview data when told
     shiny::observeEvent(input$save_interview_data, {
-      saveRDS(vals$interview_data, file.path(output_data_dir, paste0(file_date(meta$start_date), "_interview_data.rds")))
+      saveRDS(vals$interview_data, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_interview_data.rds")))
     })
 
     # create the label for the gear/stratum summary table
@@ -199,7 +166,7 @@ data_tool = function() {
     output$stratum_gear_summary_table = shiny::renderTable({
       if (!is.null(vals$interview_data)) {
         counts = table(vals$interview_data$stratum, vals$interview_data$gear)
-        colnames(counts) = capitalize(colnames(counts))
+        colnames(counts) = KuskoHarvUtils::capitalize(colnames(counts))
         x = strata_names[strata_names$stratum %in% rownames(counts),]
         rownames(counts) = paste0(x$stratum_start, " - ", x$stratum_end, " (", rownames(counts), ")")
         counts = rbind(counts, Total = colSums(counts))
@@ -265,8 +232,8 @@ data_tool = function() {
 
         df_print = df_print[,-which(stringr::str_detect(colnames(df_print), "suit"))]
         df_print = df_print[,-which(stringr::str_detect(colnames(df_print), "goal"))]
-        df_print$trip_start = short_datetime(df_print$trip_start, include_date = FALSE)
-        df_print$trip_end = short_datetime(df_print$trip_end, include_date = FALSE)
+        df_print$trip_start = KuskoHarvUtils::short_datetime(df_print$trip_start, include_date = FALSE)
+        df_print$trip_end = KuskoHarvUtils::short_datetime(df_print$trip_end, include_date = FALSE)
         df_print$trip_duration = as.character(df_print$trip_duration)
         df_print$soak_duration = as.character(df_print$soak_duration)
 
@@ -283,13 +250,12 @@ data_tool = function() {
 
     # toggle flight data buttons
     shiny::observe({
-      shinyjs::toggleState("load_flight_data", !is.null(vals$interview_data))
       shinyjs::toggleState("save_flight_data", !is.null(vals$flight_data))
     })
 
     # save the flight data when instructed
     shiny::observeEvent(input$save_flight_data, {
-      saveRDS(vals$flight_data, file.path(output_data_dir, paste0(file_date(meta$start_date), "_flight_data.rds")))
+      saveRDS(vals$flight_data, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_flight_data.rds")))
     })
 
     # create the text that describes the flight data summary
@@ -306,8 +272,8 @@ data_tool = function() {
     output$flight_summary_table = shiny::renderTable({
       if (!is.null(vals$flight_data)) {
         print_flights = vals$flight_data
-        print_flights$start_time = short_datetime(print_flights$start_time)
-        print_flights$end_time = short_datetime(print_flights$end_time)
+        print_flights$start_time = KuskoHarvUtils::short_datetime(print_flights$start_time)
+        print_flights$end_time = KuskoHarvUtils::short_datetime(print_flights$end_time)
         print_flights[,-1]
       } else {
         NULL

@@ -7,7 +7,7 @@
 make_effort_plot(flight_data, effort_info, trips_only = FALSE)
 }
 \arguments{
-\item{flight_data}{Data frame storing flight data; created using \code{\link[=prepare_flights]{prepare_flights()}}}
+\item{flight_data}{A \code{\link[base:data.frame]{data.frame}} storing the times and counts on each flight, constructed via \code{\link[=prepare_flights]{prepare_flights()}}}
 
 \item{effort_info}{List storing the output of \code{\link[=estimate_effort]{estimate_effort()}}}
 

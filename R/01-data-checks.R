@@ -76,7 +76,7 @@ is_complete_trip = function(interview_data) {
 #'   than this will have their net length deemed unsuitable for any purpose
 #' @details Nets that are extremely long are probably mis-recorded and should not be included.
 
-is_normal_net = function(interview_data, net_length_cut = getOption("net_length_cut")) {
+is_normal_net = function(interview_data, net_length_cut = KuskoHarvEst_opts("net_length_cut")) {
   ifelse(!has_net_length(interview_data), TRUE, ifelse(interview_data[,"net_length"] <= net_length_cut, TRUE, FALSE))
 }
 
@@ -91,7 +91,7 @@ is_normal_net = function(interview_data, net_length_cut = getOption("net_length_
 #'   to completed trips only -- records that are for incomplete trips or that
 #'   do not have soak time recorded will have `FALSE` returned.
 
-is_soak_outlier = function(interview_data, soak_sd_cut = getOption("soak_sd_cut")) {
+is_soak_outlier = function(interview_data, soak_sd_cut = KuskoHarvEst_opts("soak_sd_cut")) {
   # extract the soak hours
   soak_hrs = as.numeric(interview_data$soak_duration, "hours")
 
@@ -183,7 +183,7 @@ is_short_incomplete_soak = function(interview_data) {
 #'   interview will be deemed unreliable.
 #'   Calculations done only for drift net interviews -- set net interviews are skipped.
 
-is_catch_per_trip_outlier = function(interview_data, catch_per_trip_cut = getOption("catch_per_trip_cut")) {
+is_catch_per_trip_outlier = function(interview_data, catch_per_trip_cut = KuskoHarvEst_opts("catch_per_trip_cut")) {
 
   # container (cpt = average catch of all salmon per trip)
   loo_cpt = rep(NA, nrow(interview_data))
@@ -220,27 +220,4 @@ is_catch_per_trip_outlier = function(interview_data, catch_per_trip_cut = getOpt
 unique_start_dates = function(interview_data) {
   start_dates = lubridate::date(interview_data$trip_start)
   unique(start_dates[!is.na(start_dates)])
-}
-
-#' Determine if all global options have been set
-#'
-
-check_options = function() {
-
-  # query the options needed for KuskoHarvEst
-  KuskoHarvEst_options = list(
-    soak_sd_cut = getOption("soak_sd_cut"),
-    net_length_cut = getOption("net_length_cut"),
-    catch_per_trip_cut = getOption("catch_per_trip_cut"),
-    central_fn = getOption("central_fn"),
-    pooling_threshold = getOption("pooling_threshold")
-  )
-
-  # determine if each is missing
-  is_null_option = unlist(lapply(KuskoHarvEst_options, is.null))
-
-  # if any are missing, return an error
-  if (any(is_null_option)) {
-    stop("The following global options are not set, but are required:\n  ", paste(names(is_null_option[is_null_option]), collapse = ", "))
-  }
 }

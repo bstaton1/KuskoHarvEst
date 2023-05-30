@@ -36,6 +36,24 @@ rmd_tool = function() {
     flight_data = readRDS(file.path(output_data_dir, flight_file))
   }
 
+  # prepare the salmon species choices for the dropdown menu
+  salmon_species = species_names$species[species_names$is_salmon]
+  salmon_species_show = KuskoHarvUtils::capitalize(salmon_species)
+  salmon_choices = as.list(salmon_species)
+  names(salmon_choices) = salmon_species_show
+
+  # prepare the nonsalmon species choices for the dropdown menu
+  nonsalmon_species = species_names$species[!species_names$is_salmon]
+  nonsalmon_species_show = KuskoHarvUtils::capitalize(nonsalmon_species)
+  nonsalmon_choices = as.list(nonsalmon_species)
+  names(nonsalmon_choices) = nonsalmon_species_show
+
+  # combine
+  species_choices = list(
+    "Salmon" = salmon_choices,
+    "Non-Salmon" = nonsalmon_choices
+  )
+
   # create the output directory if it doesn't exist already
   if (!dir.exists(output_dir)) dir.create(output_dir)
 
@@ -62,14 +80,30 @@ rmd_tool = function() {
           shiny::actionLink("est_get_help", label = "Get Help with Using This Tool", icon = shiny::icon("question-circle")),
 
           # widgets for estimate report control
-          shiny::sliderInput(inputId = "est_n_boot", label = "Number of Bootstrap Samples", value = 1000, min = 100, max = 1000, step = 100),
-          shiny::checkboxInput(inputId = "est_draft", label = "Mark as Draft", value = TRUE),
-          shiny::checkboxInput(inputId = "est_do_setnets", label = "Make Set Net Harvest Estimate", value = TRUE),
-          shiny::checkboxInput(inputId = "est_include_johnson_table", label = "Include Johnson River Proximity Table", value = ifelse(meta$set_only, FALSE, TRUE)),
-          shiny::checkboxInput(inputId = "est_include_goal_table", label = "Include Harvest Goal Attainment Table", value = FALSE),
-          shiny::checkboxInput(inputId = "est_include_appendix", label = "Include Detailed Appendix", value = TRUE),
-          shiny::checkboxInput(inputId = "est_split_chum_sockeye", label = "Present Some Summaries for Chum and Sockeye Separately", value = FALSE),
-          shiny::checkboxInput(inputId = "est_include_nonsalmon", label = "Include Appendix with Non-Salmon Harvest Estimates", value = FALSE)
+          # species
+          shiny::selectizeInput(inputId = "est_species", choices = species_choices, label = shiny::h4(shiny::strong("Species")), multiple = TRUE, selected = c("chinook", "chum", "sockeye"), options = list("plugins" = list("remove_button"), placeholder = "At Least One Must be Salmon")),
+          shiny::div(shiny::checkboxInput(inputId = "est_dont_split_chum_sockeye", label = "Combine Chum & Sockeye In Some Summaries?", value = FALSE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+
+          # gear types
+          shiny::h4(shiny::strong("Gear Types")),
+          shiny::div(shiny::checkboxInput(inputId = "est_do_drift", label = "Drift Nets", value = TRUE),
+                     style = "margin-bottom: -10px; margin-top: -5px;"),
+          shiny::div(shiny::checkboxInput(inputId = "est_do_set", label = "Set Nets", value = TRUE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+
+          # include content
+          shiny::h4(shiny::strong("Include")),
+          shiny::div(shiny::checkboxInput(inputId = "est_long_boot", label = "Full Bootstrap", value = TRUE),
+                     style = "margin-bottom: -10px; margin-top: -5px;"),
+          shiny::div(shiny::checkboxInput(inputId = "est_include_johnson_table", label = "Johnson R. Table", value = ifelse(meta$set_only, FALSE, TRUE)),
+                     style = "margin-bottom: -10px; margin-top: -10px;"),
+          # shiny::div(shiny::checkboxInput(inputId = "est_include_goal_table", label = "Harvest Goal Attainment Table", value = FALSE),
+                     # style = "margin-bottom: -10px; margin-top: -10px;"),
+          shiny::div(shiny::checkboxInput(inputId = "est_include_appendix", label = "Appendix Summarizing Interview Data", value = TRUE),
+                     style = "margin-bottom: -10px; margin-top: -10px;"),
+          shiny::div(shiny::checkboxInput(inputId = "est_draft", label = "Draft Watermark", value = TRUE),
+                     style = "margin-bottom: -5px; margin-top: -10px;")
         ),
 
         # buttons for estimate report
@@ -93,10 +127,26 @@ rmd_tool = function() {
           shiny::uiOutput("sen_setonly_message"),
 
           # widgets for sensitivity report control
-          shiny::sliderInput(inputId = "sen_n_boot", label = "Number of Bootstrap Samples", value = 1000, min = 100, max = 1000, step = 100),
-          shiny::checkboxInput(inputId = "sen_draft", label = "Mark as Draft", value = ifelse(meta$set_only, FALSE, TRUE)),
-          shiny::checkboxInput(inputId = "sen_do_setnets", label = "Make Set Net Harvest Estimate", value = ifelse(meta$set_only, FALSE, TRUE)),
-          shiny::checkboxInput(inputId = "sen_include_plots", label = "Include Trip Time Plots", value = FALSE)
+          # species
+          shiny::selectizeInput(inputId = "sen_species", choices = salmon_choices, label = shiny::h4(shiny::strong("Species")), multiple = TRUE, selected = c("chinook", "chum", "sockeye"), options = list("plugins" = list("remove_button"), placeholder = "At Least One Must be Salmon")),
+          shiny::div(shiny::checkboxInput(inputId = "sen_dont_split_chum_sockeye", label = "Combine Chum & Sockeye In Some Summaries?", value = FALSE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+
+          # gear types
+          shiny::h4(shiny::strong("Gear Types")),
+          shiny::div(shiny::checkboxInput(inputId = "sen_do_drift", label = "Drift Nets", value = TRUE),
+                     style = "margin-bottom: -10px; margin-top: -5px;"),
+          shiny::div(shiny::checkboxInput(inputId = "sen_do_set", label = "Set Nets", value = TRUE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+
+          # include
+          shiny::h4(shiny::strong("Include")),
+          shiny::div(shiny::checkboxInput(inputId = "sen_long_boot", label = "Full Bootstrap", value = TRUE),
+                     style = "margin-bottom: -10px; margin-top: -5px;"),
+          shiny::div(shiny::checkboxInput(inputId = "sen_include_plots", label = "Trip Time Plots", value = FALSE),
+                     style = "margin-bottom: -5px; margin-top: -10px;"),
+          shiny::div(shiny::checkboxInput(inputId = "sen_draft", label = "Draft Watermark", value = TRUE),
+                     style = "margin-bottom: -5px; margin-top: -10px;")
         ),
 
         # buttons for sensitivity report
@@ -113,10 +163,10 @@ rmd_tool = function() {
 
     # when the "get_help" link is clicked:
     shiny::observeEvent(input$est_get_help, {
-      file.show(resource_path("04-documentation/04-report-builder-tool.html"))
+      file.show(resource_path("04-docs/04-report-builder-tool.html"))
     })
     shiny::observeEvent(input$sen_get_help, {
-      file.show(resource_path("04-documentation/04-report-builder-tool.html"))
+      file.show(resource_path("04-docs/04-report-builder-tool.html"))
     })
 
     # reactive container/values
@@ -127,22 +177,54 @@ rmd_tool = function() {
     # toggles for estimate report tab
     shiny::observe({
       shinyjs::toggleState("est_do_setnets", condition = !meta$set_only)
-      shinyjs::toggleState("est_include_johnson_table", condition = !meta$set_only)
+      shinyjs::toggleState("est_include_johnson_table", condition = !meta$set_only & input$est_do_drift)
       shinyjs::toggleState("knit_est_rmd", condition = vals$est_knitable)
+
+      # don't include johnson table if not doing drift nets
+      if (!input$est_do_drift) {
+        shiny::updateCheckboxInput(inputId = "est_include_johnson_table", value = FALSE)
+      }
+
+      # handle whether split chum/sockeye can be checked
+      splitable = all(c("chum", "sockeye") %in% input$est_species)
+      if (!splitable) {
+        shiny::updateCheckboxInput(inputId = "est_dont_split_chum_sockeye", value = FALSE)
+      }
+      shinyjs::toggleState(id = "est_dont_split_chum_sockeye", condition = splitable)
+
+      # handle whether gear types can be selected & which options are available
+      if (meta$set_only) {
+        shiny::updateCheckboxInput(inputId = "est_do_set", value = TRUE)
+        shiny::updateCheckboxInput(inputId = "est_do_drift", value = FALSE)
+      }
+      shinyjs::toggleState(id = "est_do_drift", condition = !meta$set_only)
+      shinyjs::toggleState(id = "est_do_set", condition = !meta$set_only)
+
+      # handle whether the draft watermark must be shown
+      if (!input$est_long_boot) {
+        shiny::updateCheckboxInput(inputId = "est_draft", value = TRUE)
+      }
+      shinyjs::toggleState(id = "est_draft", condition = input$est_long_boot)
+
+      # handle whether the Rmd can be built
+      # must have at least one salmon species and at least one gear selected
+      shinyjs::toggleState(id = "save_est_rmd", condition = !is.null(input$est_species) & any(salmon_species %in% input$est_species) & any(c(input$est_do_drift, input$est_do_set)))
     })
 
     # build the estimate report rmd when instructed
     shiny::observeEvent(input$save_est_rmd, {
       vals$est_knitable = TRUE
-      vals$est_rmd_file = KuskoHarvEst:::build_estimate_report_Rmd(
+      vals$est_rmd_file = build_estimate_report_Rmd(
         draft = input$est_draft,
-        do_setnets = input$est_do_setnets,
-        n_boot = input$est_n_boot,
+        do_drift = input$est_do_drift,
+        do_set = input$est_do_set,
+        n_boot = ifelse(input$est_long_boot, 1000, 100),
+        species = input$est_species,
+        split_chum_sockeye = !input$est_dont_split_chum_sockeye,
         include_johnson_table = input$est_include_johnson_table,
-        include_goal_table = input$est_include_goal_table,
+        # include_goal_table = input$est_include_goal_table,
+        include_goal_table = FALSE,
         include_appendix = input$est_include_appendix,
-        split_chum_sockeye = input$est_split_chum_sockeye,
-        include_nonsalmon = input$est_include_nonsalmon,
         save_bootstrap = TRUE
       )
     })
@@ -167,7 +249,7 @@ rmd_tool = function() {
     # build a message for set net only openers saying that the sensitivity report can't be produced
     output$sen_setonly_message = renderUI({
       if (meta$set_only) {
-        shiny::p(shiny::strong("This report cannot be produced if the opportunity was for set nets only."))
+        shiny::p(shiny::strong("This report cannot be produced if the opportunity was for set nets only."), style = "color:red;")
       } else {
         NULL
       }
@@ -175,21 +257,40 @@ rmd_tool = function() {
 
     # toggles for sensitivity report tab
     shiny::observe({
-      shinyjs::toggleState("sen_draft", condition = !meta$set_only)
-      shinyjs::toggleState("sen_n_boot", condition = !meta$set_only)
-      shinyjs::toggleState("sen_do_setnets", condition = !meta$set_only)
+
+      # handle whether split chum/sockeye can be checked
+      splitable = all(c("chum", "sockeye") %in% input$sen_species)
+      if (!splitable) {
+        shiny::updateCheckboxInput(inputId = "sen_dont_split_chum_sockeye", value = FALSE)
+      }
+
+      # handle whether the draft watermark must be shown
+      if (!input$sen_long_boot) {
+        shiny::updateCheckboxInput(inputId = "sen_draft", value = TRUE)
+      }
+
+      shinyjs::toggleState("sen_species", condition = !meta$set_only)
+      shinyjs::toggleState("sen_dont_split_chum_sockeye", condition = !meta$set_only & splitable)
+      shinyjs::toggleState("sen_do_drift", condition = !meta$set_only)
+      shinyjs::toggleState("sen_do_set", condition = !meta$set_only)
+      shinyjs::toggleState("sen_draft", condition = !meta$set_only & input$sen_long_boot)
       shinyjs::toggleState("sen_include_plots", condition = !meta$set_only)
-      shinyjs::toggleState("save_sen_rmd", condition = !meta$set_only)
+      shinyjs::toggleState("sen_long_boot", condition = !meta$set_only)
+      shinyjs::toggleState("save_sen_rmd", condition = !meta$set_only & !is.null(input$sen_species) & any(c(input$sen_do_drift, input$sen_do_set)))
       shinyjs::toggleState("knit_sen_rmd", condition = !meta$set_only & vals$sen_knitable)
+
     })
 
     # build the sensitivity report rmd when instructed
     shiny::observeEvent(input$save_sen_rmd, {
       vals$sen_knitable = TRUE
-      vals$sen_rmd_file = KuskoHarvEst:::build_sensitivity_report_Rmd(
+      vals$sen_rmd_file = build_sensitivity_report_Rmd(
+        do_drift = input$sen_do_drift,
+        do_set = input$sen_do_set,
+        species = input$sen_species,
         draft = input$sen_draft,
-        do_setnets = input$sen_do_setnets,
-        n_boot = input$sen_n_boot,
+        n_boot = ifelse(input$sen_long_boot, 1000, 100),
+        split_chum_sockeye = !input$sen_dont_split_chum_sockeye,
         include_plots = input$sen_include_plots
       )
     })

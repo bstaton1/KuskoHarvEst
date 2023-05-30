@@ -2,15 +2,38 @@
 #'
 #' Prevents needing to edit the YAML header by hand
 #'
-#' @param doc_type Character; accepted options are `"estimate_report"` or `"sensitivity_report"`
+#' @param doc_type Character; accepted options are `"estimate_report"` or `"sensitivity_report"`.
 #' @param draft Logical; should a draft watermark be printed in the rendered output?
+#' @param species Character; vector of accepted species (see `KuskoHarvEst:::species_names`).
+#' @param n_boot Numeric; how many bootstrap iterations should be performed?
+#' @param do_drift Logical; should harvest and effort estimates be produced for drift nets?
+#' @param do_set Logical; should harvest and effort estimates be produced for set nets?
+#' @param split_chum_sockeye Logical; if both chum and sockeye salmon data are available, do you wish to
+#'   present their summaries disaggregated by species (`TRUE`, default), or aggregated together as chum+sockeye (`FALSE`)?
+#' @export
 
-build_yaml = function(doc_type, draft) {
+build_yaml = function(doc_type = "estimate_report", draft = FALSE,
+                      do_drift, do_set, species = c("chinook", "chum", "sockeye"),
+                      n_boot = 1000,
+                      split_chum_sockeye = TRUE
+) {
 
   # read in the meta data file
-  meta = readRDS(list.files(pattern = "meta", full.names = TRUE, recursive = TRUE))
+  meta_file = list.files(pattern = "meta\\.rds", full.names = TRUE, recursive = TRUE)
+  meta = readRDS(meta_file)
 
-  # a small function to handle processing of logicals
+  # determine the downstream and upstream ends of the estimate
+  # based on strata found in flight data. Can't produce strata estimate if no effort count there.
+  flight_file = list.files(pattern = "flight_data\\.rds", full.names = TRUE, recursive = TRUE)
+  flight_data = readRDS(flight_file)
+  flight_strata = sort(get_flight_strata(flight_data))
+
+  # if either do_set or do_drift wasn't specified, stop
+  if (missing(do_set) | missing(do_drift)) {
+    stop ("Both do_set and do_drift must be specified")
+  }
+
+  # function needed to treat logicals properly
   logical_handler = function(x) {
     result = ifelse(x, "true", "false")
     class(result) = "verbatim"
@@ -18,7 +41,7 @@ build_yaml = function(doc_type, draft) {
   }
 
   # create the R code to point to the graphics directory
-  graphics_path = '`r KuskoHarvEst:::resource_path("06-logos")`'
+  graphics_path = paste0('`r KuskoHarvEst:::resource_path("06-logos")`', "/")
   class(graphics_path) = "verbatim"
 
   # create a list with yaml key mappings (i.e., settings for Rmarkdown and the LaTeX template)
@@ -26,23 +49,36 @@ build_yaml = function(doc_type, draft) {
     output = "KuskoHarvEst:::pdf_report",
     editor_options = list(chunk_output_type = "console"),
     title = ifelse(doc_type == "estimate_report", "Kuskokwim River In-season Harvest and Effort Estimates", "Kuskokwim River In-season Harvest/Effort Sensitivity Analysis"),
-    "opener-label" = paste0(basic_date(meta$start_date), " Subsistence Harvest Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
-    rfooter = paste0(basic_date(meta$start_date), " Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
-    "opener-start" = short_datetime(meta$start_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
-    "opener-end" = short_datetime(meta$end_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-label" = paste0(KuskoHarvUtils::basic_date(meta$start_date), " Subsistence Harvest Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
+    rfooter = paste0(KuskoHarvUtils::basic_date(meta$start_date), " Opportunity (", ifelse(meta$set_only, "Set Nets Only)", "Drift & Set Nets)")),
+    "opener-start" = KuskoHarvUtils::short_datetime(meta$start_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
+    "opener-end" = KuskoHarvUtils::short_datetime(meta$end_date, include_date = lubridate::date(meta$start_date) != lubridate::date(meta$end_date)),
     "opener-duration" = paste0(round(as.numeric(lubridate::as.duration(lubridate::int_length(lubridate::interval(meta$start_date, meta$end_date))), units = "hours"), 1), " Hours"),
-    "ds-bound" = meta$ds_bound,
-    "us-bound" = meta$us_bound,
+    "ds-bound" = strata_names$stratum_start[strata_names$stratum == flight_strata[1]],
+    "us-bound" = strata_names$stratum_end[strata_names$stratum == flight_strata[length(flight_strata)]],
     lfooter = ifelse(doc_type == "estimate_report", "In-season Harvest and Effort Estimates", "Sensitivity Analyses"),
     "draft-watermark" = draft,
     "graphics-path" = graphics_path
   )
-  # class(yaml_in$title) = class(yaml_in$`opener-label`) = class(yaml_in$rfooter) = class(yaml_in$`opener-start`) = class(yaml_in$`opener-end`) = "verbatim"
+
+  # build the list passed to the params key
+  all_species = species_names$species
+  params_list = lapply(1:length(all_species), function(i) list(value = all_species[i] %in% species))
+  names(params_list) = all_species
+  params_list = c(params_list,
+                  list(do_drift = list(value = do_drift)),
+                  list(do_set = list(value = do_set)),
+                  list(split_chum_sockeye = list(value = split_chum_sockeye)),
+                  list(n_boot = list(value = as.integer(n_boot)))
+  )
+
+  # combine params with the other settings
+  yaml_in = c(yaml_in, params = list(params_list))
 
   # append the contact person(s) setting if found in meta
   if (!is.na(meta$contact_persons)) yaml_in = append(yaml_in, list(contact = meta$contact_persons))
 
-  # append the annoucement number (ID) setting if found in meta
+  # append the announcement number (ID) setting if found in meta
   if (!is.na(meta$announce_name)) yaml_in = append(yaml_in, list(announcement = meta$announce_name))
 
   # append the announcement URL setting if found in meta
@@ -59,7 +95,6 @@ build_yaml = function(doc_type, draft) {
 
   # return the converted yaml header
   return(yaml_out)
-
 }
 
 #' Automate creation of a Rmd source file for in-season reports
@@ -67,30 +102,32 @@ build_yaml = function(doc_type, draft) {
 #' Based on a set of supplied options, builds the Rmarkdown source file to build
 #'  an in-season report documenting key output from the sampling and estimation
 #'  for a single day of fishing
-#'
-#' @param draft Logical; should a draft watermark be printed in the rendered output?
-#' @param do_setnets Logical; should a set net harvest estimate be produced?
-#' @param n_boot Numeric; how many bootstrap iterations should be performed?
+#' @inheritParams build_yaml
 #' @param include_johnson_table Logical; should the output of [make_johnson_summary_table()] be included?
 #' @param include_goal_table Logical; should the output of [make_goals_summary_table()] be included?
 #' @param include_appendix Logical; should the many tables each produced by [make_appendix_table()] be included?
-#' @param split_chum_sockeye Logical; should histograms and appendix tables show summaries of chum+sockeye, or summaries for these species separately?
-#' @param include_nonsalmon Logical; should an appendix showing results of estimating non-salmon harvest be included?
 #' @param save_bootstrap Logical; should a code chunk be included that saves a file containing the bootstrap samples of harvest?
-#'
+#' @param ... Arguments to be passed to [build_yaml()]. Both `do_drift = TRUE/FALSE` and `do_set = TRUE/FALSE`
+#'   are required, the remainder of the arguments have defaults. See [build_yaml()].
 #' @details This function selects from the many Rmarkdown source scripts found in `inst/rstudio/templates/project/resources/`
 #'   (subdirectories: `01-common` and `02-estimate-report` therein) to automate the construction of the report source code.
 #'   This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
 #'   the features of the new case the code needed to be applied to.
+#' @export
 
-build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_johnson_table = TRUE, include_goal_table = FALSE, include_appendix = FALSE, split_chum_sockeye = FALSE, include_nonsalmon = FALSE, save_bootstrap = TRUE) {
+build_estimate_report_Rmd = function(do_drift, do_set, species = c("chinook", "chum", "sockeye"),
+                                     include_johnson_table = TRUE,
+                                     include_goal_table = FALSE,
+                                     include_appendix = FALSE,
+                                     save_bootstrap = TRUE, ...
+                                     ) {
 
   # read in the meta data file
-  meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
+  meta_file = list.files(pattern = "meta\\.rds", full.names = TRUE, recursive = TRUE)
   meta = readRDS(meta_file)
 
   # determine how many flights were conducted
-  flight_file = list.files(pattern = "flight_data", full.names = TRUE, recursive = TRUE)
+  flight_file = list.files(pattern = "flight_data\\.rds", full.names = TRUE, recursive = TRUE)
   n_flights = nrow(readRDS(flight_file))
 
   # files for global setup and data preparation
@@ -108,7 +145,7 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 
   # 1: select the right file to produce data source summaries
   if (!meta$set_only) {
-    if (do_setnets) {
+    if (do_set) {
       data_sources_file = resource_path(file.path("02-estimate-report", "01a-data-sources_driftset.Rmd"))
     } else {
       data_sources_file = resource_path(file.path("02-estimate-report", "01b-data-sources_driftset_noset.Rmd"))
@@ -118,26 +155,11 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   }
 
   # 2: select the right file to produce effort estimate summaries
-  if (!meta$set_only) {
-    if (do_setnets) {
-      effort_file = resource_path(file.path("02-estimate-report", paste0("02a-effort_driftset_", n_flights, "flight.Rmd")))
-    } else {
-      effort_file = resource_path(file.path("02-estimate-report", paste0("02b-effort_driftset_noset_", n_flights, "flight.Rmd")))
-    }
-  } else {
-    effort_file = resource_path(file.path("02-estimate-report", "02c-effort_setonly.Rmd"))
-  }
+  effort_file = resource_path(file.path("02-estimate-report", "02-effort.Rmd"))
 
   # 3: select the right file to produce harvest estimate summaries
-  if (!meta$set_only) {
-    if (do_setnets) {
-      harvest_file = resource_path(file.path("02-estimate-report", "03a-harvest_driftset.Rmd"))
-    } else {
-      harvest_file = resource_path(file.path("02-estimate-report", "03b-harvest_driftset_noset.Rmd"))
-    }
-  } else {
-    harvest_file = resource_path(file.path("02-estimate-report", "03c-harvest_setonly.Rmd"))
-  }
+  harvest_file = resource_path(file.path("02-estimate-report", "03-harvest.Rmd"))
+
 
   # 4: select the right file to use for the place where the johnson summary table should go if requested
   if (include_johnson_table & !meta$set_only) {
@@ -154,11 +176,7 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   }
 
   # 6: select the right file to use for the histograms
-  if (!meta$set_only) {
-    histogram_file = resource_path(file.path("02-estimate-report", "06a-histograms_drift.Rmd"))
-  } else {
-    histogram_file = resource_path(file.path("02-estimate-report", "06b-histograms_set.Rmd"))
-  }
+  histogram_file = resource_path(file.path("02-estimate-report", "06-histograms.Rmd"))
 
   # 7: select the right file to use for saving the bootstrapped output file
   if (save_bootstrap) {
@@ -169,32 +187,20 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 
   # 8: select the right file to use for the appendix
   if (include_appendix) {
-    if (!meta$set_only) {
-      appendix_file = resource_path(file.path("02-estimate-report", "08a-appendix_drift.Rmd"))
-    } else {
-      appendix_file = resource_path(file.path("02-estimate-report", "08b-appendix_set.Rmd"))
-    }
+    appendix_file = resource_path(file.path("02-estimate-report", "08-appendix.Rmd"))
   } else {
     appendix_file = blank_file
   }
 
-  # 9: select the right file to use for the appendix
-  if (include_nonsalmon) {
-    if (!meta$set_only) {
-      if (do_setnets) {
-        nonsalmon_file = resource_path(file.path("02-estimate-report", "09a-nonsalmon_driftset.Rmd"))
-      } else {
-        nonsalmon_file = resource_path(file.path("02-estimate-report", "09b-nonsalmon_driftset_noset.Rmd"))
-      }
-    } else {
-      nonsalmon_file = resource_path(file.path("02-estimate-report", "09c-nonsalmon_setonly.Rmd"))
-    }
+  # 9: select the right file to use for the nonsalmon appendix
+  if (any(species_names$species[!species_names$is_salmon] %in% species)) {
+    nonsalmon_file = resource_path(file.path("02-estimate-report", "09-nonsalmon.Rmd"))
   } else {
     nonsalmon_file = blank_file
   }
 
   # build the YAML header
-  yaml_contents = build_yaml("estimate_report", draft)
+  yaml_contents = build_yaml(doc_type = "estimate_report", species = species, do_drift = do_drift, do_set = do_set, ...)
 
   # combine the names of the Rmd source files to use
   body_files = c(setup_file, data_prep_file, data_sources_file, effort_file, harvest_file, johnson_file, goal_file, histogram_file, save_boot_file, appendix_file, nonsalmon_file)
@@ -205,18 +211,8 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
   # paste all content into one vector, with entries separated by new lines
   Rmd_contents = paste(yaml_contents, paste(body_contents, collapse = "\n"), collapse = "\n")
 
-  # replace the n_boot placeholder text with the number supplied
-  Rmd_contents = stringr::str_replace(Rmd_contents, "N_BOOT_REPLACE", as.character(n_boot))
-
-  # replace the split_chum_sockeye placeholder text with the logical indicator supplied
-  Rmd_contents = stringr::str_replace(Rmd_contents, "SPLIT_CHUM_SOCKEYE_REPLACE", as.character(split_chum_sockeye))
-
-  # replace the nonsalmon_appendix_replace placeholder text with the correct appendix letter ID
-  nonsalmon_letter = ifelse(include_appendix, "B", "A")
-  Rmd_contents = stringr::str_replace_all(Rmd_contents, "NONSALMON_APPENDIX_REPLACE", nonsalmon_letter)
-
   # build the file name
-  Rmd_file = paste0("KuskoHarvEst_", file_date(meta$start_date), ".Rmd")
+  Rmd_file = paste0("KuskoHarvEst_", KuskoHarvUtils::file_date(meta$start_date), ".Rmd")
 
   # write the Rmd source file that is ready to be knitted
   writeLines(Rmd_contents, Rmd_file)
@@ -231,24 +227,27 @@ build_estimate_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 
 #'  a sensitivity analysis report documenting the output of a variety of analyses
 #'  that leave out certain data sources to gauge the reliability of the estimate.
 #'
-#' @param draft Logical; should a draft watermark be printed in the rendered output?
-#' @param do_setnets Logical; should a set net harvest estimate be produced?
-#' @param n_boot Numeric; how many bootstrap iterations should be performed?
+#' @inheritParams build_yaml
 #' @param include_plots Logical; should the output of [make_effort_plot()] be displayed
 #'   for each data scenario? This can result in many plots and a long document, so it is `FALSE` by default.
 #' @details This function selects from the many Rmarkdown source scripts found in `inst/rstudio/templates/project/resources/`
 #'   (subdirectories: `01-common` and `03-sensitivity-report` therein) to automate the construction of the report source code.
 #'   This was previously a major time bottle neck, since old code had to be repeatedly copied, pasted, and edited depending on
 #'   the features of the new case the code needed to be applied to.
+#' @param ... Arguments to be passed to [build_yaml()]. Both `do_drift = TRUE/FALSE` and `do_set = TRUE/FALSE`
+#'   are required, the remainder of the arguments have defaults. See [build_yaml()].
+#' @export
 
-build_sensitivity_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot = 1000, include_plots = FALSE) {
+build_sensitivity_report_Rmd = function(do_drift, do_set,
+                                        species = c("chinook", "chum", "sockeye"),
+                                        include_plots = FALSE, ...) {
 
   # read in the meta data file
-  meta_file = list.files(pattern = "meta", full.names = TRUE, recursive = TRUE)
+  meta_file = list.files(pattern = "meta\\.rds", full.names = TRUE, recursive = TRUE)
   meta = readRDS(meta_file)
 
   # determine how many flights were conducted
-  flight_file = list.files(pattern = "flight_data", full.names = TRUE, recursive = TRUE)
+  flight_file = list.files(pattern = "flight_data\\.rds", full.names = TRUE, recursive = TRUE)
   n_flights = nrow(readRDS(flight_file))
 
   # files for global setup and data preparation
@@ -276,14 +275,10 @@ build_sensitivity_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot
   }
 
   # 2: select the right file to produce effort sensitivity analyses
-  if (do_setnets) {
-    harvest_file = resource_path(file.path("03-sensitivity-report", "02a-harvest_driftset.Rmd"))
-  } else {
-    harvest_file = resource_path(file.path("03-sensitivity-report", "02b-harvest_driftset_noset.Rmd"))
-  }
+  harvest_file = resource_path(file.path("03-sensitivity-report", "02-harvest.Rmd"))
 
   # build the YAML header
-  yaml_contents = build_yaml("sensitivity_report", draft)
+  yaml_contents = build_yaml(doc_type = "sensitivity_report", do_drift = do_drift, do_set = do_set, species = species, ...)
 
   # combine the names of the Rmd source files to use
   body_files = c(setup_file, data_prep_file, effort_file, harvest_file)
@@ -294,14 +289,8 @@ build_sensitivity_report_Rmd = function(draft = FALSE, do_setnets = TRUE, n_boot
   # paste all content into one vector, with entries separated by new lines
   Rmd_contents = paste(yaml_contents, paste(body_contents, collapse = "\n"), collapse = "\n")
 
-  # replace the n_boot placeholder text with the number supplied
-  Rmd_contents = stringr::str_replace(Rmd_contents, "N_BOOT_REPLACE", as.character(n_boot))
-
-  # replace the split_chum_sockeye placeholder text with the logical indicator supplied
-  Rmd_contents = stringr::str_replace(Rmd_contents, "SPLIT_CHUM_SOCKEYE_REPLACE", "FALSE")
-
   # build the file name
-  Rmd_file = paste0("sensitivity_", file_date(meta$start_date), ".Rmd")
+  Rmd_file = paste0("sensitivity_", KuskoHarvUtils::file_date(meta$start_date), ".Rmd")
 
   # write the Rmd source file that is ready to be knitted
   writeLines(Rmd_contents, Rmd_file)

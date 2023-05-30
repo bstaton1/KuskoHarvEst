@@ -3,13 +3,47 @@
 #' Reads in and formats one data file containing interview data
 #'   into a standardized format to be used by other functions
 #'
-#' @param input_file Character; the name of one file that contains interview data from a single source and fishing day
-#' @param include_village Logical; should the village of the fisher be included in the output?
-#' @param include_goals Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?
-#' @param include_nonsalmon Logical; should the catches of non-salmon species (whitefish and sheefish) be returned?
+#' @inheritParams prepare_interviews
+#' @param input_file Character; name of a single file that contains interview data
+#' @note This function should always be called by calling the wrapper [prepare_interviews()], not directly.
 #'
 
-prepare_interviews_one = function(input_file, include_village = FALSE, include_goals = FALSE, include_nonsalmon = FALSE) {
+prepare_interviews_one = function(input_file, include_salmon, include_nonsalmon, include_village, include_goals) {
+
+  ### ERROR CHECKS FOR SPECIES ###
+
+  # small function to ensure acceptable values supplied
+  check_spp_args = function(include, accepted, label) {
+    has_all = any(include == "all")
+    has_none = any(include == "none")
+    lgt1 = length(include) > 1
+
+    if (has_all & lgt1) {
+      paste0("if ", label, " includes 'all', it cannot include other selections") |>
+        stop()
+    }
+    if (has_none & lgt1)  {
+      paste0("if ", label, " includes 'none', it cannot include other selections") |>
+        stop()
+    }
+    if (!all(include %in% c("none", "all", accepted))) {
+      paste0(label, " must be one of 'all', 'none', or any combination of ", knitr::combine_words(accepted, and = " or ", before = "'")) |>
+        stop()
+    }
+  }
+
+  # which species names are accepted for salmon/nonsalmon?
+  accepted_salmon = species_names$species[species_names$is_salmon]
+  accepted_nonsalmon = species_names$species[!species_names$is_salmon]
+
+  # check the validity of supplied argument values
+  check_spp_args(include_salmon, accepted_salmon, "include_salmon")
+  check_spp_args(include_nonsalmon, accepted_nonsalmon, "include_nonsalmon")
+
+  # if both salmon and nonsalmon are set to 'none', return error
+  if (all(include_salmon == "none") & all(include_nonsalmon == "none")) {
+    stop ("one of include_salmon or include_nonsalmon must not be 'none'")
+  }
 
   ### STEP 0: load the input data file & format column names
   dat_in = suppressWarnings(read.csv(input_file, stringsAsFactors = FALSE))
@@ -49,6 +83,9 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
     dat_out = dat_out[!unknown_stratum,]
   }
 
+  # if all records have been discarded, return empty output
+  if (nrow(dat_out) == 0) return(NULL)
+
   ### STEP 3: handle the gear (net) type
   gear_entered = stringr::str_remove(dat_in$gear, " ")
   gear_standard = tolower(gear_entered) # make lowercase
@@ -83,12 +120,12 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
 
   # build the trip start and end datetime objects
   if (has_starttime) {
-    dat_out$trip_start = combine_datetime(dat_in[,startdate_use], dat_in$trip_start)
+    dat_out$trip_start = KuskoHarvUtils::combine_datetime(dat_in[,startdate_use], dat_in$trip_start)
   } else {
     dat_out$trip_start = NA
   }
   if (has_endtime) {
-    dat_out$trip_end = combine_datetime(dat_in[,enddate_use], dat_in$trip_end)
+    dat_out$trip_end = KuskoHarvUtils::combine_datetime(dat_in[,enddate_use], dat_in$trip_end)
   } else {
     dat_out$trip_end = NA
   }
@@ -111,26 +148,40 @@ prepare_interviews_one = function(input_file, include_village = FALSE, include_g
     dat_out$soak_duration = suppressWarnings(lubridate::as.period(round(lubridate::duration(num = dat_in[,soak_var], ifelse(soak_units_entered == "hrs", "hours", "minutes")))))
   }
 
-  ### STEP 7: handle which catches by species
-
-  # Pacific salmon species. these columns are always present
-  dat_out = cbind(dat_out, dat_in[,c("chinook", "chum", "sockeye")])
-
-  # include nonsalmon species if requested
-  if (include_nonsalmon) {
-    # "whitefish" - non-salmon. this column is not always present, create empty column if missing
-    if ("whitefish" %in% vars) {
-      dat_out = cbind(dat_out, whitefish = dat_in[,"whitefish"])
+  pull_or_create = function(x, v) {
+    if (v %in% colnames(x)) {
+      return(x[,v])
     } else {
-      dat_out$whitefish = NA
+      return(rep(NA, nrow(x)))
     }
+  }
 
-    # sheefish - non-salmon. this column is not always present, create empty column if missing
-    if ("sheefish" %in% vars) {
-      dat_out = cbind(dat_out, sheefish = dat_in[,"sheefish"])
-    } else {
-      dat_out$sheefish = NA
-    }
+  ### STEP 7a: handle catches by salmon species
+  if (length(include_salmon) == 1) {
+    if (include_salmon == "all") keep_salmon = accepted_salmon
+    if (include_salmon == "none") keep_salmon = NULL
+    if (include_salmon %in% accepted_salmon) keep_salmon = include_salmon
+  } else {
+    keep_salmon = include_salmon
+  }
+  if (all(!is.null(keep_salmon))) {
+    salmon_catch = do.call(cbind, lapply(keep_salmon, function(v) pull_or_create(x = dat_in, v = v)))
+    colnames(salmon_catch) = keep_salmon
+    dat_out = cbind(dat_out, salmon_catch)
+  }
+
+  ### STEP 7b: handle catches by nonsalmon species
+  if (length(include_nonsalmon) == 1) {
+    if (include_nonsalmon == "all") keep_nonsalmon = accepted_nonsalmon
+    if (include_nonsalmon == "none") keep_nonsalmon = NULL
+    if (include_nonsalmon %in% accepted_nonsalmon) keep_nonsalmon = include_nonsalmon
+  } else {
+    keep_nonsalmon = include_nonsalmon
+  }
+  if (all(!is.null(keep_nonsalmon))) {
+    nonsalmon_catch = do.call(cbind, lapply(keep_nonsalmon, function(v) pull_or_create(x = dat_in, v = v)))
+    colnames(nonsalmon_catch) = keep_nonsalmon
+    dat_out = cbind(dat_out, nonsalmon_catch)
   }
 
   ### STEP 8: add village information if requested

@@ -1,0 +1,22 @@
+
+# Effort Estimates {-} 
+
+```{r estimate-effort}
+# estimate drift net effort if instructed
+if (params$do_drift) {
+  drift_effort_info <<- estimate_effort(interview_data, flight_data, "drift", method = "dbl_exp")
+} else {
+  drift_effort_info <<- NULL
+}
+
+# estimate set net effort if instructed
+if (params$do_set) {
+  set_effort_info <<- estimate_effort(interview_data, flight_data, "set", method = "max_per_stratum")
+} else {
+  set_effort_info <<- NULL
+}
+```
+
+```{r results = "asis"}
+effort_bullets(do_drift = params$do_drift, do_set = params$do_set)
+```

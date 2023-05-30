@@ -11,8 +11,27 @@ meta_tool = function() {
   output_data_dir = file.path(proj_dir, "data-use")
   if(!dir.exists(output_data_dir)) dir.create(output_data_dir)
 
+  ### SET UP THE STRATA DROPDOWN MENUS ###
+
+  # build the names that will be shown in the dropdown menuS
+  strata_show_down = with(strata_names, paste0(stratum, ": ", stratum_start))
+  strata_show_up = with(strata_names, paste0(stratum, ": ", stratum_end))
+
+  # build the choice objects that will be selected from
+  strata_down_choices = strata_names$stratum_start
+  names(strata_down_choices) = strata_show_down
+  strata_up_choices = strata_names$stratum_end
+  names(strata_up_choices) = strata_show_up
+
+  # make the first choice a placeholder
+  strata_down_choices = c("Select One" = "", strata_down_choices)
+  strata_up_choices = c("Select One" = "", strata_up_choices)
+
   # USER-INTERFACE
   ui = miniUI::miniPage(
+
+    # for disabling buttons until actionable
+    shinyjs::useShinyjs(),
 
     # create the title
     miniUI::gadgetTitleBar("KuskoHarvEst Meta-Data Entry Tool"),
@@ -20,7 +39,7 @@ meta_tool = function() {
     # populate page with input widgets
     miniUI::miniContentPanel(
       shiny::fillCol(
-        flex = c(2,1,3,3,3,3,1),
+        flex = c(2,1,3,3,3,1),
 
         # descriptive text
         shiny::fillRow(
@@ -36,12 +55,6 @@ meta_tool = function() {
                     value = lubridate::today(), format = "mm-dd-yyyy"),
           shinyTime::timeInput(inputId = "start_time", label = "Start Time (24-hr)", seconds = FALSE, value = strptime("12:00", "%R")),
           shinyTime::timeInput(inputId = "end_time", label = "End Time (24-hr)", seconds = FALSE, value = strptime("23:59", "%R"))
-        ),
-
-        # estimate spatial coverage
-        shiny::fillRow(
-          shiny::textInput(inputId = "downstream_end", label = "Downstream Boundary", value = "Tuntutuliak"),
-          shiny::textInput(inputId = "upstream_end", label = "Upstream Boundary", value = "Akiak")
         ),
 
         # special action identifiers
@@ -76,7 +89,7 @@ meta_tool = function() {
 
     # when the "get_help" link is clicked:
     shiny::observeEvent(input$get_help, {
-      file.show(resource_path("04-documentation/02-meta-data-tool.html"))
+      file.show(resource_path("04-docs/02-meta-data-tool.html"))
     })
 
     # when the "save" button is clicked:
@@ -94,8 +107,6 @@ meta_tool = function() {
       meta = list(
         start_date = start_date,
         end_date = end_date,
-        ds_bound = input$downstream_end,
-        us_bound = input$upstream_end,
         announce_name = ifelse(input$announce_name == "", NA, input$announce_name),
         announce_url = ifelse(input$announce_url == "", NA, input$announce_url),
         announce_news_url = ifelse(input$announce_news_url == "", NA, input$announce_news_url),
@@ -104,7 +115,7 @@ meta_tool = function() {
       )
 
       # export this list to an rds file to be used later
-      saveRDS(meta, file.path(output_data_dir, paste0(file_date(meta$start_date), "_meta.rds")))
+      saveRDS(meta, file.path(output_data_dir, paste0(KuskoHarvUtils::file_date(meta$start_date), "_meta.rds")))
 
       # close the app
       shiny::stopApp()

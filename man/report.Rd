@@ -11,7 +11,7 @@ report(
   date = NULL,
   CI = TRUE,
   conf_level = 0.95,
-  digits = -1,
+  digits = 0,
   return_numeric = FALSE,
   boot_out_use = NULL
 )
@@ -39,7 +39,7 @@ Defaults to \code{NULL}, in which case the date is ignored when summarizing.}
 E.g., \code{0.95} corresponds to a 95\% confidence interval (the default).
 Ignored if \code{CI = FALSE}}
 
-\item{digits}{Numeric; the rounding rule (passed to \code{\link[base:Round]{base::round()}}); defaults to \code{-1}}
+\item{digits}{Numeric; the rounding rule (passed to \code{\link[base:Round]{base::round()}}); defaults to \code{0} (i.e., nearest whole fish)}
 
 \item{return_numeric;}{Logical; should summary be returned as numeric class rather than character?}
 
@@ -49,4 +49,7 @@ Defaults to \code{NULL}, in which case the function searches for an object in ex
 \description{
 Summarizes bootstrapped harvest estimates into a point estimate
 and confidence limits, by species, gear, and geographic stratum
+}
+\note{
+All zero values will be returned if all bootstrapped values to be summarized are \code{NA}.
 }

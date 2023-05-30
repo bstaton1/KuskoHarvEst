@@ -20,74 +20,90 @@
 make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 
   # set the variables that are accepted, and perform error check
-  accepted_variables = c("total_salmon", "chinook", "chum", "sockeye", "chum+sockeye", "trip_start", "trip_end", "soak_duration", "trip_duration", "p_chinook")
-  if (!(variable %in% accepted_variables)) {
-    stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:\n", paste0("  '", accepted_variables, "'\n"))
+  spp_accept = c(unlist(paste(species_names$species)), "chum+sockeye", "total_salmon")
+  duration_accept = c("trip_duration", "soak_duration")
+  time_accept = c("trip_start", "trip_end")
+  p_accept = c("p_chinook")
+  accepted_variables = c(spp_accept, duration_accept, time_accept, p_accept)
+
+  # determine what kind of variable it is
+  is_catch = variable %in% spp_accept
+  is_duration = variable %in% duration_accept
+  is_time = variable %in% time_accept
+  is_p = variable %in% p_accept
+
+  # which species are found in the interview data
+  spp_found = unname(unlist(species_in_data(interview_data)))
+
+  # if more than one variable supplied, stop
+  if (length(variable) > 1) {
+    stop ("only one variable can be supplied at once")
   }
 
-  # keep only values for the specified gear and only completed trips
+  # if the supplied variable isn't in the list of those accepted, stop
+  if (!(variable %in% accepted_variables)) {
+    stop ("supplied value for variable argument ('", variable, "') not accepted.\nAccepted values are:", knitr::combine_words(accepted_variables, before = "  \n'", after = "'", and = " or "))
+  }
+
+  # add a total_salmon variable
+  if (any(species_names$species[species_names$is_salmon] %in% spp_found)) {
+    interview_data$total_salmon = rowSums(as.matrix(interview_data[,species_in_data(interview_data)$salmon]), na.rm = TRUE)
+  } else {
+    interview_data$total_salmon = 0
+  }
+
+  # if both chum and sockeye data are found in data, add a chum+sockeye variable
+  if (all(c("chum", "sockeye") %in% spp_found)) {
+    interview_data = cbind(interview_data, "chum+sockeye" = rowSums(interview_data[,c("chum", "sockeye")]))
+  }
+
+  # if it is a catch and the species name isn't in data, stop
+  if ((is_catch | is_p) & (!stringr::str_remove(variable, "_rate$|^p_") %in% c(spp_found, "total_salmon", "chum+sockeye"))) {
+    stop ("species '", stringr::str_remove(variable, "_rate$|^p_"), "' is not contained in interview_data")
+  }
+
+  # subset out only relevant data for the histogram: completed trips using this gear type
   x_data = interview_data[is_complete_trip(interview_data) & interview_data$gear == gear,]
 
   # drop any data collected by ADFG -- this hasn't been historically reported here
   x_data = x_data[x_data$source != "ADFG",]
 
-  # prepare the information: total_salmon
-  if (variable == "total_salmon") {
-    x = rowSums(x_data[,c("chinook", "chum", "sockeye")])
-    main = "Total Salmon Catch/Trip"
+  # prepare information: catch/trip
+  if (is_catch) {
+    x = x_data[,variable]
+    if (variable %in% species_names$species) {
+      main = paste0(stringr::str_to_title(species_names$in_text[species_names$species == variable]), " Catch/Trip")
+    } else {
+      if (variable == "total_salmon") main = "Total Salmon Catch/Trip"
+      if (variable == "chum+sockeye") main = "Chum+Sockeye Salmon Catch/Trip"
+    }
   }
 
-  # prepare the information: chinook
-  if (variable == "chinook") {
-    x = x_data[,"chinook"]
-    main = "Chinook Salmon Catch/Trip"
+  # prepare information: trip_start or trip_end
+  if (is_time) {
+    x = lubridate::hour(x_data[,variable])
+    main = variable |>
+      stringr::str_replace("_", " ") |>
+      stringr::str_to_title() |>
+      paste0(" Time")
   }
 
-  # prepare the information: chum
-  if (variable == "chum") {
-    x = x_data[,"chum"]
-    main = "Chum Salmon Catch/Trip"
+  # prepare information: soak_duration or trip_duration
+  if (is_duration) {
+    x = as.numeric(lubridate::as.duration(x_data[,variable]), "hours")
+    main = variable |>
+      stringr::str_remove("_.+$") |>
+      stringr::str_to_title() |>
+      paste0(" Duration (Hours)")
   }
 
-  # prepare the information: sockeye
-  if (variable == "sockeye") {
-    x = x_data[,"sockeye"]
-    main = "Sockeye Salmon Catch/Trip"
-  }
-
-  # prepare the information: chum + sockeye
-  if (variable == "chum+sockeye") {
-    x = rowSums(x_data[,c("chum", "sockeye")])
-    main = "Chum+Sockeye Salmon Catch/Trip"
-  }
-
-  # prepare the information: trip_start
-  if (variable == "trip_start") {
-    x = lubridate::hour(x_data$trip_start)
-    main = "Trip Start Time"
-  }
-
-  # prepare the information: trip_end
-  if (variable == "tri_end") {
-    x = lubridate::hour(x_data$trip_start)
-    main = "Trip End Time"
-  }
-
-  # prepare the information: soak duration
-  if (variable == "soak_duration") {
-    x = as.numeric(lubridate::as.duration(x_data$soak_duration), "hours")
-    main = "Soak Duration (Hours)"
-  }
-
-  # prepare the information: trip duration
-  if (variable == "trip_duration") {
-    x = as.numeric(lubridate::as.duration(x_data$trip_duration), "hours")
-    main = "Trip Duration (Hours)"
-  }
-
-  # prepare the information: % chinook
-  if (variable == "p_chinook") {
-    x = x_data$chinook/rowSums(x_data[,c("chinook", "chum", "sockeye")])
+  # prepare information: p_chinook
+  if (is_p) {
+    p_spp = stringr::str_remove(variable, "^p_")
+    salmon_spp = spp_found[spp_found %in% species_names$species[species_names$is_salmon]]
+    numerator = x_data[,p_spp]
+    denominator = rowSums(as.matrix(x_data[,salmon_spp]), na.rm = TRUE)
+    x = numerator/denominator
     x = x * 100
     main = "% Chinook Salmon"
   }
@@ -143,15 +159,22 @@ make_histogram = function(interview_data, gear, variable, n_bins = 10) {
 #'
 #' @inheritParams estimate_harvest
 #' @param variables Character; vector indicating which
-#'   variables to draw histograms for. See [make_histogram()] for accepted options
+#'   variables to draw histograms for. See [make_histogram()] for accepted options.
+#'   If left `NULL` (the default), [select_histogram_variables()] will automatically select
+#'   the variables to display.
 #' @param mfrow Numeric; vector of length 2 specifying how to organize the histogram panels in `c(rows,colums)`.
 #'   Supplied to [graphics::par()] and defaults to `c(2,3)`.
 #' @param n_bins Numeric; the number of bars to draw for the histogram
+#' @param ... Optional arguments to be passed to [select_histogram_variables()]
 #' @note If 6 or fewer variables are supplied, the panels will be organized as
 #'
 #' @export
 
-make_histograms = function(interview_data, gear, variables, mfrow = c(2,3), n_bins = 10) {
+make_histograms = function(interview_data, gear, variables = NULL, mfrow = c(2,3), n_bins = 10, ...) {
+
+  if (is.null(variables)) {
+    variables = select_histogram_variables(interview_data = interview_data, ...)
+  }
 
   # graphics device settings
   par(mfrow = mfrow, mar = c(1.5,1,2,1), oma = c(0,2,0,0))
@@ -194,3 +217,58 @@ make_histogram_caption = function(interview_data, gear) {
   # return it
   return(hist_fig_cap)
 }
+
+#' Automate selection of histogram variables
+#'
+#' @inheritParams make_appendix_table
+#' @param max_vars Numeric; the maximum number of variables to return, defaults to 6 for a 2x3 multi-panel plot.
+#' @param min_noncatch Numeric; the minimum number of noncatch variables to return, defaults to 2.
+#' @param noncatch_vars Character; vector of variable names to show in addition to the catch variables.
+#'   As many valid options will be returned (in order as specified here) as room allows by `max_vars`.
+#'   Defaults to `c("trip_duration", "soak_duration", "trip_start", "trip_end")`.
+
+select_histogram_variables = function(interview_data, split_chum_sockeye = TRUE,
+                                      max_vars = 6, min_noncatch = 2,
+                                      noncatch_vars = c("trip_duration", "soak_duration", "trip_start", "trip_end")) {
+
+  # get the names of all salmon species contained in the interview data
+  salmon_species = KuskoHarvEst:::species_in_data(interview_data)$salmon
+
+  # set this as the starting point for the list of variables to plot
+  vars = salmon_species
+
+  # handle the split_chum_sockeye argument
+  if (all(c("chum", "sockeye") %in% salmon_species & !split_chum_sockeye)) {
+    vars = salmon_species[-which(salmon_species %in% c("chum", "sockeye"))]
+    vars = c(vars, "chum+sockeye")
+  }
+
+  # how many salmon species-specific panels will there be?
+  n_salmon = length(vars)
+
+  # if more than one species, add a total
+  if (n_salmon > 1) vars = c(vars, "total_salmon")
+
+  # if chinook is present and not the only species, add its composition
+  if (n_salmon > 1 & "chinook" %in% vars) vars = c(vars, "p_chinook")
+
+  # drop the total salmon variable if it puts us over the max_vars count
+  if (length(vars) + min_noncatch > max_vars) {
+    vars = vars[-which(vars == "total_salmon")]
+  }
+
+  # drop the total salmon variable if it puts us over the max_vars count
+  if (length(vars) + min_noncatch > max_vars) {
+    vars = vars[-which(vars == "p_chinook")]
+  }
+
+  # how many noncatch variables will be plotted
+  n_noncatch_vars = min(max_vars - length(vars), length(noncatch_vars))
+
+  # combine the catch and noncatch variables
+  vars = c(vars, noncatch_vars[1:n_noncatch_vars])
+
+  # return
+  vars
+}
+

@@ -4,14 +4,29 @@
 \alias{prepare_interviews}
 \title{Prepare interview data files}
 \usage{
-prepare_interviews(input_files, ...)
+prepare_interviews(
+  input_files,
+  include_salmon = "all",
+  include_nonsalmon = "none",
+  include_goals = FALSE,
+  include_village = FALSE
+)
 }
 \arguments{
 \item{input_files}{Character; vector of file names that contain interview data}
 
-\item{...}{Optional arguments passed to \code{\link[=prepare_interviews_one]{prepare_interviews_one()}}}
+\item{include_salmon}{Character; accepted options are \code{"all"}, \code{"none"}, or any combination of acceptable salmon species names}
+
+\item{include_nonsalmon}{Character; accepted options are \code{"all"}, \code{"none"}, or any combination of acceptable nonsalmon species names}
+
+\item{include_goals}{Logical; should the fisher's reported progress towards meeting their season-wide harvest goals be returned?}
+
+\item{include_village}{Logical; should the village of the fisher be included in the output?}
 }
 \description{
 Calls \code{\link[=prepare_interviews_one]{prepare_interviews_one()}} multiple times, once per interview data file
 and performs data quality checks
+}
+\note{
+For the list of acceptable species names, please see \code{KuskoHarvEst:::species_names}.
 }

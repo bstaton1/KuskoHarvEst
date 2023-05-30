@@ -4,12 +4,31 @@
 \alias{build_yaml}
 \title{Automate creation of a YAML header based on pre-defined meta data}
 \usage{
-build_yaml(doc_type, draft)
+build_yaml(
+  doc_type = "estimate_report",
+  draft = FALSE,
+  do_drift,
+  do_set,
+  species = c("chinook", "chum", "sockeye"),
+  n_boot = 1000,
+  split_chum_sockeye = TRUE
+)
 }
 \arguments{
-\item{doc_type}{Character; accepted options are \code{"estimate_report"} or \code{"sensitivity_report"}}
+\item{doc_type}{Character; accepted options are \code{"estimate_report"} or \code{"sensitivity_report"}.}
 
 \item{draft}{Logical; should a draft watermark be printed in the rendered output?}
+
+\item{do_drift}{Logical; should harvest and effort estimates be produced for drift nets?}
+
+\item{do_set}{Logical; should harvest and effort estimates be produced for set nets?}
+
+\item{species}{Character; vector of accepted species (see \code{KuskoHarvEst:::species_names}).}
+
+\item{n_boot}{Numeric; how many bootstrap iterations should be performed?}
+
+\item{split_chum_sockeye}{Logical; if both chum and sockeye salmon data are available, do you wish to
+present their summaries disaggregated by species (\code{TRUE}, default), or aggregated together as chum+sockeye (\code{FALSE})?}
 }
 \description{
 Prevents needing to edit the YAML header by hand
