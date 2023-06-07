@@ -1,5 +1,5 @@
 # make a table to store the short and long names for each interview data source
-source_names = data.frame(source_long = c("Tundra Villages (ADF&G)", "Bethel Boat Harbor (ONC)", "Bethel Area Fish Camps (ONC)", "Other Villages (BSFA/KRITFC)", "Law Enforcement Officers (USFWS)")
+source_names = data.frame(source_long = c("Tundra Villages (ADF&G)", "Bethel Boat Harbor (ONC)", "Bethel Area Fish Camps (ONC)", "Other Villages (KRITFC)", "Law Enforcement Officers (USFWS)")
 )
 rownames(source_names) = c("ADFG", "BBH", "FC", "CBM", "LE")
 
