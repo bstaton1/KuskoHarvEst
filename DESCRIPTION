@@ -1,6 +1,6 @@
 Package: KuskoHarvEst
 Title: Tools for Producing In-season Estimates of Salmon Harvest and Effort Occurring in Short-Duration Subsistence Harvest Opportunities in the Lower Kuskokwim River
-Version: 1.2.0
+Version: 1.2.1
 Authors@R: 
     person(given = "Ben",
            family = "Staton",

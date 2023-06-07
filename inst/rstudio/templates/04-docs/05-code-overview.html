@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Package Version: 1.2.0" />
+<meta name="author" content="Package Version: 1.2.1" />
 
 
 <title>Code Overview</title>
@@ -1486,8 +1486,8 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore"><strong>Code Overview</strong></h1>
 <h3 class="subtitle"><em>KuskoHarvEst Documentation</em></h3>
-<h4 class="author">Package Version: 1.2.0</h4>
-<h4 class="date">Last Updated: 5/29/2023</h4>
+<h4 class="author">Package Version: 1.2.1</h4>
+<h4 class="date">Last Updated: 6/6/2023</h4>
 
 </div>
 
@@ -1534,8 +1534,8 @@ file paths/names of these files:</p>
 <p>Note that three files store interview data and one stores flight
 counts.</p>
 <pre class="r"><code>basename(data_files)</code></pre>
-<pre><code>## [1] &quot;BBH_2020_06_12_EXAMPLE_ONLY.csv&quot;           &quot;CBM_2020_06_12_EXAMPLE_ONLY.csv&quot;           &quot;FC_2020_06_12_EXAMPLE_ONLY.csv&quot;           
-## [4] &quot;Flight_counts_2020_06_12_EXAMPLE_ONLY.csv&quot;</code></pre>
+<pre><code>## [1] &quot;BBH_2020_06_12_EXAMPLE_ONLY.csv&quot;           &quot;CBM_2020_06_12_EXAMPLE_ONLY.csv&quot;          
+## [3] &quot;FC_2020_06_12_EXAMPLE_ONLY.csv&quot;            &quot;Flight_counts_2020_06_12_EXAMPLE_ONLY.csv&quot;</code></pre>
 <p>Determine which files are used for which purpose:</p>
 <pre class="r"><code>flight_file = data_files[stringr::str_detect(data_files, &quot;Flight_counts&quot;)]
 interview_files = data_files[!stringr::str_detect(data_files, &quot;Flight_counts&quot;)]</code></pre>
@@ -1576,48 +1576,69 @@ this function.</p>
 <p>The output object stores interviews as rows and variables as columns
 just as in the raw data files, but again, it is now in a standardized
 and combined format. Here are the first 20 rows:</p>
-<pre><code>##    source stratum  gear net_length mesh_size          trip_start            trip_end trip_duration soak_duration chinook chum sockeye coho suit_effort
-## 1     BBH       C drift        150     6.000 2020-06-12 06:00:00 2020-06-12 17:35:00    11H 35M 0S    11H 35M 0S      17    2       0   NA        TRUE
-## 2     BBH       C drift        150     6.000 2020-06-12 05:30:00 2020-06-12 18:04:00    12H 34M 0S    12H 34M 0S       1    1       1   NA        TRUE
-## 3     BBH       C drift        100     5.500 2020-06-12 06:00:00 2020-06-12 16:07:00     10H 7M 0S     10H 7M 0S       2    0       3   NA        TRUE
-## 4     BBH       C drift        140     5.875 2020-06-12 06:00:00 2020-06-12 17:42:00    11H 42M 0S    11H 42M 0S       0    0       0   NA        TRUE
-## 5     BBH       C   set         60     6.000 2020-06-12 06:00:00 2020-06-12 18:45:00    12H 45M 0S    12H 45M 0S       8    0       0   NA        TRUE
-## 6     BBH       C   set         60     5.875 2020-06-12 05:30:00 2020-06-12 18:00:00    12H 30M 0S    12H 30M 0S       6    0       0   NA        TRUE
-## 7     BBH       C drift         60     4.000 2020-06-12 06:00:00 2020-06-12 17:18:00    11H 18M 0S    11H 18M 0S       3    2       0   NA        TRUE
-## 8     BBH       C drift        150     5.250 2020-06-12 06:00:00 2020-06-12 18:32:00    12H 32M 0S     10H 0M 0S       8    0       0   NA        TRUE
-## 9     BBH       C   set         60     6.000 2020-06-12 06:00:00 2020-06-12 16:00:00     10H 0M 0S     10H 0M 0S       1    0       0   NA        TRUE
-## 10    BBH       B   set        150     5.750 2020-06-12 08:00:00 2020-06-12 16:30:00     8H 30M 0S     8H 30M 0S       3    0       0   NA        TRUE
-## 11    BBH       C drift        150     5.500 2020-06-12 06:00:00 2020-06-12 18:04:00     12H 4M 0S     6H 45M 0S      10    1       4   NA        TRUE
-## 12    BBH       B drift        150     6.000 2020-06-12 06:00:00 2020-06-12 12:12:00     6H 12M 0S      6H 0M 0S       6    0       0   NA        TRUE
-## 13    BBH       C drift        150     6.000 2020-06-12 12:00:00 2020-06-12 17:46:00     5H 46M 0S     5H 46M 0S       0    0       0   NA        TRUE
-## 14    BBH       B drift         60     6.000 2020-06-12 08:00:00 2020-06-12 15:37:00     7H 37M 0S     5H 50M 0S       1    0       0   NA        TRUE
-## 15    BBH       C   set         60     5.875 2020-06-12 06:00:00 2020-06-12 11:45:00     5H 45M 0S     5H 30M 0S       4    0       0   NA        TRUE
-## 16    BBH       B drift        140     5.500 2020-06-12 06:25:00 2020-06-12 17:15:00    10H 50M 0S     5H 25M 0S      10    1       2   NA        TRUE
-## 17    BBH       B drift         60     6.000 2020-06-12 07:30:00 2020-06-12 15:37:00      8H 7M 0S      5H 0M 0S       4    0       0   NA        TRUE
-## 18    BBH       B drift        150     5.625 2020-06-12 09:00:00 2020-06-12 16:15:00     7H 15M 0S      5H 0M 0S       1    0       0   NA        TRUE
-## 19    BBH       C drift        150     5.750 2020-06-12 13:30:00 2020-06-12 18:01:00     4H 31M 0S     4H 31M 0S       4    0       0   NA        TRUE
-## 20    BBH       C drift        100     6.000 2020-06-12 13:00:00 2020-06-12 18:14:00     5H 14M 0S      5H 0M 0S       3    0       0   NA        TRUE
-##    suit_cr_info suit_cr_reliable suit_avg_soak suit_avg_net                                                                note
-## 1          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 2          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 3          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 4          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 5          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 6          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 7          TRUE             TRUE          TRUE         TRUE Long soak duration (12H 0M 0S) edited to trip duration (11H 18M 0S)
-## 8          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 9          TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 10         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 11         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 12         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 13         TRUE             TRUE          TRUE         TRUE   Long soak duration (6H 0M 0S) edited to trip duration (5H 46M 0S)
-## 14         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 15         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 16         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 17         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 18         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;
-## 19         TRUE             TRUE          TRUE         TRUE   Long soak duration (5H 0M 0S) edited to trip duration (4H 31M 0S)
-## 20         TRUE             TRUE          TRUE         TRUE                                                                &lt;NA&gt;</code></pre>
+<pre><code>##    source stratum  gear net_length mesh_size          trip_start            trip_end trip_duration
+## 1     BBH       C drift        150     6.000 2020-06-12 06:00:00 2020-06-12 17:35:00    11H 35M 0S
+## 2     BBH       C drift        150     6.000 2020-06-12 05:30:00 2020-06-12 18:04:00    12H 34M 0S
+## 3     BBH       C drift        100     5.500 2020-06-12 06:00:00 2020-06-12 16:07:00     10H 7M 0S
+## 4     BBH       C drift        140     5.875 2020-06-12 06:00:00 2020-06-12 17:42:00    11H 42M 0S
+## 5     BBH       C   set         60     6.000 2020-06-12 06:00:00 2020-06-12 18:45:00    12H 45M 0S
+## 6     BBH       C   set         60     5.875 2020-06-12 05:30:00 2020-06-12 18:00:00    12H 30M 0S
+## 7     BBH       C drift         60     4.000 2020-06-12 06:00:00 2020-06-12 17:18:00    11H 18M 0S
+## 8     BBH       C drift        150     5.250 2020-06-12 06:00:00 2020-06-12 18:32:00    12H 32M 0S
+## 9     BBH       C   set         60     6.000 2020-06-12 06:00:00 2020-06-12 16:00:00     10H 0M 0S
+## 10    BBH       B   set        150     5.750 2020-06-12 08:00:00 2020-06-12 16:30:00     8H 30M 0S
+## 11    BBH       C drift        150     5.500 2020-06-12 06:00:00 2020-06-12 18:04:00     12H 4M 0S
+## 12    BBH       B drift        150     6.000 2020-06-12 06:00:00 2020-06-12 12:12:00     6H 12M 0S
+## 13    BBH       C drift        150     6.000 2020-06-12 12:00:00 2020-06-12 17:46:00     5H 46M 0S
+## 14    BBH       B drift         60     6.000 2020-06-12 08:00:00 2020-06-12 15:37:00     7H 37M 0S
+## 15    BBH       C   set         60     5.875 2020-06-12 06:00:00 2020-06-12 11:45:00     5H 45M 0S
+## 16    BBH       B drift        140     5.500 2020-06-12 06:25:00 2020-06-12 17:15:00    10H 50M 0S
+## 17    BBH       B drift         60     6.000 2020-06-12 07:30:00 2020-06-12 15:37:00      8H 7M 0S
+## 18    BBH       B drift        150     5.625 2020-06-12 09:00:00 2020-06-12 16:15:00     7H 15M 0S
+## 19    BBH       C drift        150     5.750 2020-06-12 13:30:00 2020-06-12 18:01:00     4H 31M 0S
+## 20    BBH       C drift        100     6.000 2020-06-12 13:00:00 2020-06-12 18:14:00     5H 14M 0S
+##    soak_duration chinook chum sockeye coho suit_effort suit_cr_info suit_cr_reliable suit_avg_soak
+## 1     11H 35M 0S      17    2       0   NA        TRUE         TRUE             TRUE          TRUE
+## 2     12H 34M 0S       1    1       1   NA        TRUE         TRUE             TRUE          TRUE
+## 3      10H 7M 0S       2    0       3   NA        TRUE         TRUE             TRUE          TRUE
+## 4     11H 42M 0S       0    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 5     12H 45M 0S       8    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 6     12H 30M 0S       6    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 7     11H 18M 0S       3    2       0   NA        TRUE         TRUE             TRUE          TRUE
+## 8      10H 0M 0S       8    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 9      10H 0M 0S       1    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 10     8H 30M 0S       3    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 11     6H 45M 0S      10    1       4   NA        TRUE         TRUE             TRUE          TRUE
+## 12      6H 0M 0S       6    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 13     5H 46M 0S       0    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 14     5H 50M 0S       1    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 15     5H 30M 0S       4    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 16     5H 25M 0S      10    1       2   NA        TRUE         TRUE             TRUE          TRUE
+## 17      5H 0M 0S       4    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 18      5H 0M 0S       1    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 19     4H 31M 0S       4    0       0   NA        TRUE         TRUE             TRUE          TRUE
+## 20      5H 0M 0S       3    0       0   NA        TRUE         TRUE             TRUE          TRUE
+##    suit_avg_net                                                                note
+## 1          TRUE                                                                &lt;NA&gt;
+## 2          TRUE                                                                &lt;NA&gt;
+## 3          TRUE                                                                &lt;NA&gt;
+## 4          TRUE                                                                &lt;NA&gt;
+## 5          TRUE                                                                &lt;NA&gt;
+## 6          TRUE                                                                &lt;NA&gt;
+## 7          TRUE Long soak duration (12H 0M 0S) edited to trip duration (11H 18M 0S)
+## 8          TRUE                                                                &lt;NA&gt;
+## 9          TRUE                                                                &lt;NA&gt;
+## 10         TRUE                                                                &lt;NA&gt;
+## 11         TRUE                                                                &lt;NA&gt;
+## 12         TRUE                                                                &lt;NA&gt;
+## 13         TRUE   Long soak duration (6H 0M 0S) edited to trip duration (5H 46M 0S)
+## 14         TRUE                                                                &lt;NA&gt;
+## 15         TRUE                                                                &lt;NA&gt;
+## 16         TRUE                                                                &lt;NA&gt;
+## 17         TRUE                                                                &lt;NA&gt;
+## 18         TRUE                                                                &lt;NA&gt;
+## 19         TRUE   Long soak duration (5H 0M 0S) edited to trip duration (4H 31M 0S)
+## 20         TRUE                                                                &lt;NA&gt;</code></pre>
 <p>The columns that start with <code>&quot;suit_&quot;</code> store a
 <code>TRUE</code> if that object is suitable for a purpose and
 <code>FALSE</code> if not and the <code>&quot;note&quot;</code> column stores some
@@ -2019,7 +2040,7 @@ updated.</strong></p>
 ## ADFG          Tundra Villages (ADF&amp;G)
 ## BBH          Bethel Boat Harbor (ONC)
 ## FC       Bethel Area Fish Camps (ONC)
-## CBM      Other Villages (BSFA/KRITFC)
+## CBM           Other Villages (KRITFC)
 ## LE   Law Enforcement Officers (USFWS)</code></pre></li>
 <li><p>An object named <code>strata_names</code> that includes
 information about what each of the stratum codes mean. <strong>If new
