@@ -97,9 +97,7 @@ create_harvest_combos = function(interview_data) {
 #'   repeatedly, once per combination of flights or interview data sources. Each list element is the output from a different
 #'   data scenario.
 #' @param combos The output of [make_flight_combos()] or [make_interview_combos()]
-#'
 #' @export
-#' @importFrom magrittr %>%
 #'
 
 make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) {
@@ -146,10 +144,10 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
 
   # build the kable
   knitr::kable(combo_table, format = "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE,
-               align = paste(c("l", paste(rep("c", ncol(combo_table) - 1), collapse = "")), collapse = "")) %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = c("scale_down", "HOLD_position")) %>%
-    kableExtra::row_spec(0, bold = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
+               align = paste(c("l", paste(rep("c", ncol(combo_table) - 1), collapse = "")), collapse = "")) |>
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("scale_down", "HOLD_position")) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::column_spec(1, bold = TRUE) |>
     KuskoHarvUtils::add_vspace()
 }
 
@@ -157,12 +155,6 @@ make_effort_sensitivity_table = function(effort_scenarios, flight_data, combos) 
 #'
 #' @inheritParams make_harvest_sensitivity_tables
 #' @param species The species to report, only salmon species are accepted as well as `"total"`, representing all salmon species.
-#' @importFrom magrittr %>%
-#'
-#'
-
-# species = "chinook"
-# combos = harvest_combos
 
 make_harvest_sensitivity_table = function(species, harvest_scenarios, combos, interview_data) {
 
@@ -224,14 +216,14 @@ make_harvest_sensitivity_table = function(species, harvest_scenarios, combos, in
   colnames(tab) = c("Scenario", "Estimate", "\\% Change", "CV")
 
   # build the kable to print
-  kable_input = knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lccc", escape = FALSE, label = paste0(species, "-table")) %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
-    kableExtra::add_header_above(c(" " = 1, "SPECIES Salmon" = 3), bold = TRUE) %>%
-    kableExtra::row_spec(0, bold = TRUE) %>%
-    kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
-    KuskoHarvUtils::add_vspace() %>%
+  kable_input = knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lccc", escape = FALSE, label = paste0(species, "-table")) |>
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) |>
+    kableExtra::add_header_above(c(" " = 1, "SPECIES Salmon" = 3), bold = TRUE) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) |>
+    kableExtra::column_spec(1, bold = TRUE) |>
+    kableExtra::column_spec(1, bold = TRUE) |>
+    KuskoHarvUtils::add_vspace() |>
     KuskoHarvUtils::kable_replace(pattern = "SPECIES", replacement = KuskoHarvUtils::capitalize(species))
 }
 

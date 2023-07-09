@@ -35,7 +35,6 @@ header-includes:
 # load in packages
 library(knitr)
 library(kableExtra)
-library(magrittr)
 library(msdown)
 
 # clear the workspace
