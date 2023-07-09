@@ -223,16 +223,6 @@ make_harvest_sensitivity_table = function(species, harvest_scenarios, combos, in
   # make nice column names
   colnames(tab) = c("Scenario", "Estimate", "\\% Change", "CV")
 
-  # function to replace the species name placeholder
-  # this is a workaround because add_header_above() only accepts hard-coded characters as the header titles
-  # FIXME: should be moved to KuskoHarvUtils; see KuskoHarvUtils#4
-  kable_replace = function(kable_input, pattern, replacement) {
-    kable_input_new = stringr::str_replace(as.character(kable_input), pattern = pattern, replacement = replacement)
-    class(kable_input_new) = class(kable_input)
-    attributes(kable_input_new) = attributes(kable_input)
-    return(kable_input_new)
-  }
-
   # build the kable to print
   kable_input = knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lccc", escape = FALSE, label = paste0(species, "-table")) %>%
     kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
@@ -242,7 +232,7 @@ make_harvest_sensitivity_table = function(species, harvest_scenarios, combos, in
     kableExtra::column_spec(1, bold = TRUE) %>%
     kableExtra::column_spec(1, bold = TRUE) %>%
     KuskoHarvUtils::add_vspace() %>%
-    kable_replace(pattern = "SPECIES", replacement = KuskoHarvUtils::capitalize(species))
+    KuskoHarvUtils::kable_replace(pattern = "SPECIES", replacement = KuskoHarvUtils::capitalize(species))
 }
 
 #' Make a table to report multiple tables from harvest sensitivity analyses
