@@ -1,8 +1,6 @@
 #' Create a table to report the number of interviews by data source
 #'
 #' @inheritParams estimate_harvest
-#'
-#' @importFrom magrittr %>%
 #' @export
 #'
 
@@ -25,19 +23,17 @@ make_interview_data_table = function(interview_data) {
 
   # build the kable
   knitr::kable(tab, "latex", linesep = "", booktabs = TRUE, longtable = FALSE, escape = TRUE, align = "lrr",
-               caption = "The number and percent of fisher interviews conducted by location and organization.") %>%
-    kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") %>%
-    kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
-    kableExtra::row_spec(nrow(tab), bold = TRUE) %>%
-    kableExtra::row_spec(0, bold = TRUE) %>%
+               caption = "The number and percent of fisher interviews conducted by location and organization.") |>
+    kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") |>
+    kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) |>
+    kableExtra::row_spec(nrow(tab), bold = TRUE) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
     KuskoHarvUtils::add_vspace()
 }
 
 #' Create a table to report the flights and the counts that were made on each
 #'
 #' @inheritParams estimate_effort
-#'
-#' @importFrom magrittr %>%
 #' @export
 
 make_flight_data_table = function(flight_data) {
@@ -62,10 +58,10 @@ make_flight_data_table = function(flight_data) {
 
   # build the kable
   knitr::kable(tab, "latex", col.names = c("Start Time", "End Time", "Hours", "Drift", "Set"), linesep = "", booktabs = TRUE, longtable = FALSE, escape = TRUE, align = "rrccc",
-               caption = "The time each flight was conducted and fishers counted each flight.") %>%
-    kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") %>%
-    kableExtra::add_header_above(c("Time Information" = 3, "Nets Counted" = 2), bold = TRUE) %>%
-    kableExtra::row_spec(0, bold = TRUE) %>%
+               caption = "The time each flight was conducted and fishers counted each flight.") |>
+    kableExtra::kable_styling(position = "center", latex_options = "HOLD_position") |>
+    kableExtra::add_header_above(c("Time Information" = 3, "Nets Counted" = 2), bold = TRUE) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
     KuskoHarvUtils::add_vspace()
 }
 
@@ -73,8 +69,6 @@ make_flight_data_table = function(flight_data) {
 #'
 #' @inheritParams estimate_harvest
 #' @param nonsalmon Logical; should the table display estimates for non-salmon instead of salmon species?
-#'
-#' @importFrom magrittr %>%
 #' @export
 
 make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
@@ -143,21 +137,19 @@ make_strata_summary_table = function(interview_data, gear, nonsalmon = FALSE) {
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", escape = FALSE, row.names = FALSE,
                align = paste(c("l", rep("c", 2 + length(spp))), collapse = ""),
-               caption = paste0("Summaries by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) %>%
-    kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = length(spp)), bold = TRUE) %>%
-    kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
-    kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) %>%
-    kableExtra::column_spec(ncol(tab), bold = length(spp) > 1) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
+               caption = paste0("Summaries by river stratum (area) for ", gear, " nets. Numbers in parentheses are 95\\% confidence intervals.")) |>
+    kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) |>
+    kableExtra::add_header_above(c(" " = 3, "Estimated Harvest" = length(spp)), bold = TRUE) |>
+    kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) |>
+    kableExtra::row_spec(1:(nrow(tab) - 1), hline_after = TRUE) |>
+    kableExtra::column_spec(ncol(tab), bold = length(spp) > 1) |>
+    kableExtra::column_spec(1, bold = TRUE) |>
     KuskoHarvUtils::add_vspace()
 }
 
 #' Create a table to summarize catch rates and species composition relative to Johnson River
 #'
 #' @details Requires that an object named `boot_out` to be in existence
-#'
-#' @importFrom magrittr %>%
 #' @export
 
 make_johnson_summary_table = function() {
@@ -238,11 +230,11 @@ make_johnson_summary_table = function() {
   knitr::kable(tab, "latex",
                row.names = FALSE, booktabs = TRUE, longtable = FALSE, linesep = "",
                align = paste0("lcc", paste(rep("c", length(spp)), collapse = "")), escape = FALSE,
-               caption = "Estimated trips, average (95\\% confidence limits) total salmon catch per trip, and percent catch by species summarized for the areas above and below the confluence of the Johnson River with the Kuskokwim River. Quantities are derived from the strata- and species-specific harvest estimates, not the raw interview data.") %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) %>%
-    kableExtra::add_header_above(c(" " = 3, "Salmon Species \\\\% Composition" = length(spp)), bold = TRUE, escape = FALSE) %>%
-    kableExtra::row_spec(0, bold = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
+               caption = "Estimated trips, average (95\\% confidence limits) total salmon catch per trip, and percent catch by species summarized for the areas above and below the confluence of the Johnson River with the Kuskokwim River. Quantities are derived from the strata- and species-specific harvest estimates, not the raw interview data.") |>
+    kableExtra::kable_styling(full_width = FALSE, latex_options = latex_options) |>
+    kableExtra::add_header_above(c(" " = 3, "Salmon Species \\\\% Composition" = length(spp)), bold = TRUE, escape = FALSE) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::column_spec(1, bold = TRUE) |>
     KuskoHarvUtils::add_vspace()
 }
 
@@ -259,7 +251,6 @@ make_johnson_summary_table = function() {
 #'   * `"net_length"`
 #'   * `"p_chinook"`
 #'
-#' @importFrom magrittr %>%
 
 make_appendix_table = function(interview_data, gear, variable) {
 
@@ -448,11 +439,11 @@ make_appendix_table = function(interview_data, gear, variable) {
 
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", caption = cap, escape = F, align = "lcccccc",
-               label = paste0("appendix-table-", stringr::str_replace(variable, "_", "-"))) %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") %>%
-    kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) %>%
-    kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
+               label = paste0("appendix-table-", stringr::str_replace(variable, "_", "-"))) |>
+    kableExtra::kable_styling(full_width = FALSE, latex_options = "HOLD_position") |>
+    kableExtra::row_spec(c(0, nrow(tab)), bold = TRUE) |>
+    kableExtra::row_spec(nrow(tab) - 1, hline_after = TRUE) |>
+    kableExtra::column_spec(1, bold = TRUE) |>
     KuskoHarvUtils::add_vspace()
 
 }
@@ -513,8 +504,6 @@ make_appendix_tables = function(interview_data, gear, include_rates = TRUE, spli
 #' Create a table displaying reported harvest goal attainment
 #'
 #' @inheritParams estimate_harvest
-#'
-#' @importFrom magrittr %>%
 #' @export
 
 make_goals_summary_table = function(interview_data) {
@@ -566,12 +555,10 @@ make_goals_summary_table = function(interview_data) {
 
   # build the kable
   knitr::kable(tab, "latex", booktabs = TRUE, longtable = FALSE, linesep = "", align = "lcccc", escape = FALSE,
-               caption = paste0("Percentage of fishers reporting that they are either under halfway done, halfway done, over halfway done, or completely done fishing for a given species, relative to their season-wide harvest goals (sample size = ", n_goal_interviews, ").")) %>%
-    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) %>%
-    kableExtra::add_header_above(c(" " = 1, "Category of Harvest Goals Attained" = 4), bold = TRUE) %>%
-    kableExtra::row_spec(0, bold = TRUE) %>%
-    kableExtra::column_spec(1, bold = TRUE) %>%
+               caption = paste0("Percentage of fishers reporting that they are either under halfway done, halfway done, over halfway done, or completely done fishing for a given species, relative to their season-wide harvest goals (sample size = ", n_goal_interviews, ").")) |>
+    kableExtra::kable_styling(full_width = FALSE, latex_options = c("HOLD_position")) |>
+    kableExtra::add_header_above(c(" " = 1, "Category of Harvest Goals Attained" = 4), bold = TRUE) |>
+    kableExtra::row_spec(0, bold = TRUE) |>
+    kableExtra::column_spec(1, bold = TRUE) |>
     KuskoHarvUtils::add_vspace()
 }
-
-

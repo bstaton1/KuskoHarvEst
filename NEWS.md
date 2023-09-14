@@ -1,5 +1,16 @@
 # *NEWS*
 
+# KuskoHarvEst 1.2.2 (2023-07-08)
+
+## Internal (Not User-Facing)
+
+* Moved `kable_replace()` from inside the body of `KuskoHarvEst:::make_harvest_sensitivity_table()` to the 'KuskoHarvUtils' package -- it likely has more uses and should be more widely accessible.
+* Removed the 'magrittr' package as a dependency, and replaced all uses of the `%>%` pipe with the native `|>` pipe operator. 
+
+# KuskoHarvEst 1.2.1 (2023-06-06)
+
+* Removed BFSA from the list of data-collecting organizations.
+
 # KuskoHarvEst 1.2.0 (2023-05-29)
 
 ## New Features: User-Facing
