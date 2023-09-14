@@ -127,7 +127,13 @@ These messages may include:
     cat("Warning: X interview(s) had missing gear type information.\nThese records have been discarded since they\ncannot be used for anything.")
     ```
 
-* **Invalid stratum values**: The stratum columns must contain one of these values: `A`, `B`, `C`, `D1`, or `NA`. If another stratum value is found in the data, the corresponding records will be discarded and this warning will be returned:
+* **Invalid gear type**: if a record has an invalid gear type (i.e., something not containing the text `"drift"` or `"set"`, non-case sensitive, can include `"net"`, can include spaces), then it will be discarded entirely from the data set, and this warning will be returned:
+
+    ```{r, comment = NA}
+    cat("Warning: X interviews(s) had invalid gear types ([invalid values here])\nThese records have been discarded since they \ncannot be used for anything.")
+    ```
+
+* **Invalid stratum values**: The stratum columns must contain one of these values: `A`, `B`, `C`, `D1`, `D2`, or `NA`. If another stratum value is found in the data, the corresponding records will be discarded and this warning will be returned:
 
     ```{r, comment = NA}
     cat("Warning: There were X records with invalid stratum values: [invalid values here]\nThey have been discarded.")
