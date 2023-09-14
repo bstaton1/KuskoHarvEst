@@ -39,6 +39,15 @@ prepare_interviews = function(input_files, include_salmon = "all", include_nonsa
     warning("\n", sum(no_gear), " interview(s) had missing gear type information.\nThese records have been discarded since they\ncannot be used for anything.")
   }
 
+  # discard any trips with invalid gear types
+  valid_gears = c("drift", "set")
+  if (!all(interview_data$gear %in% valid_gears)) {
+    bad_gears = interview_data$gear[!interview_data$gear %in% valid_gears]
+    n_bad_gears = length(bad_gears)
+    interview_data = interview_data[interview_data$gear %in% valid_gears,]
+    warning("\n", n_bad_gears, " interview(s) had invalid gear types (", knitr::combine_words(unique(bad_gears), before = "'"), ").\nThese records have been discarded since they\ncannot be used for anything.")
+  }
+
   # perform suitability checks and combine logical flags with the data
   tasks = c("effort", "catch_rate_info", "catch_rate_info_reliable", "avg_soak", "avg_net_length")
   suitable = sapply(tasks, suitable_for, interview_data = interview_data)
