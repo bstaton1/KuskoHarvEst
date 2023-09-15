@@ -101,7 +101,14 @@ These should be entered like this:
   <img src="SS/07-final-report-content/odd-openers-example.png" width="500"/>
 </p>
 
-**Make sure to save your changes to this file before moving on.**
+
+**NOTE:** If there were no flights conducted for an opener, you **must** include an "empty" data file for it in the subfolder for that opener. Here is an example for the July 9, 2021 no flight opener:
+
+<p align="center">
+  <img src="SS/07-final-report-content/empty-flight-file.png" width="500"/>
+</p>
+
+**Make sure to save your changes to the `00-specify-odd-openers.R` file before moving on to the next step.**
 
 # Recompile All Estimates and Data
 
