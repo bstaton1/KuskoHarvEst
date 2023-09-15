@@ -1,5 +1,9 @@
 # *NEWS*
 
+# KuskoHarvEst 1.2.3 (2023-09-14)
+
+* Added a new QA/QC check/data discarding rule: if the gear type returned is not valid (i.e., one of `drift` or `set` after removing case sensitivity, all spaces, and the presence of `net`), then it will be discarded by `KuskoHarvEst::prepare_interviews()` and a warning will be returned. The documentation on the data preparation tool has been updated to reflect this new warning type that can be returned.
+
 # KuskoHarvEst 1.2.2 (2023-07-08)
 
 ## Internal (Not User-Facing)

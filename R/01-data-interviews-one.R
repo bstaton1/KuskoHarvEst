@@ -87,7 +87,7 @@ prepare_interviews_one = function(input_file, include_salmon, include_nonsalmon,
   if (nrow(dat_out) == 0) return(NULL)
 
   ### STEP 3: handle the gear (net) type
-  gear_entered = stringr::str_remove(dat_in$gear, " ")
+  gear_entered = stringr::str_remove_all(dat_in$gear, " ")
   gear_standard = tolower(gear_entered) # make lowercase
   gear_standard = stringr::str_remove(gear_standard, "net")
   dat_out$gear = gear_standard
