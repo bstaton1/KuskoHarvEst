@@ -32,6 +32,9 @@ colnames(flight_df) = stringr::str_remove(colnames(flight_df), "_drift")
 # calculate the total count per flight
 flight_df$total = rowSums(flight_df[,KuskoHarvEst:::strata_names$stratum], na.rm = TRUE)
 
+# make all values NA for dates with no flight
+flight_df[flight_df$start_time == "00:00" & flight_df$end_time == "00:00",2:ncol(flight_df)] = NA
+
 # export the output file
 write.csv(flight_df, file.path(out_dir, "all-driftnet-counts.csv"), row.names = FALSE)
 
@@ -52,7 +55,10 @@ flight_df = flight_df[,c("date", "start_time", "end_time", paste0(KuskoHarvEst::
 colnames(flight_df) = stringr::str_remove(colnames(flight_df), "_set")
 
 # calculate the total count per flight
-flight_df = flight_df[,c("date", "start_time", "end_time", paste0(KuskoHarvEst:::strata_names$stratum, "_set"))]
+flight_df$total = rowSums(flight_df[,KuskoHarvEst:::strata_names$stratum], na.rm = TRUE)
+
+# make all values NA for dates with no flight
+flight_df[flight_df$start_time == "00:00" & flight_df$end_time == "00:00",2:ncol(flight_df)] = NA
 
 # export the output file
 write.csv(flight_df, file.path(out_dir, "all-setnet-counts.csv"), row.names = FALSE)
@@ -68,6 +74,9 @@ effort_df = reshape2::dcast(effort_df, date ~ stratum, value.var = "estimate")
 # reformat the date variable
 effort_df$date = KuskoHarvUtils::basic_date(effort_df$date)
 
+# make totals NA if no strata data
+effort_df$total[is.na(effort_df$A)] = NA
+
 # export the output file
 write.csv(effort_df, file.path(out_dir, "all-driftnet-effort-estimates.csv"), row.names = FALSE)
 
@@ -81,6 +90,9 @@ effort_df = reshape2::dcast(effort_df, date ~ stratum, value.var = "estimate")
 
 # reformat the date variable
 effort_df$date = KuskoHarvUtils::basic_date(effort_df$date)
+
+# make totals NA if no strata data
+effort_df$total[is.na(effort_df$A)] = NA
 
 # export the output file
 write.csv(effort_df, file.path(out_dir, "all-setnet-effort-estimates.csv"), row.names = FALSE)
@@ -99,7 +111,7 @@ out_numeric = NULL
 # the pools to create combos for calculating individual summaries for
 date_pool = unique(boot_out$date)
 gear_pool = c("drift", "set", "total")
-species_pool = c("chinook", "chum", "sockeye", "total")
+species_pool = c(KuskoHarvEst:::species_names$species[KuskoHarvEst:::species_names$is_salmon], "total")
 strata_pool = c(KuskoHarvEst:::strata_names$stratum, "total")
 
 # loop through each combination
@@ -140,9 +152,9 @@ out_character$date = factor(out_character$date, levels = c(unique(flight_df$date
 out_character$estimate = stringr::str_replace(out_character$estimate, " -- ", "-")
 
 # capitalize columns
-out_character$date = KuskoHarvUtils::capitalize(out_character$date)
 out_character$species = KuskoHarvUtils::capitalize(out_character$species)
 out_character$stratum = KuskoHarvUtils::capitalize(out_character$stratum)
+out_character$species = factor(out_character$species, levels = c("Chinook", "Chum", "Sockeye", "Coho", "Total"))
 
 # subset out each gear and reshape
 total_table = reshape2::dcast(subset(out_character, gear == "total"), date + species ~ stratum, value.var = "estimate")

@@ -1,5 +1,9 @@
 # *NEWS*
 
+# KuskoHarvEst 1.2.4 (2023-09-15)
+
+* Updated code to produce post-season content. Changes were all small in nature -- the content produced and the workflow to do so are the same, but several changes were needed to accommodate the new output for coho and stratum D2.
+
 # KuskoHarvEst 1.2.3 (2023-09-14)
 
 * Added a new QA/QC check/data discarding rule: if the gear type returned is not valid (i.e., one of `drift` or `set` after removing case sensitivity, all spaces, and the presence of `net`), then it will be discarded by `KuskoHarvEst::prepare_interviews()` and a warning will be returned. The documentation on the data preparation tool has been updated to reflect this new warning type that can be returned.
