@@ -9,10 +9,11 @@ rm(list = ls(all = TRUE))
 source("00-specify-odd-openers.R")
 
 # extract the names of all openers with data
-dirs = dir("raw-data-files", full.names = TRUE, pattern = "_[0-9][0-9]$")
+dirs = dir("raw-data-files", full.names = TRUE, pattern = "_[0-9][0-9]")
 
 # convert to dates
-dates = stringr::str_replace_all(basename(dirs), "_", "-")
+dates = stringr::str_remove(basename(dirs), "_[:alpha:]+$") |>
+  stringr::str_replace_all("_", "-")
 
 # output directory
 out_dir = "compiled-output"
@@ -140,7 +141,14 @@ for (i in 1:length(dirs)) {
   }
 
   # combine drift, set, and total into one data frame of bootstrap output
-  tmp_boot_out = KuskoHarvEst::combine_boot_out(boot_out_drift = tmp_boot_out_drift, boot_out_set = tmp_boot_out_set)
+  if (!is.null(tmp_boot_out_drift) | !is.null(tmp_boot_out_set)) {
+    tmp_boot_out = KuskoHarvEst::combine_boot_out(boot_out_drift = tmp_boot_out_drift, boot_out_set = tmp_boot_out_set)
+  } else {
+    tmp_boot_out = expand.grid(iter = NA, date = dates[i], gear = unique(boot_out$gear), stratum = unique(boot_out$stratum))
+    tmp_boot_out = data.frame(tmp_boot_out, chinook = NA, chum = NA, sockeye = NA, coho = NA, total = NA)
+    tmp_boot_out = tmp_boot_out[order(tmp_boot_out$gear, tmp_boot_out$stratum),]
+    rownames(tmp_boot_out) = NULL
+  }
 
   # combine bootstrap output with output from other openers
   boot_out = rbind(boot_out, tmp_boot_out)
