@@ -35,5 +35,7 @@ Imports:
     tinytex,
     latex2exp,
     yaml,
-    settings
-remotes: bstaton1/KuskoHarvUtils
+    settings,
+    KuskoHarvUtils
+Remotes: 
+    bstaton1/KuskoHarvUtils
