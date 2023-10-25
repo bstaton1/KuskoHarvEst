@@ -29,7 +29,6 @@ Many additional R packages will be installed automatically.
 
 ```R
 install.packages("remotes")
-remotes::install_github("bstaton1/KuskoHarvUtils")
 remotes::install_github("bstaton1/KuskoHarvEst")
 ```
 
