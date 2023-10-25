@@ -11,7 +11,7 @@ Description: This package contains two main types of functionality to facilitate
     First, there are "core" functions that handle data processing and estimation tasks. However, many potential users
     of this package are not R programmers, and so the second type of functionality is to enable interactive and automated
     creation of estimates and reports. The intent is to place the emphasis of the analyst on the raw data files
-    rather than on the intracacies of estimation and automated reporting. 
+    rather than on the intricacies of estimation and automated reporting. 
 License: use_mit_license()
 Encoding: UTF-8
 LazyData: true
