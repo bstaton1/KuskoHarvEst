@@ -1,5 +1,10 @@
 # *NEWS*
 
+# KuskoHarvEst 1.2.5 (2023-10-25)
+
+* Updated DESCRIPTION to ensure 'KuskoHarvUtils' is installed automatically upon installing 'KuskoHarvEst' ([#188](https://www.github.com/bstaton1/KuskoHarvEst/issues/188))
+* Fixed minor typos in README and DESCRIPTION files
+
 # KuskoHarvEst 1.2.4 (2023-09-15)
 
 * Updated code to produce post-season content. Changes were all small in nature -- the content produced and the workflow to do so are the same, but several changes were needed to accommodate the new output for coho and stratum D2.

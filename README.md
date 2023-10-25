@@ -29,11 +29,10 @@ Many additional R packages will be installed automatically.
 
 ```R
 install.packages("remotes")
-remotes::install_github("bstaton1/KuskoHarvUtils")
 remotes::install_github("bstaton1/KuskoHarvEst")
 ```
 
-### $\mathrm{\LaTeX}$ Distribution and Additional Packages
+### TeX Distribution and Additional Packages
 
 $\mathrm{\LaTeX}$ is a program that allows building PDF documents from code.
 'KuskoHarvEst' depends on '[tinytex](https://yihui.org/tinytex/)', which is an R package that installs a minimal distribution (<0.1GB in size) and allows you to install extensions as needed.
