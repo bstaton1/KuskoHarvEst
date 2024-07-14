@@ -1,5 +1,9 @@
 # *NEWS*
 
+# KuskoHarvEst 1.2.6 (2024-07-14)
+
+* Updated package hexsticker
+
 # KuskoHarvEst 1.2.5 (2023-10-25)
 
 * Updated DESCRIPTION to ensure 'KuskoHarvUtils' is installed automatically upon installing 'KuskoHarvEst' ([#188](https://www.github.com/bstaton1/KuskoHarvEst/issues/188))
