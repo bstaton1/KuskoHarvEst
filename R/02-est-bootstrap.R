@@ -63,18 +63,18 @@ combine_boot_out = function(boot_out_drift = NULL, boot_out_set = NULL) {
   id_vars = c("iter", "date", "gear", "stratum")
 
   # placeholder object for if no drift estimates
-  # duplicate the set net output and convert estimates to NA
+  # duplicate the set net output and convert estimates to 0
   if (no_drift) {
     boot_out_drift = boot_out_set
-    boot_out_drift[,!(colnames(boot_out_drift) %in% id_vars)] = NA
+    boot_out_drift[,!(colnames(boot_out_drift) %in% id_vars)] = 0
     boot_out_drift$gear = "drift"
   }
 
   # placeholder object for if no set estimates
-  # duplicate the drift net output and convert estimates to NA
+  # duplicate the drift net output and convert estimates to 0
   if (no_set) {
     boot_out_set = boot_out_drift
-    boot_out_set[,!(colnames(boot_out_set) %in% id_vars)] = NA
+    boot_out_set[,!(colnames(boot_out_set) %in% id_vars)] = 0
     boot_out_set$gear = "set"
   }
 
@@ -84,7 +84,7 @@ combine_boot_out = function(boot_out_drift = NULL, boot_out_set = NULL) {
   # obtain a total across gears
   boot_out_total = cbind(
     boot_out_drift[,id_vars],
-    sapply(spp, function(s) rowSums(cbind(boot_out_drift[,s], boot_out_set[,s]), na.rm = TRUE))
+    sapply(spp, function(s) rowSums(cbind(boot_out_drift[,s], boot_out_set[,s]), na.rm = FALSE))
   )
   boot_out_total$gear = "total"
 
