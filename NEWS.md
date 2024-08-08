@@ -1,5 +1,9 @@
 # *NEWS*
 
+# KuskoHarvEst 1.2.7 (2024-08-07)
+
+* Fixed bug: bootstrap iterations resulting in `NA` now correctly handled when calculating totals across gears; see issue [#236](https://www.github.com/bstaton1/KuskoHarvEst/issues/188) and pull request [#237](https://www.github.com/bstaton1/KuskoHarvEst/pull/237) for complete details.
+
 # KuskoHarvEst 1.2.6 (2024-07-14)
 
 * Updated package hexsticker
