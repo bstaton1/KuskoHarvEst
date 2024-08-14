@@ -1,5 +1,9 @@
 # *NEWS*
 
+# KuskoHarvEst 1.3.0 (2024-08-13)
+
+This version update is to serve as an easy permanent reference -- see the [v1.3.0 release](https://www.github.com/bstaton1/KuskoHarvEst/releases/tag/v1.3.0) for more details. Several minor updates were made to the package README and documentation, including a new grouped package hexsticker logo. No changes in functionality from v1.2.7.
+
 # KuskoHarvEst 1.2.7 (2024-08-07)
 
 * Fixed bug: bootstrap iterations resulting in `NA` now correctly handled when calculating totals across gears; see issue [#236](https://www.github.com/bstaton1/KuskoHarvEst/issues/188) and pull request [#237](https://www.github.com/bstaton1/KuskoHarvEst/pull/237) for complete details.
