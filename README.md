@@ -116,6 +116,24 @@ Finally, users can find some information about the 'KuskoHarvEst' development pr
   <img src="man/figures/readme-SS/summary-report.png" width="600"/>
 </p>
 
+## Related Packages <img src="man/figures/sticker/KuskoHarvEst-logo-grouped.png" align="right" height=250px/>
+
+'KuskoHarvEst' is a member of a family of packages:
+
+* ['KuskoHarvData'](https://www.github.com/bstaton1/KuskoHarvData) stores the data and compiled estimates across multiple openers and years.
+* ['KuskoHarvPred'](https://www.github.com/bstaton1/KuskoHarvPred) contains tools for predicting outcomes of future openers based on past data. 
+* ['KuskoHarvUtils'](https://www.github.com/bstaton1/KuskoHarvUtils) contains features that support the other packages.
+
+## Publications
+
+A description of the sampling methodology and estimation framework can be found in the manuscript:
+
+>_In-season monitoring of harvest and effort from a large-scale subsistence salmon fishery in western Alaska_ by B. A. Staton, W. R. Bechtol, L. G. Coggins Jr., G. Decossas, and J. Esquible, submitted to the _Canadian Journal of Fisheries and Aquatic Sciences_ (analysis repository: [bstaton1/KuskoHarvEst-ms-analysis](https://github.com/bstaton1/KuskoHarvEst-ms-analysis); archived under DOI [10.5281/zenodo.10369148](https://doi.org/10.5281/zenodo.10369148)).
+
+An approach for predicting outcomes of future openers based on past data can be found in the manuscript:
+
+>_In-season predictions of daily harvest for lower Kuskokwim River subsistence salmon fisheries_ by B. A. Staton, W. R. Bechtol, L. G. Coggins Jr., and G. Decossas, submitted to the _North American Journal of Fisheries Management_ (analysis repository: [bstaton1/KuskoHarvPred-ms-analysis](https://www.github.com/bstaton1/KuskoHarvPred-ms-analysis); archived under DOI [10.5281/zenodo.13293677](https://doi.org/10.5281/zenodo.13293677)).
+
 ## Contact
 
 If users are uncertain with how to properly use an aspect of the tool and cannot find the answer in the documentation, they are encouraged to contact the developer of the software: Ben Staton (<bstaton.qes@gmail.com>).
